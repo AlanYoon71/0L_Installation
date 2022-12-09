@@ -13,7 +13,7 @@ sudo useradd node -m -s /bin/bash && sudo su node
 echo ""
 echo "Using tmux entering session fullnode"
 sleep 1
-tmux 
+tmux new -s fullnode
 echo "Installing fullnode for 0L now..."
 git clone https://github.com/OLSF/libra.git
 cd libra
