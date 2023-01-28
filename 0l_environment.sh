@@ -22,11 +22,8 @@ echo ""
 echo "Changing user from root to node and installing.. It takes about 30min more, so be patient until finishing installation."
 echo "===================="
 sudo useradd node -m -s /bin/bash
-cp ./0l_fullnode.sh /home/node
 cp ./0l_tmux.sh /home/node
-chmod go+rw /home/node/0l_fullnode.sh
+chmod +x /home/node/0l_tmux.sh
 chmod go+rw /home/node/0l_tmux.sh
 #su - node -c '/home/node/0l_tmux.sh
-sudo -u node /home/node/0l_tmux.sh <<!
-y
-!
+sudo -u node /home/node/0l_tmux.sh
