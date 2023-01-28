@@ -8,7 +8,8 @@ tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s
 sleep 1200
 
 tmux send-keys -t $session:$window '\n
-cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && AUTH=$(sed -n '7p' keygen.txt) && MNEM=$(sed -n '11p' keygen.txt) && cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user' C-m
+cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+tmux send-keys -t $session:$window 'cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user && cat <<< $MNEM' C-m
 
 sleep 300
 tmux kill-session -t $session
@@ -32,7 +33,10 @@ session="tower"
 tmux new-session -d -s $session
 window=0
 tmux rename-window -t $session:$window 'tower'
-tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start' C-m
+tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start && cat <<< $MNEM' C-m
+
+
 echo ""
 echo "Tower started!"
 echo ""
@@ -43,6 +47,7 @@ session="monitor"
 tmux new-session -d -s $session
 window=0
 tmux rename-window -t $session:$window 'monitor'
+tmux send-keys -t $session:$window 'cd /home/node/bin && curl icanhazip.com > ip.txt && IP=$(cat ./ip.txt)'
 tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
 echo ""
 echo "Monitor started!"
@@ -50,5 +55,8 @@ echo ""
 echo "Done!!"
 echo ""
 echo ""
-curl icanhazip.com > ip.txt && IP=$(cat ./ip.txt)
+IP=$(cat /home/node/bin/ip.txt)
 echo "From now, you can monitor your node in browser by typing [ http://$IP:3030 ]"
+echo ""
+AUTH=$(sed -n '7p' /home/node/bin/keygen.txt) 
+echo "IMPORTANT! >> For operating tower, you should request onboarding to anyone who can onboard you with [ txs create-account --authkey $AUTH --coins 1 ]"
