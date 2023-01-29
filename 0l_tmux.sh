@@ -15,10 +15,11 @@ tmux send-keys -t $session:$window '/home/node/bin/ol init -a && cd $HOME/.0L &&
 
 echo ""
 echo "Open your tmux session in another terminal[ tmux attach -t $session ], write your answer and paste your mnemonic for creating config files(session name : $session)."
+echo "Just wait until your first mining complete and this $session session close automatically."
 echo "===================="
 
-echo "From now, mining first proof and creating config files.."
-echo "When all reqired files is detected, your fullnode and tower will be installed automatically."
+echo "Mining first proof and creating config files now.."
+echo "When all reqired files are created, your fullnode and tower will start installation automatically."
 
 A=1
 B=10
