@@ -97,9 +97,9 @@ do
                     [ txs create-account --authkey $AUTH --coins 1 ]"
                     echo "===================="
                     echo ""
-                    echo "TMUX session list:"
+                    echo "TMUX sessions created by this script:"
                     echo "===================="
-                    echo "cat /home/node/bin/tmux_status.txt"
+                    cat -n /home/node/bin/tmux_status.txt
                     echo "===================="
                     echo ""
                     echo ""
