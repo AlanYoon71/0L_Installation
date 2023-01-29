@@ -17,9 +17,9 @@ echo "===================="
 sleep 2
 curl -sL https://raw.githubusercontent.com/OLSF/libra/main/ol/util/setup.sh | bash
 echo ""
-echo "0l linux environment installation finished."
+echo "All required linux environment packages for 0l already installed."
 echo ""
-echo "Changing user from root to node and installing.. It takes about 30min more, so be patient until finishing installation."
+echo "Preparing onboard condition now.. This script takes 30min more entirely until completed, so be patient, please."
 echo "===================="
 sudo useradd node -m -s /bin/bash
 cp ./0l_tmux.sh /home/node
