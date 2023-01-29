@@ -17,7 +17,7 @@ echo "===================="
 sleep 2
 curl -sL https://raw.githubusercontent.com/OLSF/libra/main/ol/util/setup.sh | bash
 echo ""
-echo "All required linux environment packages for 0l already installed."
+echo "All required linux environment packages for 0l are already installed."
 echo ""
 echo "Preparing onboard condition now.. This script takes 30min more entirely until completed, so be patient, please."
 echo "===================="
