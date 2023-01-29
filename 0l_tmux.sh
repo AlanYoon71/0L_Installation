@@ -40,7 +40,7 @@ do
                     tmux new-session -d -s $session
                     window=0
                     tmux rename-window -t $session:$window 'fullnode'
-                    tmux send-keys -t $session:$window '/home/node/bin/ol restore && ulimit -n 100000 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                    tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && /home/node/bin/ol init --key-store --waypoint $WAY && /home/node/bin/ol restore && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
 
                     sleep 300
 
