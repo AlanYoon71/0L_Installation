@@ -29,90 +29,88 @@ do
     then
         if [ -f /home/node/.0L/account.json ]
         then
-            if [ -f /home/node/.0L/key_store.json ]
+            if [ -f /home/node/.0L/vdf_proofs/proof_0.json ]
             then
-                if [ -f /home/node/.0L/vdf_proofs/proof_0.json ]
-                then
-                    sleep 60
-                    echo ""
-                    echo "Your node already created all required files successfully! Starting fullnode and tower.."
-                    tmux kill-session -t $session
-                    sleep 2
-                    session="fullnode"
-                    tmux new-session -d -s $session
-                    window=0
-                    tmux rename-window -t $session:$window 'fullnode'
-                    tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && /home/node/bin/ol init --key-store --waypoint $WAY && /home/node/bin/ol restore && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                sleep 60
+                echo ""
+                echo "Your node already created all required files successfully! Starting fullnode and tower.."
+                tmux kill-session -t $session
+                sleep 2
+                session="fullnode"
+                tmux new-session -d -s $session
+                window=0
+                tmux rename-window -t $session:$window 'fullnode'
+                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && /home/node/bin/ol init --key-store --waypoint $WAY && /home/node/bin/ol restore && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
 
-                    sleep 300
+                sleep 300
 
-                    session="fullnode_log"
-                    tmux new-session -d -s $session
-                    window=0
-                    tmux rename-window -t $session:$window 'fullnode_log'
-                    tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
+                session="fullnode_log"
+                tmux new-session -d -s $session
+                window=0
+                tmux rename-window -t $session:$window 'fullnode_log'
+                tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
 
-                    echo ""
-                    echo "Fullnode started!"
-                    echo "===================="
-                    echo ""
+                echo ""
+                echo "Fullnode started!"
+                echo "===================="
+                echo ""
 
-                    sleep 300
+                sleep 300
 
-                    session="tower"
-                    tmux new-session -d -s $session
-                    window=0
-                    tmux rename-window -t $session:$window 'tower'
-                    tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
-                    tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
-                    tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start' C-m
+                session="tower"
+                tmux new-session -d -s $session
+                window=0
+                tmux rename-window -t $session:$window 'tower'
+                tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+                tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
+                tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start' C-m
 
-                    echo ""
-                    echo "Open your tmux session in the other terminal(tmux attach -t $session), copy and paste your mnemonic into tmux session(session name : $session)."
-                    echo "===================="
+                echo ""
+                echo "Open your tmux session in the other terminal(tmux attach -t $session), copy and paste your mnemonic into tmux session(session name : $session)."
+                echo "===================="
 
-                    echo ""
-                    echo "Tower started!"
-                    echo "===================="
-                    echo ""
+                echo ""
+                echo "Tower started!"
+                echo "===================="
+                echo ""
 
-                    sleep 2
+                sleep 2
 
-                    session="monitor"
-                    tmux new-session -d -s $session
-                    window=0
-                    tmux rename-window -t $session:$window 'monitor'
-                    tmux send-keys -t $session:$window 'tmux ls > /home/node/bin/tmux_status.txt' C-m
-                    tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
-                    echo ""
-                    echo "Monitor started!"
-                    echo "===================="
-                    echo ""
-                    echo ""
-                    IP=$(sed -n '1p' /home/node/bin/ip.txt)
-                    echo "From now, you can monitor your node in browser by typing [ http://$IP:3030 ]"
-                    echo "===================="
-                    echo ""
-                    AUTH=$(sed -n '7p' /home/node/bin/keygen.txt) 
-                    echo "IMPORTANT!
-                    >> For operating tower, you should request onboarding to anyone who can onboard you with a transaction below.
-                    [ txs create-account --authkey $AUTH --coins 1 ]"
-                    echo "===================="
-                    echo ""
-                    echo "TMUX sessions created by this script:"
-                    echo "===================="
-                    cat -n /home/node/bin/tmux_status.txt
-                    echo "===================="
-                    echo ""
-                    echo ""
-                    echo "Done!!"
-                    echo ""
-                    A=15
-                fi
-            sleep 60
+                session="monitor"
+                tmux new-session -d -s $session
+                window=0
+                tmux rename-window -t $session:$window 'monitor'
+                tmux send-keys -t $session:$window 'tmux ls > /home/node/bin/tmux_status.txt' C-m
+                tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
+                echo ""
+                echo "Monitor started!"
+                echo "===================="
+                echo ""
+                echo ""
+                IP=$(sed -n '1p' /home/node/bin/ip.txt)
+                echo "From now, you can monitor your node in browser by typing [ http://$IP:3030 ]"
+                echo "===================="
+                echo ""
+                AUTH=$(sed -n '7p' /home/node/bin/keygen.txt) 
+                echo "IMPORTANT!
+                >> For operating tower, you should request onboarding to anyone who can onboard you with a transaction below.
+                [ txs create-account --authkey $AUTH --coins 1 ]"
+                echo "===================="
+                echo ""
+                echo "TMUX sessions created by this script:"
+                echo "===================="
+                cat -n /home/node/bin/tmux_status.txt
+                echo "===================="
+                echo ""
+                echo ""
+                echo "Done!!"
+                echo ""
+                A=15
             fi
+        else
         sleep 60
         fi
+    else
     sleep 60
     fi
 done
