@@ -17,7 +17,7 @@ echo "===================="
 sleep 2
 curl -sL https://raw.githubusercontent.com/OLSF/libra/main/ol/util/setup.sh | bash
 echo ""
-echo "0l environment installation finished"
+echo "0l linux environment installation finished."
 echo ""
 echo "Changing user from root to node and installing.. It takes about 30min more, so be patient until finishing installation."
 echo "===================="
