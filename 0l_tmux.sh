@@ -11,6 +11,8 @@ sleep 1200
 
 tmux send-keys -t $session:$window '\n
 cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+tmux send-keys -t $session:$window 'cd /home/node/bin && curl icanhazip.com > ip.txt && IP=$(cat /home/node/bin/ip.txt)' C-m
+tmux send-keys -t $session:$window '/home/node/bin/ol init -u http://$IP:8080' C-m
 tmux send-keys -t $session:$window 'cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user' C-m
 
 echo ""
@@ -24,9 +26,9 @@ while [ $A -lt $B ]
 do
     if [ $A -eq $C ]
     then
-        if [ -f /home/node/.0L/account.json ]
+        if [ -f /home/node/.0L/0L.toml ]
         then
-            echo "Your account already created successfully! Starting fullnode and tower.."
+            echo "Your account and 0L.toml already created successfully! Starting fullnode and tower.."
             tmux kill-session -t $session
             sleep 2
             session="fullnode"
@@ -73,7 +75,6 @@ do
             tmux new-session -d -s $session
             window=0
             tmux rename-window -t $session:$window 'monitor'
-            tmux send-keys -t $session:$window 'cd /home/node/bin && curl icanhazip.com > ip.txt && IP=$(cat /home/node/bin/ip.txt)' C-m
             tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
             echo ""
             echo "Monitor started!"
@@ -94,7 +95,7 @@ do
             echo "Done!!"
             A=15
         else
-            echo "Checking if your account was created, but not yet. Be patient.."
+            echo "Checking if your account and 0L.toml was created, but not yet. Be patient.."
             A=13
             sleep 60
         fi
