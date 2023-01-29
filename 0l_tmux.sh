@@ -33,6 +33,7 @@ do
                 if [ -f /home/node/.0L/vdf_proofs/proof_0.json ]
                 then
                     sleep 60
+                    echo ""
                     echo "Your node already created all required files successfully! Starting fullnode and tower.."
                     tmux kill-session -t $session
                     sleep 2
