@@ -23,7 +23,7 @@ echo "===================="
 sleep 30
 
 echo ""
-echo "If you complete upper process, genesis proof and config files will be created."
+echo "If you complete upper actions and prove you are human, genesis proof and config files will be created."
 echo "When all required files are created, your fullnode and tower will start installation automatically."
 echo "===================="
 
