@@ -3,23 +3,29 @@ session="onboarding"
 tmux new-session -d -s $session
 window=0
 tmux rename-window -t $session:$window 'fullnode'
-tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd /home/node/libra && make bins install' C-m
-tmux send-keys -t $session:$window '\n
-' C-m
+tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd /home/node/libra && make bins install && \n
+cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt) && /home/node/bin/ol init -a && cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user' C-m
+#tmux send-keys -t $session:$window '\n
+#' C-m
 
-sleep 1200
+#sleep 1200
 
-tmux send-keys -t $session:$window '\n
-cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
-tmux send-keys -t $session:$window '/home/node/bin/ol init -a && cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user' C-m
+#tmux send-keys -t $session:$window '\n
+#cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+#tmux send-keys -t $session:$window '/home/node/bin/ol init -a && cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user' C-m
 
 echo ""
-echo "Open your tmux session in another terminal[ tmux attach -t $session ], write your answer and paste your mnemonic for creating config files(session name : $session)."
-echo "Just wait until your first mining complete and this $session session close automatically."
+echo "Open your tmux session in another terminal[ tmux attach -t $session ], wait until your server complete compiling."
+echo "If compiling ok, you can copy your mnemonic displayed in monitor and paste it. And you can write your answer(y/n or statement) and paste your mnemonic, too."
+echo "And then just wait until your first mining complete(20 ~ 30min) and this $session session close automatically."
 echo "===================="
 
-echo "Mining first proof and creating config files now.."
-echo "When all reqired files are created, your fullnode and tower will start installation automatically."
+sleep 30
+
+echo ""
+echo "If you complete upper process, genesis proof and config files will be created."
+echo "When all required files are created, your fullnode and tower will start installation automatically."
+echo "===================="
 
 A=1
 B=10
