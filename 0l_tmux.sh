@@ -26,7 +26,7 @@ do
     then
         if [ -f /home/node/.0L/account.json ]
         then
-            echo "Your account already created successfully!"
+            echo "Your account already created successfully! Starting fullnode and tower.."
             tmux kill-session -t $session
             sleep 2
             session="fullnode"
@@ -94,7 +94,7 @@ do
             echo "Done!!"
             A=15
         else
-            echo "Checking if account was created, but not yet.."
+            echo "Checking if your account was created, but not yet. Be patient.."
             A=13
             sleep 60
         fi
