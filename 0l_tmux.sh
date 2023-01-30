@@ -3,7 +3,13 @@ session="onboarding"
 tmux new-session -d -s $session
 window=0
 tmux rename-window -t $session:$window 'fullnode'
+
+sleep 1
+
 tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd /home/node/libra && make bins install' C-m
+
+sleep 1
+
 tmux send-keys -t $session:$window '\n
 ' C-m
 
@@ -24,6 +30,9 @@ done
 
 
 tmux send-keys -t $session:$window 'cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+
+sleep 1
+
 tmux send-keys -t $session:$window '/home/node/bin/ol init -a && cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user' C-m
 
 sleep 5
@@ -68,8 +77,14 @@ do
                 tmux new-session -d -s $session
                 window=0
                 tmux rename-window -t $session:$window 'fullnode'
-                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
-                tmux send-keys -t $session:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && /home/node/bin/ol init --key-store --waypoint $WAY && sleep 10 && killall diem-node && sleep 3 && /home/node/bin/ol restore && cd /home/node/.0L && sleep 3 & diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+
+                sleep 1
+                
+                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && sleep 2 && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
+                
+                sleep 10
+                
+                tmux send-keys -t $session:$window '/home/node/bin/ol restore && cd /home/node/.0L && sleep 3 & diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
 
                 echo ""
                 echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ], copy and paste your mnemonic into $session session screen. <<< \e[0m"
@@ -82,6 +97,9 @@ do
                 tmux new-session -d -s $session
                 window=0
                 tmux rename-window -t $session:$window 'fullnode_log'
+                
+                sleep 1
+                
                 tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
 
                 echo ""
@@ -94,8 +112,17 @@ do
                 tmux new-session -d -s $session
                 window=0
                 tmux rename-window -t $session:$window 'tower'
+                
+                sleep 1
+                
                 tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+                
+                sleep 1
+
                 tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
+                
+                sleep 1
+                
                 tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start && echo -e $MNEM"\n"' C-m
 
                 echo ""
@@ -112,8 +139,15 @@ do
                 tmux new-session -d -s $session
                 window=0
                 tmux rename-window -t $session:$window 'monitor'
+                
+                sleep 1
+                
                 tmux send-keys -t $session:$window 'tmux ls > /home/node/bin/tmux_status.txt' C-m
+                
+                sleep 1
+                
                 tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
+                
                 echo ""
                 echo "Monitor started! All of binary files are started now."
                 echo ""
