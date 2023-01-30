@@ -80,8 +80,13 @@ do
                 window=0
                 tmux rename-window -t $session:$window 'update'
                 sleep 1
-                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && sleep 2 && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
-                sleep 60
+                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && sleep 2 && cat /home/node/bin/keygen.txt && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
+                sleep 20
+                
+                echo ""
+                echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ] by user node, copy and paste your mnemonic. <<< \e[0m"
+                echo "===================="
+                echo ""
                 
                 C=1
                 D=10
@@ -98,11 +103,11 @@ do
                     fi
                 done
                 
-                tmux send-keys -t $session:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = "$WAY"" /home/node/.0L/0L.toml' C-m
+                tmux send-keys -t $session:$window 'WAY=$(cat /home/node/bin/waypoint.txt) && sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = "$WAY"" /home/node/.0L/0L.toml' C-m
                 sleep 3
-                tmux send-keys -t $session:$window 'sed -i "tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                tmux send-keys -t $session:$window 'sed -i "s/tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
                 sleep 3
-                tmux send-keys -t $session:$window 'sed -i "tx = 1000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                tmux send-keys -t $session:$window 'sed -i "s/tx = 1000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
                 sleep 1
 
                 echo ""
@@ -115,16 +120,8 @@ do
                 tmux rename-window -t $session:$window 'fullnode'
                 sleep 1
                 
-                tmux send-keys -t $session:$window 'ulimit -n 100000 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
-                sleep 10
-
-                tmux send-keys -t $session:$window 'killall diem-node && sleep 5 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
-                
-                echo ""
-                echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ] by user node, copy and paste your mnemonic. <<< \e[0m"
-                echo "===================="
-                echo ""
-                sleep 300
+                tmux send-keys -t $session:$window 'ulimit -n 100000 && killall diem-node && sleep 3 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                sleep 180
                 
                 session="fullnode_log"
                 tmux new-session -d -s $session
@@ -137,7 +134,7 @@ do
                 echo ""
                 echo "Fullnode started!"
                 echo ""
-                sleep 300
+                sleep 180
                 
                 session="tower"
                 tmux new-session -d -s $session
@@ -151,7 +148,7 @@ do
                 tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
                 sleep 1
 
-                tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start && echo -e $MNEM"\n"' C-m
+                tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start' C-m
                 
                 echo ""
                 echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ] by user node, copy and paste your mnemonic. <<< \e[0m"
