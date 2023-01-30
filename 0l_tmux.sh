@@ -31,15 +31,15 @@ echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach 
 echo -e "\e[1m\e[32m>>> If compiling ok, you can copy your mnemonic displayed in monitor and paste it. And you can write your answer(y/n or statement) and paste your mnemonic, too. <<< \e[0m"
 echo "===================="
 echo ""
-echo ">>> And then just wait until your first mining complete(20 ~ 30min) and this $session session close automatically. <<<"
+echo "And then just wait until your first mining complete(20 ~ 30min) and this $session session close automatically."
 echo ""
 echo ""
 
 sleep 30
 
 echo ""
-echo ">>> If you complete upper actions and prove you are human, genesis proof and config files will be created. <<<"
-echo ">>> When all required files are created, your fullnode and tower will start installation automatically. <<<"
+echo "If you complete upper actions and prove you are human, genesis proof and config files will be created."
+echo "When all required files are created, your fullnode and tower will be started automatically."
 echo ""
 echo ""
 
@@ -118,12 +118,12 @@ do
                 echo "===================="
                 echo ""
                 AUTH=$(sed -n '7p' /home/node/bin/keygen.txt) 
-                echo -e "IMPORTANT!
-                >>> For operating tower and mining successfully, you should request onboarding to anyone who can onboard you with a transaction below. <<<
-                \e[1m\e[32m[ txs create-account --authkey $AUTH --coins 1 ] \e[0m"
+                echo -e "\e[1m\e[32m>>> Don't forget this! <<<
+                For operating tower and mining successfully, you should request onboarding to anyone who can onboard you with a transaction below.
+                [ txs create-account --authkey $AUTH --coins 1 ] \e[0m"
                 echo "===================="
                 echo ""
-                echo -e "\e[1m\e[32mTMUX sessions created by this script: \e[0m"
+                echo -e "\e[1m\e[32m>>>TMUX sessions created by this script <<< \e[0m"
                 echo "===================="
                 cat -n /home/node/bin/tmux_status.txt
                 echo "===================="
