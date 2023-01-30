@@ -83,17 +83,20 @@ do
                 tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && sleep 2 && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
                 sleep 60
                 
-                if [ -f /home/node/.0L/key_store.json ]
-                then
-                    echo ""
-                    echo "Your key_store.json file created and waypoint are already updated successfully!"
-                    echo ""
-                else
-                    echo ""
-                    echo "Your key and waypoint is not saved and updated. It's a critical.. You can't run tower."
-                    echo "If you want to retry installation from scratch, delete user node [ userdel node && rm -rf /home/node ] by root first."
-                    exit()
-                fi
+                C=1
+                D=10
+                while [ $C -lt $D ]
+                do
+                    if [ -f /home/node/.0L/key_store.json ]
+                    then
+                        echo ""
+                        echo "Your key_store.json file created successfully!"
+                        echo ""
+                        C=15
+                    else
+                    sleep 10
+                    fi
+                done
                 
                 tmux send-keys -t $session:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = "$WAY"" /home/node/.0L/0L.toml' C-m
                 sleep 3
@@ -105,7 +108,7 @@ do
                 echo ""
                 echo "0L.toml configuration( base_waypoint and max_gas ) modified successfully."
                 echo ""
-                
+
                 session="fullnode"
                 tmux new-session -d -s $session
                 window=0
