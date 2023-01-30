@@ -22,10 +22,11 @@ echo ""
 echo ""
 echo "All required linux environment packages for 0l are already installed."
 echo ""
-echo "Preparing onboard condition now.. "
 echo -e "\e[1m\e[32m3. Preparing onboard condition now.. \e[0m"
-echo "This script takes 30min more entirely until completed, so be patient, please."
 echo "===================="
+echo ""
+echo "This script takes 30min more entirely until completed, so be patient, please."
+echo ""
 sudo useradd node -m -s /bin/bash
 cp ./0l_tmux.sh /home/node
 chmod +x /home/node/0l_tmux.sh
