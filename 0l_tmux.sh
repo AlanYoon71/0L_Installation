@@ -177,9 +177,9 @@ do
                 echo "From now, you can monitor your node in browser by typing [ http://your_IP:3030 ]"
                 echo ""
                 AUTH=$(sed -n '7p' /home/node/bin/keygen.txt) 
-                echo -e "\e[1m\e[32m>>> Don't forget this! <<<
-                For operating tower and mining successfully, you should request onboarding to anyone who can onboard you with a transaction below.
-                [ txs create-account --authkey $AUTH --coins 1 ] \e[0m"
+                echo -e "\e[1m\e[32m>>> Don't forget this! <<< \e[0m"
+                echo "To run tower and mining successfully, you should be onboarded by anyone who can onboard you with a transaction below."
+                echo -e "\e[1m\e[32m[ txs create-account --authkey $AUTH --coins 1 ] \e[0m"
                 echo "===================="
                 echo ""
                 echo -e "\e[1m\e[32m>>>TMUX sessions created by this script <<< \e[0m"
