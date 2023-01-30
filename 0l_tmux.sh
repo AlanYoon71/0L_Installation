@@ -7,23 +7,41 @@ tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s
 tmux send-keys -t $session:$window '\n
 ' C-m
 
-sleep 1000
+C=1
+D=10
+while [ $C -lt $D ]
+do
+    if [ -f /home/node/bin/onboard ]
+    then
+        echo ""
+        echo "Binary files for 0l are already compiled successfully!"
+        echo ""
+        C=15
+    else
+    sleep 60
+    fi
+done
+
 
 tmux send-keys -t $session:$window 'cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
 tmux send-keys -t $session:$window '/home/node/bin/ol init -a && cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user' C-m
 
 echo ""
 echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ], and wait until your server complete compiling. <<< \e[0m"
-echo ">>> If compiling ok, you can copy your mnemonic displayed in monitor and paste it. And you can write your answer(y/n or statement) and paste your mnemonic, too. <<<"
-echo ">>> And then just wait until your first mining complete(20 ~ 30min) and this $session session close automatically. <<<"
+echo -e "\e[1m\e[32m>>> If compiling ok, you can copy your mnemonic displayed in monitor and paste it. And you can write your answer(y/n or statement) and paste your mnemonic, too. <<< \e[0m"
 echo "===================="
+echo ""
+echo ">>> And then just wait until your first mining complete(20 ~ 30min) and this $session session close automatically. <<<"
+echo ""
+echo ""
 
 sleep 30
 
 echo ""
 echo ">>> If you complete upper actions and prove you are human, genesis proof and config files will be created. <<<"
 echo ">>> When all required files are created, your fullnode and tower will start installation automatically. <<<"
-echo "===================="
+echo ""
+echo ""
 
 A=1
 B=10
@@ -74,7 +92,7 @@ do
                 tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start && echo -e $MNEM"\n"' C-m
 
                 echo ""
-                echo ">>> Open your tmux session in the other terminal(tmux attach -t $session), copy and paste your mnemonic into tmux session(session name : $session). <<<"
+                echo -e "\e[1m\e[32m>>> Open your tmux session in the other terminal(tmux attach -t $session), copy and paste your mnemonic into tmux session(session name : $session). <<< \e[0m"
                 echo "===================="
 
                 echo ""
@@ -100,18 +118,18 @@ do
                 echo "===================="
                 echo ""
                 AUTH=$(sed -n '7p' /home/node/bin/keygen.txt) 
-                echo "IMPORTANT!
+                echo -e "IMPORTANT!
                 >>> For operating tower and mining successfully, you should request onboarding to anyone who can onboard you with a transaction below. <<<
-                \e[1m\e[32m[ txs create-account --authkey $AUTH --coins 1 ]\e[0m"
+                \e[1m\e[32m[ txs create-account --authkey $AUTH --coins 1 ] \e[0m"
                 echo "===================="
                 echo ""
-                echo "TMUX sessions created by this script:"
+                echo -e "\e[1m\e[32mTMUX sessions created by this script: \e[0m"
                 echo "===================="
                 cat -n /home/node/bin/tmux_status.txt
                 echo "===================="
                 echo ""
                 echo ""
-                echo "Done!!"
+                echo -e "\e[1m\e[32mDone!! \e[0m"
                 echo ""
                 A=15
             fi
