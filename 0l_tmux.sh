@@ -3,8 +3,7 @@ session="onboarding"
 tmux new-session -d -s $session
 window=0
 tmux rename-window -t $session:$window 'fullnode'
-tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd /home/node/libra && make bins install && \n
-cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt) && /home/node/bin/ol init -a && cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user' C-m
+tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd /home/node/libra && make bins install && echo -e "y\n" && cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt) && /home/node/bin/ol init -a && echo -e $MNEM"\n" && cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user && echo -e $MNEM"\n"' C-m
 #tmux send-keys -t $session:$window '\n
 #' C-m
 
@@ -69,7 +68,7 @@ do
                 tmux rename-window -t $session:$window 'tower'
                 tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
                 tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
-                tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start' C-m
+                tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start && echo -e $MNEM"\n"' C-m
 
                 echo ""
                 echo "Open your tmux session in the other terminal(tmux attach -t $session), copy and paste your mnemonic into tmux session(session name : $session)."
