@@ -2,7 +2,7 @@
 session="onboarding"
 tmux new-session -d -s $session
 window=0
-tmux rename-window -t $session:$window 'fullnode'
+tmux rename-window -t $session:$window 'onboarding'
 
 sleep 1
 
@@ -69,81 +69,101 @@ do
                 echo "All required files are already created successfully!"
                 echo ""
                 sleep 3
+                
                 echo -e "\e[1m\e[32m4. Starting fullnode and tower.. \e[0m"
                 echo "===================="
                 tmux kill-session -t $session
-                sleep 2
+                sleep 3
+                
+                session="update"
+                tmux new-session -d -s $session
+                window=0
+                tmux rename-window -t $session:$window 'update'
+                sleep 1
+                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && sleep 2 && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
+                sleep 60
+                
+                if [ -f /home/node/.0L/key_store.json ]
+                then
+                    echo ""
+                    echo "Your key_store.json file created and waypoint are already updated successfully!"
+                    echo ""
+                else
+                    echo ""
+                    echo "Your key and waypoint is not saved and updated. It's a critical.. You can't run tower."
+                    echo "If you want to retry installation from scratch, delete user node [ userdel node && rm -rf /home/node ] by root first."
+                    exit()
+                fi
+                
+                tmux send-keys -t $session:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = "$WAY"" /home/node/.0L/0L.toml' C-m
+                sleep 3
+                tmux send-keys -t $session:$window 'sed -i "tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                sleep 3
+                tmux send-keys -t $session:$window 'sed -i "tx = 1000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                sleep 1
+
+                echo ""
+                echo "0L.toml configuration( base_waypoint and max_gas ) modified successfully."
+                echo ""
+                
                 session="fullnode"
                 tmux new-session -d -s $session
                 window=0
                 tmux rename-window -t $session:$window 'fullnode'
-
                 sleep 1
                 
-                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && sleep 2 && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
-                
+                tmux send-keys -t $session:$window 'ulimit -n 100000 && cd /home/node/.0L && sleep 3 & diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                 sleep 10
                 
-                tmux send-keys -t $session:$window '/home/node/bin/ol restore && cd /home/node/.0L && sleep 3 & diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
-
                 echo ""
                 echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ] by user node, copy and paste your mnemonic. <<< \e[0m"
                 echo "===================="
                 echo ""
-
                 sleep 300
-
+                
                 session="fullnode_log"
                 tmux new-session -d -s $session
                 window=0
                 tmux rename-window -t $session:$window 'fullnode_log'
-                
                 sleep 1
                 
                 tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
-
+                
                 echo ""
                 echo "Fullnode started!"
                 echo ""
-
                 sleep 300
-
+                
                 session="tower"
                 tmux new-session -d -s $session
                 window=0
                 tmux rename-window -t $session:$window 'tower'
-                
                 sleep 1
                 
                 tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
-                
                 sleep 1
-
+                
                 tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
-                
                 sleep 1
-                
-                tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start && echo -e $MNEM"\n"' C-m
 
+                tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start && echo -e $MNEM"\n"' C-m
+                
                 echo ""
                 echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ] by user node, copy and paste your mnemonic. <<< \e[0m"
                 echo "===================="
-
+                
                 echo ""
                 echo "Tower started!"
                 echo ""
-
                 sleep 2
-
+                
                 session="monitor"
                 tmux new-session -d -s $session
                 window=0
                 tmux rename-window -t $session:$window 'monitor'
-                
                 sleep 1
                 
                 tmux send-keys -t $session:$window 'tmux ls > /home/node/bin/tmux_status.txt' C-m
-                
                 sleep 1
                 
                 tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
@@ -152,8 +172,7 @@ do
                 echo "Monitor started! All of binary files are started now."
                 echo ""
                 echo ""
-                IP=$(sed -n '1p' /home/node/bin/ip.txt)
-                echo "From now, you can monitor your node in browser by typing [ http://$IP:3030 ]"
+                echo "From now, you can monitor your node in browser by typing [ http://your_IP:3030 ]"
                 echo ""
                 AUTH=$(sed -n '7p' /home/node/bin/keygen.txt) 
                 echo -e "\e[1m\e[32m>>> Don't forget this! <<<
