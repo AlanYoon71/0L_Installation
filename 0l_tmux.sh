@@ -38,7 +38,7 @@ tmux send-keys -t $session:$window '/home/node/bin/ol init -a && cd $HOME/.0L &&
 sleep 5
 
 echo ""
-echo -e "\e[1m\e[32m>>> From now you can open your tmux session in another terminal[ tmux attach -t $session ] <<< \e[0m"
+echo -e "\e[1m\e[32m>>> From now you can change user to node, open your tmux session in another terminal[ tmux attach -t $session ] <<< \e[0m"
 echo -e "\e[1m\e[32m>>> In $session session screen, copy your mnemonic displayed in monitor, paste it and write your answer(y/n or statement). <<< \e[0m"
 echo "===================="
 echo ""
@@ -87,7 +87,7 @@ do
                 tmux send-keys -t $session:$window '/home/node/bin/ol restore && cd /home/node/.0L && sleep 3 & diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
 
                 echo ""
-                echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ], copy and paste your mnemonic into $session session screen. <<< \e[0m"
+                echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ] by user node, copy and paste your mnemonic. <<< \e[0m"
                 echo "===================="
                 echo ""
 
@@ -126,7 +126,7 @@ do
                 tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start && echo -e $MNEM"\n"' C-m
 
                 echo ""
-                echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ], copy and paste your mnemonic into $session session screen. <<< \e[0m"
+                echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ] by user node, copy and paste your mnemonic. <<< \e[0m"
                 echo "===================="
 
                 echo ""
