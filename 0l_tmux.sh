@@ -1,4 +1,4 @@
-
+#!/bin/bash
 session="onboarding"
 tmux new-session -d -s $session
 window=0
