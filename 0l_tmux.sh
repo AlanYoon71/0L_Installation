@@ -41,6 +41,7 @@ do
                 echo ""
                 sleep 3
                 echo -e "\e[1m\e[32m4. Starting fullnode and tower.. \e[0m"
+                echo "===================="
                 tmux kill-session -t $session
                 sleep 2
                 session="fullnode"
@@ -100,7 +101,7 @@ do
                 echo ""
                 AUTH=$(sed -n '7p' /home/node/bin/keygen.txt) 
                 echo "IMPORTANT!
-                >>> For operating tower, you should request onboarding to anyone who can onboard you with a transaction below. <<<
+                >>> For operating tower and mining successfully, you should request onboarding to anyone who can onboard you with a transaction below. <<<
                 \e[1m\e[32m[ txs create-account --authkey $AUTH --coins 1 ]\e[0m"
                 echo "===================="
                 echo ""
