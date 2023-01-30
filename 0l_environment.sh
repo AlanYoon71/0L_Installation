@@ -3,7 +3,7 @@ clear
 echo ""
 echo "================================"
 echo ""
-echo "Script from  //-\ ][_ //-\ ][\][ ";
+echo "Script from  //-\ ][_ //-\ ][\[ ";
 echo ""
 echo "================================"
 echo ""
