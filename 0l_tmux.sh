@@ -115,8 +115,10 @@ do
                 tmux rename-window -t $session:$window 'fullnode'
                 sleep 1
                 
-                tmux send-keys -t $session:$window 'ulimit -n 100000 && cd /home/node/.0L && sleep 3 & diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                tmux send-keys -t $session:$window 'ulimit -n 100000 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                 sleep 10
+
+                tmux send-keys -t $session:$window 'killall diem-node && sleep 5 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                 
                 echo ""
                 echo -e "\e[1m\e[32m>>> Open your tmux session in another terminal[ tmux attach -t $session ] by user node, copy and paste your mnemonic. <<< \e[0m"
