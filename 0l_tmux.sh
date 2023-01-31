@@ -109,7 +109,7 @@ do
                         tmux rename-window -t $session:$window 'update'
                         sleep 1
                                             
-                        tmux send-keys -t $session:$window 'WAY=$(cat /home/node/bin/waypoint.txt) && sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = "$WAY"" /home/node/.0L/0L.toml' C-m
+                        tmux send-keys -t $session:$window 'WAY=$(cat /home/node/bin/waypoint.txt) && sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" /home/node/.0L/0L.toml' C-m
                         sleep 5
                         tmux send-keys -t $session:$window 'sed -i "s/tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
                         sleep 3
@@ -127,7 +127,7 @@ do
                         tmux rename-window -t $session:$window 'fullnode'
                         sleep 1
                         
-                        tmux send-keys -t $session:$window 'ulimit -n 100000 && killall diem-node && sleep 3 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                        tmux send-keys -t $session:$window 'ulimit -n 100000 && killall diem-node > /dev/null ; sleep 3 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                         sleep 180
                         
                         session="node_log"
@@ -147,36 +147,41 @@ do
                         echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
                         echo "===================="                    
                         echo ""
+                        apt install bc &&
                         
                         echo ""
-                        syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")
-                        sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\")
-                        echo $syn
-                        echo $sync
-                        syn1 $(echo $syn | grep -o '[0-9]*')
-                        sync1=$(echo $sync | grep -o '[0-9]*')
-                        sleep 10
+                        syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                        sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                        echo $syn &&
+                        echo $sync &&
+                        syn1=$(echo $syn | grep -o '[0-9]*') &&
+                        sync1=$(echo $sync | grep -o '[0-9]*') &&
+                        sleep 30
                         echo ""
-                        echo "Checking if version is increasing in 10 seconds interval"
-                        syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")
-                        sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\")
-                        echo $syn
-                        echo $sync
-                        syn2 $(echo $syn | grep -o '[0-9]*')
-                        sync2=$(echo $sync | grep -o '[0-9]*')
-                        sleep 2
-                        delt=$((syn2 - syn1))
-                        TP=$((delt / 10))
-                        delta=$((sync2 - sync1))
-                        TPS=$((delta / 10))
+                        echo "Checking if version is increasing in 10 seconds interval" &&
+                        syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                        sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                        echo $syn &&
+                        echo $sync &&
+                        syn2=$(echo $syn | grep -o '[0-9]*') &&
+                        sync2=$(echo $sync | grep -o '[0-9]*') &&
+                        delt=$((syn2 - syn1)) &&
+                        TP=$((delt / 30)) &&
+                        delta=$((sync2 - sync1)) &&
+                        TPS=$((delta / 30)) &&
                         echo ""
                         echo "===================="
-                        echo "Network TPS  : \e[1m\e[32m$TP \e[0m[tx/s]"
-                        echo "Fullnode TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
+                        echo -e "Network TPS : \e[1m\e[32m$TP \e[0m[tx/s]"
+                        echo -e "Local TPS   : \e[1m\e[32m$TPS \e[0m[tx/s]"
                         echo "===================="
-
                         echo ""
-                        echo "If your fullnode health's good, synced version should be increased in real time and TPS can't be 0."
+                        lag=$((syn2 - sync2)) &&
+                        speed=$((TPS - TP)) &&
+                        catch=$(echo "scale=2; $lag / $speed / 3600" | bc) &&
+                        echo "===================="
+                        echo -e "Syncing Lag(current)     : \e[1m\e[35m$lag \e[0m"
+                        echo -e "Catch Up Time(estimated) : \e[1m\e[35m$catch \e[0m[Hr]"
+                        echo "===================="
                         echo ""
                         echo ""
                         echo -e "\e[1m\e[32m8. Starting tower and monitor.. \e[0m"
@@ -219,10 +224,10 @@ do
                         tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
                         
                         echo ""
-                        echo "Monitor started! All of binary files are started now."
+                        echo "Monitor started!"
                         echo ""
                         echo ""
-                        echo "From now, you can monitor your node in browser by typing \e[1m\e[32m[ http://your_IP:3030 ] \e[0m"
+                        echo -e "From now, you can monitor your node in browser by typing \e[1m\e[32m[ http://your_IP:3030 ] \e[0m"
                         echo ""
                         AUTH=$(sed -n '7p' /home/node/bin/keygen.txt)
                         echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
