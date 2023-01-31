@@ -41,7 +41,7 @@ echo "===================="
 echo ""
 echo -e "Open your tmux session \e[1m\e[32m[ tmux attach -t $session ] \e[0min a new terminal by user node(not root), copy and paste your mnemonic, answer questions."
 echo ""
-echo "And then just wait until your first mining completed.(20 ~ 40min)"
+echo "And then just wait until your first mining is completed.(20 ~ 50min up to server's CPU power)"
 echo ""
 
 A=1
@@ -83,7 +83,7 @@ do
                 tmux rename-window -t $session:$window 'waypoint'
                 sleep 1
 
-                tmux send-keys -t $session:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && waylength=$(echo ${#WAY}) && cat /home/node/bin/keygen.txt && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
+                tmux send-keys -t $session:$window 'cd /home/node/.0L && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && waylength=$(echo ${#WAY}) && cat /home/node/bin/keygen.txt && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
                 sleep 60
 
                 W=73
@@ -137,7 +137,20 @@ do
                     sleep 180
 
                     echo ""
-                    echo -e "\e[1m\e[32m7. Starting tower.. \e[0m"
+                    echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
+                    echo "===================="                    
+                    echo ""
+                    
+                    curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"
+                    sleep 10
+                    curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"
+                    sleep 2
+
+                    echo ""
+                    echo "If your fullnode health's good, synced version should be increased."
+                    echo ""
+                    echo ""
+                    echo -e "\e[1m\e[32m8. Starting tower and monitor.. \e[0m"
                     echo "===================="                    
                     echo ""
 
@@ -158,8 +171,8 @@ do
 
                     echo ""
                     echo -e "Open your tmux session \e[1m\e[32m[ tmux attach -t $session ] \e[0min a new terminal by user node(not root), copy and paste your mnemonic."
-                    echo "===================="
-                    
+                    sleep 2
+
                     echo ""
                     echo "Tower started!"
                     echo ""
@@ -185,7 +198,8 @@ do
                     AUTH=$(sed -n '7p' /home/node/bin/keygen.txt)
                     echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
                     echo -e "\e[1m\e[32m[ txs create-account --authkey $AUTH --coins 1 ] \e[0m"
-                    echo "===================="
+                    sleep 2
+
                     echo ""
                     echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
                     echo "===================="
