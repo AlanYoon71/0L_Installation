@@ -74,7 +74,7 @@ do
                 tmux rename-window -t $session:$window 'restoring'
                 sleep 1
 
-                tmux send-keys -t $session:$window 'killall diem-node && sleep 3 && ulimit -n 100000 && /home/node/bin/ol restore && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                tmux send-keys -t $session:$window 'killall diem-node > /dev/null ; sleep 3 && ulimit -n 100000 && /home/node/bin/ol restore && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                 sleep 60
 
                 session="waypoint"
@@ -83,7 +83,7 @@ do
                 tmux rename-window -t $session:$window 'waypoint'
                 sleep 1
 
-                tmux send-keys -t $session:$window 'cd /home/node/.0L && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && waylength=$(echo ${#WAY}) && cat /home/node/bin/keygen.txt && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
+                tmux send-keys -t $session:$window 'cd /home/node/.0L && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt && cat /home/node/bin/keygen.txt && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
                 sleep 60
 
                 echo ""
@@ -92,10 +92,12 @@ do
 
                 E=1
                 F=10
+                W=73
+                waylength=$(cat /home/node/bin/waylength.txt)
                 while [ $E -lt $F ]
                 do
                     sleep 60
-                    if [ $waylength -eq 73 ]
+                    if [ "$waylength" == "$W" ]
                     then
                         echo ""
                         echo "Lastest waypoint fetched successfully!"
@@ -240,10 +242,6 @@ do
                         echo ""
                         A=15
                         E=15
-                    else
-                        echo ""
-                        echo -e "\e[1m\e[35m>>> Waypoint info was not fetched yet! Did you check TMUX waypoint session and input your mnemonic? <<< \e[0m"
-                        echo ""
                     fi
                 done
             fi
