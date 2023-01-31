@@ -48,13 +48,13 @@ A=1
 B=10
 while [ $A -lt $B ]
 do
+    sleep 60
     if [ -f /home/node/.0L/0L.toml ]
     then
         if [ -f /home/node/.0L/account.json ]
         then
             if [ -f /home/node/.0L/vdf_proofs/proof_0.json ]
             then
-                sleep 60
                 echo ""
                 echo "Genesis proof created successfully!"
                 echo ""
@@ -94,7 +94,8 @@ do
                 F=10
                 while [ $E -lt $F ]
                 do
-                    if (( "$waylength" = 73 ))
+                    sleep 60
+                    if [ $waylength -eq 73 ]
                     then
                         echo ""
                         echo "Lastest waypoint fetched successfully!"
@@ -241,14 +242,9 @@ do
                         echo ""
                         echo -e "\e[1m\e[35m>>> Waypoint info was not fetched yet! Did you check waypoint session and input your mnemonic? <<< \e[0m"
                         echo ""
-
                     fi
                 done
             fi
-        else
-            sleep 30
         fi
-    else
-        sleep 30
     fi
 done
