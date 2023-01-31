@@ -65,13 +65,13 @@ do
                 echo "===================="
                 echo ""
 
-                tmux kill-session -t fullnode
+                tmux kill-session -t $session
                 sleep 3
                 
-                session="fullnode"
+                session="Restoring"
                 tmux new-session -d -s $session
                 window=0
-                tmux rename-window -t $session:$window 'fullnode'
+                tmux rename-window -t $session:$window 'Restoring'
                 sleep 1
 
                 tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
@@ -236,6 +236,7 @@ do
                     echo ""
                     echo -e "\e[1m\e[35m>>> UPDATE FAILED!! It's so critical... <<< \e[0m"
                     echo ""
+
                 fi            
             fi
         else
