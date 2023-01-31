@@ -86,7 +86,8 @@ do
                 tmux send-keys -t $session:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && waylength=$(echo ${#WAY}) && cat /home/node/bin/keygen.txt && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
                 sleep 60
 
-                if [ 73 -eq "$waylength" ]
+                W=73
+                if [ "$W" -eq "$waylength" ]
                 then
                     echo ""
                     echo "Lastest waypoint fetched successfully!"
