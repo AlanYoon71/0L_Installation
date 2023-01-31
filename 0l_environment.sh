@@ -26,7 +26,7 @@ echo ""
 echo -e "\e[1m\e[32m3. Preparing onboard condition now.. \e[0m"
 echo "===================="
 echo ""
-echo "This script takes 30min more entirely until completed, so be patient, please."
+echo "This script takes 1 hour more entirely until completed, so be patient, please."
 echo ""
 sudo useradd node -m -s /bin/bash
 cp ./0l_tmux.sh /home/node
