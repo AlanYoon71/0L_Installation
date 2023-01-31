@@ -41,7 +41,7 @@ echo "===================="
 echo ""
 echo -e "Open your tmux session \e[1m\e[32m[ tmux attach -t $session ] \e[0min a new terminal by user node(not root), copy and paste your mnemonic, answer questions."
 echo ""
-echo "And then just wait until your first mining is completed. It takes 20 ~ 50min up to server's CPU power."
+echo "And then just wait until your first mining is completed. This mining takes 30 ~ 50min, up to server's CPU performance."
 echo ""
 
 A=1
