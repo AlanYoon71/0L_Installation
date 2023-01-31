@@ -23,10 +23,10 @@ echo ""
 echo ""
 echo "All required linux packages for 0l are already installed."
 echo ""
-echo -e "\e[1m\e[32m3. Preparing onboard condition now.. \e[0m"
+echo -e "\e[1m\e[32m3. Compiling ol binary files.. \e[0m"
 echo "===================="
 echo ""
-echo "This script takes 1 hour more entirely until completed, so be patient, please."
+echo "This script takes 1 hour more entirely until completed with genesis mining, so be patient, please."
 echo ""
 sudo useradd node -m -s /bin/bash
 cp ./0l_tmux.sh /home/node
