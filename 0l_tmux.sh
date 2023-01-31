@@ -233,6 +233,8 @@ do
                         cat -n /home/node/bin/tmux_status.txt
                         echo "===================="
                         echo ""
+                        echo "Generated key info was saved in /home/node/bin/keygen.txt"
+                        echo ""
                         echo ""
                         echo -e "\e[1m\e[32mDone!! \e[0m"
                         echo ""
@@ -240,7 +242,7 @@ do
                         E=15
                     else
                         echo ""
-                        echo -e "\e[1m\e[35m>>> Waypoint info was not fetched yet! Did you check waypoint session and input your mnemonic? <<< \e[0m"
+                        echo -e "\e[1m\e[35m>>> Waypoint info was not fetched yet! Did you check TMUX waypoint session and input your mnemonic? <<< \e[0m"
                         echo ""
                     fi
                 done
