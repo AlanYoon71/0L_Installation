@@ -13,7 +13,7 @@ echo "===================="
 sleep 2
 apt install -y git vim zip unzip jq build-essential cmake clang llvm libgmp-dev secure-delete pkg-config libssl-dev lld tmux
 echo ""
-echo -e "\e[1m\e[32m2. Installing required packages.. \e[0m"
+echo -e "\e[1m\e[32m2. Installing required linux packages.. \e[0m"
 echo "===================="
 sleep 2
 curl -sL https://raw.githubusercontent.com/OLSF/libra/main/ol/util/setup.sh | bash
