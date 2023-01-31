@@ -20,7 +20,7 @@ do
     if [ -f /home/node/bin/onboard ]
     then
         echo ""
-        echo "Binary files for 0l are already compiled successfully!"
+        echo "Binary files for 0l compiled successfully!"
         echo ""
         C=15
     else
@@ -65,7 +65,7 @@ do
                 echo "===================="
                 echo ""
 
-                tmux kill-session -t $session
+                tmux kill-session -t fullnode
                 sleep 3
                 
                 session="fullnode"
@@ -141,13 +141,35 @@ do
                     echo "===================="                    
                     echo ""
                     
-                    curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"
+                    echo ""
+                    syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")
+                    sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\")
+                    echo $syn
+                    echo $sync
+                    syn1 $(echo $syn | grep -o '[0-9]*')
+                    sync1=$(echo $sync | grep -o '[0-9]*')
                     sleep 10
-                    curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"
+                    echo ""
+                    echo "Checking if version is increasing in 10 seconds interval"
+                    syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")
+                    sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\")
+                    echo $syn
+                    echo $sync
+                    syn2 $(echo $syn | grep -o '[0-9]*')
+                    sync2=$(echo $sync | grep -o '[0-9]*')
                     sleep 2
+                    delt=$((syn2 - syn1))
+                    TP=$((delt / 10))
+                    delta=$((sync2 - sync1))
+                    TPS=$((delta / 10))
+                    echo ""
+                    echo "===================="
+                    echo "Network TPS  : \e[1m\e[32m$TP \e[0m[tx/s]"
+                    echo "Fullnode TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
+                    echo "===================="
 
                     echo ""
-                    echo "If your fullnode health's good, synced version should be increased."
+                    echo "If your fullnode health's good, synced version should be increased in real time and TPS can't be 0."
                     echo ""
                     echo ""
                     echo -e "\e[1m\e[32m8. Starting tower and monitor.. \e[0m"
