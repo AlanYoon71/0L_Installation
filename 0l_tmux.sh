@@ -74,7 +74,7 @@ do
                 tmux rename-window -t $session:$window 'restoring'
                 sleep 1
 
-                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                tmux send-keys -t $session:$window 'killall diem-node && sleep 3 && ulimit -n 100000 && /home/node/bin/ol restore && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                 sleep 60
 
                 session="waypoint"
