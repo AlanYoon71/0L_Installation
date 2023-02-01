@@ -1,4 +1,4 @@
-# For beginners who want to install node and experience an uncrowned king 0L network
+# For beginners who want to install 0l node and experience an uncrowned king 0L network
 
 # Auto Setup/Update Script :
 
