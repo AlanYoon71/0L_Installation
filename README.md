@@ -4,4 +4,4 @@
 
   1. Fullnode with tower
   
-  wget -q -O 0l_env.sh https://github.com/shyoon71/0L_Fullnode_installation/blob/main/0l_{env,tmux}.sh && chmod +x 0l_env.sh && chmod +x 0l_tmux.sh && bash ./0l_env.sh
+  git clone https://github.com/shyoon71/0L_Fullnode_installation.git && cd *installation && chmod +x 0l_env.sh && chmod +x 0l_tmux.sh && bash ./0l_env.sh
