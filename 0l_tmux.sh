@@ -61,7 +61,8 @@ do
                 sleep 3
                 
                 tmux send-keys -t $session:$window 'cd /home/node/.0L && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt' C-m
-
+                sleep 10
+                
                 echo ""
                 echo -e "\e[1m\e[32m5. Updating fullnode configurations.. \e[0m"
                 echo "===================="
