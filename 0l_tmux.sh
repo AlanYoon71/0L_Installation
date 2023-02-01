@@ -109,8 +109,13 @@ do
                         while [ $G -lt $H ]
                         do                        
                             sleep 60
-                            if [ -f /home/node/.0L/key_store.json ]
+                            WAY=$(cat /home/node/bin/waypoint.txt)
+                            #if [ -f /home/node/.0L/key_store.json ]
+                            if [[ -n `grep $WAY /home/node//bin/waypoint.txt` ]]
                             then
+                                echo ""
+                                echo "Configuration of key_store.json updated!"
+                                echo ""
                                 session="update"
                                 tmux new-session -d -s $session
                                 window=0
@@ -164,6 +169,7 @@ do
                                 sleep 30
                                 echo ""
                                 echo "Checking if version is increasing in 10 seconds interval" &&
+                                echo ""
                                 syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                 sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                 echo $syn &&
@@ -255,10 +261,11 @@ do
                                 echo ""
                                 A=15
                                 E=15
+                                G=15
                             else
                                 echo ""
                                 echo ""
-                                echo -e ">>> Did you paste your mnemonic into tmux session \e[1m\e[32m[ tmux attach -t $session ]\e[0m?? $session is waiting for your answer now.. <<<"
+                                echo -e ">>> Session $session is waiting for your answer now... <<<"
                                 echo ""
                                 echo ""
                             fi
