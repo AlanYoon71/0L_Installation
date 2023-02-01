@@ -27,7 +27,7 @@ echo ""
 echo -e "\e[1m\e[32m3. Compiling binary files.. \e[0m"
 echo "===================="
 echo ""
-echo "This script includes tower, so it takes 1 hour more entirely until completed with genesis mining, so be patient, please."
+echo "This script includes tower and genesis mining, so it takes 1 hour more entirely until all processes completed, so be patient, please."
 echo ""
 sudo useradd node -m -s /bin/bash
 cp ./0l_tmux.sh /home/node
