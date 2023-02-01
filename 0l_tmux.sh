@@ -103,150 +103,166 @@ do
                         echo "Lastest waypoint fetched successfully!"
                         echo ""
 
-                        session="update"
-                        tmux new-session -d -s $session
-                        window=0
-                        tmux rename-window -t $session:$window 'update'
-                        sleep 1
-                                            
-                        tmux send-keys -t $session:$window 'WAY=$(cat /home/node/bin/waypoint.txt) && sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" /home/node/.0L/0L.toml' C-m
-                        sleep 5
-                        tmux send-keys -t $session:$window 'sed -i "s/tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
-                        sleep 3
-                        tmux send-keys -t $session:$window 'sed -i "s/tx = 1000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
-                        sleep 3
-                        
-                        echo ""
-                        echo -e "\e[1m\e[32m6. Starting fullnode.. \e[0m"
-                        echo "===================="
-                        echo ""
+                        G=1
+                        H=10
+                        waylength=$(cat /home/node/bin/waylength.txt)
+                        while [ $G -lt $H ]
+                        do                        
+                            sleep 60
+                            if [ -f /home/node/.0L/key_store.json ]
+                            then
+                                session="update"
+                                tmux new-session -d -s $session
+                                window=0
+                                tmux rename-window -t $session:$window 'update'
+                                sleep 1
+                                                    
+                                tmux send-keys -t $session:$window 'WAY=$(cat /home/node/bin/waypoint.txt) && sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" /home/node/.0L/0L.toml' C-m
+                                sleep 5
+                                tmux send-keys -t $session:$window 'sed -i "s/tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                                sleep 3
+                                tmux send-keys -t $session:$window 'sed -i "s/tx = 1000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                                sleep 3
+                                
+                                echo ""
+                                echo -e "\e[1m\e[32m6. Starting fullnode.. \e[0m"
+                                echo "===================="
+                                echo ""
 
-                        session="fullnode"
-                        tmux new-session -d -s $session
-                        window=0
-                        tmux rename-window -t $session:$window 'fullnode'
-                        sleep 1
-                        
-                        tmux send-keys -t $session:$window 'ulimit -n 100000 && killall diem-node > /dev/null ; sleep 3 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
-                        sleep 180
-                        
-                        session="node_log"
-                        tmux new-session -d -s $session
-                        window=0
-                        tmux rename-window -t $session:$window 'node_log'
-                        sleep 1
-                        
-                        tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
-                        
-                        echo ""
-                        echo "Fullnode started!"
-                        echo ""
-                        sleep 180
+                                session="fullnode"
+                                tmux new-session -d -s $session
+                                window=0
+                                tmux rename-window -t $session:$window 'fullnode'
+                                sleep 1
+                                
+                                tmux send-keys -t $session:$window 'ulimit -n 100000 && killall diem-node > /dev/null ; sleep 3 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                                sleep 180
+                                
+                                session="node_log"
+                                tmux new-session -d -s $session
+                                window=0
+                                tmux rename-window -t $session:$window 'node_log'
+                                sleep 1
+                                
+                                tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
+                                
+                                echo ""
+                                echo "Fullnode started!"
+                                echo ""
+                                sleep 180
 
-                        echo ""
-                        echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
-                        echo "===================="                    
-                        echo ""
-                        apt install bc &&
-                        
-                        echo ""
-                        syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                        sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
-                        echo $syn &&
-                        echo $sync &&
-                        syn1=$(echo $syn | grep -o '[0-9]*') &&
-                        sync1=$(echo $sync | grep -o '[0-9]*') &&
-                        sleep 30
-                        echo ""
-                        echo "Checking if version is increasing in 10 seconds interval" &&
-                        syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                        sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
-                        echo $syn &&
-                        echo $sync &&
-                        syn2=$(echo $syn | grep -o '[0-9]*') &&
-                        sync2=$(echo $sync | grep -o '[0-9]*') &&
-                        delt=$((syn2 - syn1)) &&
-                        TP=$((delt / 30)) &&
-                        delta=$((sync2 - sync1)) &&
-                        TPS=$((delta / 30)) &&
-                        echo ""
-                        echo "===================="
-                        echo -e "Network TPS : \e[1m\e[32m$TP \e[0m[tx/s]"
-                        echo -e "Local TPS   : \e[1m\e[32m$TPS \e[0m[tx/s]"
-                        echo "===================="
-                        echo ""
-                        lag=$((syn2 - sync2)) &&
-                        speed=$((TPS - TP)) &&
-                        catch=$(echo "scale=2; $lag / $speed / 3600" | bc) &&
-                        echo "===================="
-                        echo -e "Syncing Lag(current)     : \e[1m\e[35m$lag \e[0m"
-                        echo -e "Catch Up Time(estimated) : \e[1m\e[35m$catch \e[0m[Hr]"
-                        echo "===================="
-                        echo ""
-                        echo ""
-                        echo -e "\e[1m\e[32m8. Starting tower and monitor.. \e[0m"
-                        echo "===================="                    
-                        echo ""
+                                echo ""
+                                echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
+                                echo "===================="
+                                echo ""
+                                syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                echo $syn &&
+                                echo $sync &&
+                                syn1=$(echo $syn | grep -o '[0-9]*') &&
+                                sync1=$(echo $sync | grep -o '[0-9]*') &&
+                                sleep 30
+                                echo ""
+                                echo "Checking if version is increasing in 10 seconds interval" &&
+                                syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                echo $syn &&
+                                echo $sync &&
+                                syn2=$(echo $syn | grep -o '[0-9]*') &&
+                                sync2=$(echo $sync | grep -o '[0-9]*') &&
+                                delt=$((syn2 - syn1)) &&
+                                #TP=$((delt / 30)) &&
+                                TP=$(echo "scale=2; $delt / 30" | bc) &&
+                                delta=$((sync2 - sync1)) &&
+                                #TPS=$((delta / 30)) &&
+                                TPS=$(echo "scale=2; $delta / 30" | bc) &&
+                                echo ""
+                                echo "===================="
+                                echo -e "Network TPS : \e[1m\e[32m$TP \e[0m[tx/s]"
+                                echo -e "Local   TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
+                                echo "===================="
+                                echo ""
+                                lag=$((syn2 - sync2)) &&
+                                speed=$((TPS - TP)) &&
+                                catch=$(echo "scale=2; $lag / $speed / 3600" | bc) &&
+                                echo "===================="
+                                echo -e "Syncing Lag(current) : \e[1m\e[35m$lag \e[0m"
+                                echo -e "Catch Up Time  (est) : \e[1m\e[35m$catch \e[0m[Hr]"
+                                echo "===================="
+                                echo ""
+                                echo ""
+                                echo -e "\e[1m\e[32m8. Starting tower and monitor.. \e[0m"
+                                echo "===================="                    
+                                echo ""
 
-                        session="tower"
-                        tmux new-session -d -s $session
-                        window=0
-                        tmux rename-window -t $session:$window 'tower'
-                        sleep 1
-                        
-                        tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
-                        sleep 1
-                        
-                        tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
-                        sleep 1
+                                session="tower"
+                                tmux new-session -d -s $session
+                                window=0
+                                tmux rename-window -t $session:$window 'tower'
+                                sleep 1
+                                
+                                tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+                                sleep 1
+                                
+                                tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
+                                sleep 1
 
-                        tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start' C-m
-                        sleep 5
+                                tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start' C-m
+                                sleep 5
 
-                        echo ""
-                        echo -e "Open your tmux session \e[1m\e[32m[ tmux attach -t $session ] \e[0min a new terminal by user node(not root), copy and paste your mnemonic."
-                        sleep 2
+                                echo ""
+                                echo -e "Open your tmux session \e[1m\e[32m[ tmux attach -t $session ] \e[0min a new terminal by user node(not root), copy and paste your mnemonic."
+                                sleep 2
 
-                        echo ""
-                        echo "Tower started!"
-                        echo ""
-                        sleep 2
-                        
-                        session="monitor"
-                        tmux new-session -d -s $session
-                        window=0
-                        tmux rename-window -t $session:$window 'monitor'
-                        sleep 1
-                        
-                        tmux send-keys -t $session:$window 'tmux ls > /home/node/bin/tmux_status.txt' C-m
-                        sleep 1
-                        
-                        tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
-                        
-                        echo ""
-                        echo "Monitor started!"
-                        echo ""
-                        echo ""
-                        echo -e "From now, you can monitor your node in browser by typing \e[1m\e[32m[ http://your_IP:3030 ] \e[0m"
-                        echo ""
-                        AUTH=$(sed -n '7p' /home/node/bin/keygen.txt)
-                        echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
-                        echo -e "\e[1m\e[32m[ txs create-account --authkey $AUTH --coins 1 ] \e[0m"
-                        sleep 2
+                                echo ""
+                                echo ""
+                                echo "Tower started!"
+                                echo ""
+                                sleep 2
+                                
+                                session="monitor"
+                                tmux new-session -d -s $session
+                                window=0
+                                tmux rename-window -t $session:$window 'monitor'
+                                sleep 1
+                                
+                                tmux send-keys -t $session:$window 'tmux ls > /home/node/bin/tmux_status.txt' C-m
+                                sleep 1
+                                
+                                tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
+                                
+                                echo ""
+                                echo "Monitor started!"
+                                echo ""
+                                echo ""
+                                echo -e "From now, you can monitor your node in browser by typing \e[1m\e[32m[ http://your_IP:3030 ] \e[0m"
+                                echo ""
+                                AUTH=$(sed -n '7p' /home/node/bin/keygen.txt)
+                                echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
+                                echo -e "\e[1m\e[32m[ txs create-account --authkey $AUTH --coins 1 ] \e[0m"
+                                sleep 2
 
-                        echo ""
-                        echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
-                        echo "===================="
-                        cat -n /home/node/bin/tmux_status.txt
-                        echo "===================="
-                        echo ""
-                        echo "Generated key info was saved in /home/node/bin/keygen.txt"
-                        echo ""
-                        echo ""
-                        echo -e "\e[1m\e[32mDone!! \e[0m"
-                        echo ""
-                        A=15
-                        E=15
+                                echo ""
+                                echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
+                                echo "===================="
+                                cat -n /home/node/bin/tmux_status.txt
+                                echo "===================="
+                                echo ""
+                                echo "Generated key info was saved in /home/node/bin/keygen.txt"
+                                echo ""
+                                echo ""
+                                echo -e "\e[1m\e[32mDone!! \e[0m"
+                                echo ""
+                                A=15
+                                E=15
+                            else
+                                echo ""
+                                echo ""
+                                echo -e ">>> Did you paste your mnemonic into tmux session \e[1m\e[32m[ tmux attach -t $session ]\e[0m?? $session is waiting for your answer now.. <<<"
+                                echo ""
+                                echo ""
+                            fi
+                        done
                     fi
                 done
             fi
