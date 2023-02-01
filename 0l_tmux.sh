@@ -20,7 +20,7 @@ do
     if [ -f /home/node/bin/onboard ]
     then
         echo ""
-        echo "Binary files for 0l compiled successfully!"
+        echo "0l Binary files compiled successfully!"
         echo ""
         C=15
     else
