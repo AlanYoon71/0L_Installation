@@ -38,14 +38,6 @@ cp ./0l_tmux.sh /home/node
 chmod +x /home/node/0l_tmux.sh
 chmod go+rw /home/node/0l_tmux.sh
 sudo -u node /home/node/0l_tmux.sh &&
-CUR_DATE=`date +%Y%m%d` &&
-mkdir -p /root/0l_config_backup/"$CUR_DATE" &&
-cp /home/node/.0L/0L.toml /root/0l_config_backup/$CUR_DATE &&
-cp /home/node/.0L/account.json /root/0l_config_backup/$CUR_DATE &&
-cp /home/node/.0L/key_store.json /root/0l_config_backup/$CUR_DATE &&
-cp /home/node/.0L/vdf_proofs/proof_0.json /root/0l_config_backup/$CUR_DATE &&
-echo ""
-rm /home/node/bin/keygen.txt ; rm /home/node/bin/waylength.txt ; rm /home/node/bin/waypoint.txt ; rm /home/node/bin/WAYPOINT.txt ; rm /home/node/bin/update_check.txt &&
-echo -e "Your config files were saved into \e[1m\e[32m[ /root/0l_config_backup/$CUR_DATE ] \e[0mdirectory. There's no mnemonic info."
 echo ""
 echo ""
+echo "\e[1m\e[32mDone! \e[0m"
