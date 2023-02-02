@@ -9,7 +9,7 @@ tmux rename-window -t $session:$window 'onboarding'
 sleep 1
 
 echo ""
-echo "Script for TMUX background started!"
+echo "Script for TMUX background started."
 echo ""
 sleep 1
 
@@ -244,7 +244,7 @@ do
                                                 S=400
                                             fi
                                         done
-                                        
+
                                         delt=$((syn2 - syn1)) &&
                                         #TP=$((delt / 30)) &&
                                         TP=$(echo "scale=2; $delt / 30" | bc) &&
