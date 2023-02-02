@@ -225,14 +225,26 @@ do
                                         echo ""
                                         echo "Checking synced versions in 60 seconds interval" &&
                                         echo ""
-                                        sleep 60
-                                        syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                                        sleep 3
-                                        sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
-                                        echo $syn &&
-                                        echo $sync &&
-                                        syn2=$(echo $syn | grep -o '[0-9]*') &&
-                                        sync2=$(echo $sync | grep -o '[0-9]*') &&
+                                        S=1
+                                        SS=300
+                                        while [ $S -lt $SS ]
+                                        do
+                                            sleep 10
+                                            syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                            sleep 3
+                                            sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                            echo $syn &&
+                                            echo $sync &&
+                                            syn2=$(echo $syn | grep -o '[0-9]*') &&
+                                            sync2=$(echo $sync | grep -o '[0-9]*') &&
+                                            if [ $syn2 == $syn1 ]
+                                            then
+                                                S=`expr $S + 1`
+                                            else
+                                                S=400
+                                            fi
+                                        done
+                                        
                                         delt=$((syn2 - syn1)) &&
                                         #TP=$((delt / 30)) &&
                                         TP=$(echo "scale=2; $delt / 30" | bc) &&
@@ -331,8 +343,6 @@ do
                                         cat /home/node/bin/keygen.txt
                                         sleep 1
                                         
-                                        echo "If you didn't write down your mnemonic yet, check this terminal screen and write down right now."
-                                        echo ""
                                         echo ""
                                         echo -e "\e[1m\e[32mScript for TMUX completed! Installation is successful! \e[0m"
                                         echo ""
