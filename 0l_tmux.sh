@@ -196,7 +196,7 @@ do
                                     
                                     tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
                                     
-                                    if [ -s /home/node/logs/node.log ]
+                                    if [ -s /home/node/.0L/logs/node.log ]
                                     then
                                         echo ""
                                         echo "Fullnode started!"
@@ -320,6 +320,11 @@ do
                                         echo ""
                                         cat /home/node/bin/keygen.txt
                                         sleep 1
+                                        
+                                        echo "If you didn't write down your mnemonic yet, check this terminal screen and write down right now."
+                                        echo ""
+                                        echo ""
+                                        
                                         rm /home/node/bin/keygen.txt && rm /home/node/bin/waylength.txt && rm /home/node/bin/waypoint.txt && rm /home/node/bin/WAYPOINT.txt && rm /home/node/bin/update_check.txt
                                         sleep 1
 
@@ -330,12 +335,9 @@ do
                                         A=15
                                         E=15
                                         G=15
-                                        echo ""
-                                        echo -e "\e[1m\e[32mDone! \e[0m"
-                                        echo ""
                                     else
                                         echo ""
-                                        echo ">>> Fullnode failed to start... <<<"
+                                        echo ">>> Fullnode failed to start... It's critical! <<<"
                                         exit
                                     fi
                                 fi
