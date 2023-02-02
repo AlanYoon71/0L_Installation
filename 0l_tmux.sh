@@ -1,7 +1,7 @@
 #!/bin/bash
 tmux kill-server &> /dev/null ; killall diem-node &> /dev/null ;
 sleep 3
- 
+
 session="onboarding"
 tmux new-session -d -s $session
 window=0
@@ -218,7 +218,7 @@ do
                                         sync1=$(echo $sync | grep -o '[0-9]*') &&
                                         sleep 30
                                         echo ""
-                                        echo "Checking if version is increasing in 10 seconds interval" &&
+                                        echo "Checking synced versions in 30 seconds interval" &&
                                         echo ""
                                         syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                         sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
@@ -237,7 +237,7 @@ do
                                             echo ""
                                         else
                                             echo ""
-                                            echo ">>> Fullnode not works normally. Syncing stopped... <<<"
+                                            echo ">>> Fullnode not works normally. Syncing stopped... It's critical! <<<"
                                             exit
                                         fi
                                         
