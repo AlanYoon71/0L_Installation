@@ -45,6 +45,3 @@ sleep 2
 echo "So if you didn't write down your mnemonic yet, goto running sessions and check screen."
 echo ""
 echo ""
-sleep 2
-echo -e "\e[1m\e[32mDone!! \e[0m"
-echo ""
