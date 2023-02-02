@@ -320,7 +320,9 @@ do
                                         echo ""
                                         cat /home/node/bin/keygen.txt
                                         sleep 1
-                                        rm /home/node/bin/keygen.txt && rm /home/node/bin/waylength.txt && rm /home/node/bin/waypoint.txt
+                                        rm /home/node/bin/keygen.txt && rm /home/node/bin/waylength.txt && rm /home/node/bin/waypoint.txt && rm /home/node/bin/WAYPOINT.txt && rm /home/node/bin/update_check.txt
+                                        sleep 1
+
                                         echo ""
                                         #echo ""
                                         #echo -e "\e[1m\e[32mDone!! \e[0m"
