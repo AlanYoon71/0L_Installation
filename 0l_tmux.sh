@@ -60,25 +60,25 @@ do
                 echo ""
                 sleep 3
 
-                session="restore"
-                tmux new-session -d -s $session
+                tmux kill-session -t $session
+                sleep 3
+
+                session1="restore"
+                tmux new-session -d -s $session1
                 window=0
-                tmux rename-window -t $session:$window 'restore'
+                tmux rename-window -t $session1:$window 'restore'
                 sleep 1
 
-                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m
+                tmux send-keys -t $session1:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m
                 sleep 60
 
-                #tmux kill-session -t $session
-                #sleep 3
-
-                session="waypoint"
-                tmux new-session -d -s $session
+                session2="waypoint"
+                tmux new-session -d -s $session2
                 window=0
-                tmux rename-window -t $session:$window 'waypoint'
+                tmux rename-window -t $session2:$window 'waypoint'
                 sleep 1
 
-                tmux send-keys -t $session:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt' C-m
+                tmux send-keys -t $session2:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt' C-m
                 sleep 10
 
                 echo ""
@@ -150,13 +150,13 @@ do
 
                                 #tmux send-keys -t $session:$window 'cd /home/node/.0L && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt)' C-m
                                 #sleep 10
-                                tmux send-keys -t $session:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" /home/node/.0L/0L.toml' C-m
+                                tmux send-keys -t $session2:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" /home/node/.0L/0L.toml' C-m
                                 sleep 5
-                                tmux send-keys -t $session:$window 'sed -i "s/tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
                                 sleep 3
-                                tmux send-keys -t $session:$window 'sed -i "s/tx = 1000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 1000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
                                 sleep 3
-                                tmux send-keys -t $session:$window 'grep $WAY /home/node/.0L/0L.toml > /home/node/bin/WAYPOINT.txt && WAY2=$(cat /home/node/bin/WAYPOINT.txt) && echo ${#WAY2} > /home/node/bin/WAYLENGTH.txt && sleep 2 && cmp -s /home/node/bin/waypoint.txt /home/node/bin/WAYPOINT.txt > /home/node/bin/update_check.txt' C-m
+                                tmux send-keys -t $session2:$window 'grep $WAY /home/node/.0L/0L.toml > /home/node/bin/WAYPOINT.txt && WAY2=$(cat /home/node/bin/WAYPOINT.txt) && echo ${#WAY2} > /home/node/bin/WAYLENGTH.txt && sleep 2 && cmp -s /home/node/bin/waypoint.txt /home/node/bin/WAYPOINT.txt > /home/node/bin/update_check.txt' C-m
                                 sleep 3
 
                                 if [ -s /home/node/bin/update_check.txt ]
@@ -169,8 +169,10 @@ do
                                     echo "Fullnode configuration updated!"
                                     echo ""
 
-                                    tmux kill-session -t $session
-                                    sleep 3
+                                    tmux kill-session -t $session1 &&
+                                    sleep 2
+                                    tmux kill-session -t $session2 &&
+                                    sleep 2
 
                                     echo ""
                                     echo -e "\e[1m\e[32m6. Starting fullnode.. \e[0m"
@@ -183,7 +185,7 @@ do
                                     tmux rename-window -t $session:$window 'fullnode'
                                     sleep 1
                                     
-                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && killall diem-node > /dev/null ; sleep 3 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                                     sleep 180
                                     
                                     session="node_log"
@@ -326,6 +328,9 @@ do
                                         A=15
                                         E=15
                                         G=15
+                                        echo ""
+                                        echo -e "\e[1m\e[32mDone! \e[0m"
+                                        echo ""
                                     else
                                         echo ""
                                         echo ">>> Fullnode failed to start... <<<"
