@@ -43,9 +43,9 @@ echo -e "\e[1m\e[32m4. Preparing account and genesis proof.. \e[0m"
 echo "===================="
 echo ""
 echo -e "Open a new terminal and change user to \"node\" [ \e[1m\e[32msudo su node\e[0m ], attach tmux session [ \e[1m\e[32mtmux attach -t $session\e[0m ], 
-copy and paste your mnemonic and answer questions for account creating."
+copy and paste your mnemonic and answer questions for basic configuration."
 echo ""
-echo "And then just wait until your first mining is completed. This mining takes 30 ~ 50min, up to server's CPU performance."
+echo "And then just wait until your first mining is completed. This mining takes 20 ~ 40min, up to server's CPU performance."
 echo ""
 
 A=1
