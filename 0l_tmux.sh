@@ -329,13 +329,13 @@ do
                                         echo ""
                                         echo ""
                                         
-                                        rm /home/node/bin/keygen.txt && rm /home/node/bin/waylength.txt && rm /home/node/bin/waypoint.txt && rm /home/node/bin/WAYPOINT.txt && rm /home/node/bin/update_check.txt
-                                        sleep 1
+                                        rm /home/node/bin/keygen.txt &> /dev/null ; rm /home/node/bin/waylength.txt &> /dev/null ; rm /home/node/bin/waypoint.txt &> /dev/null ; rm /home/node/bin/WAYPOINT.txt &> /dev/null ; rm /home/node/bin/update_check.txt &> /dev/null ;
+                                        sleep 2
 
                                         echo ""
-                                        #echo ""
-                                        #echo -e "\e[1m\e[32mDone!! \e[0m"
-                                        #echo ""
+                                        echo ""
+                                        echo -e "Script for TMUX completed!"
+                                        echo ""
                                         A=15
                                         E=15
                                         G=15
