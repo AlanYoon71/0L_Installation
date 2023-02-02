@@ -113,13 +113,13 @@ do
 
                 E=1
                 F=10
-                W=73
+                #W=73
                 #waylength=$(cat /home/node/bin/waylength.txt)
                 while [ $E -lt $F ]
                 do
                     sleep 60
                     #if [ "$waylength" == "$W" ]
-                    if [[ -n `grep $W /home/node/bin/waylength.txt` ]]
+                    if [[ -n `grep 73 /home/node/bin/waylength.txt` ]]
                     then
                         echo ""
                         echo "Lastest waypoint fetched successfully!"
