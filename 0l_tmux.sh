@@ -60,7 +60,7 @@ do
                 echo ""
                 sleep 3
                 
-                tmux send-keys -t $session:$window 'ulimit -n 100000 && cd /home/node/.0L && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m  
+                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/.0L && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m  
                 sleep 180
 
                 tmux send-keys -t $session:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt' C-m
