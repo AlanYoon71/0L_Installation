@@ -39,9 +39,7 @@ cp /home/node/.0L/account.json /root/0l_config_backup/$CUR_DATE &&
 cp /home/node/.0L/key_store.json /root/0l_config_backup/$CUR_DATE &&
 cp /home/node/.0L/vdf_proofs/proof_0.json /root/0l_config_backup/$CUR_DATE &&
 echo ""
+rm /home/node/bin/keygen.txt ; rm /home/node/bin/waylength.txt ; rm /home/node/bin/waypoint.txt ; rm /home/node/bin/WAYPOINT.txt ; rm /home/node/bin/update_check.txt &&
 echo -e "Your config files backuped in \e[1m\e[32m[ /root/0l_config_backup/$CUR_DATE ] \e[0mdirectory. There's no mnemonic info."
-echo ""
-sleep 2
-echo "So if you didn't write down your mnemonic yet, goto running sessions and check screen."
 echo ""
 echo ""
