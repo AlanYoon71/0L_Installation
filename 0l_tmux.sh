@@ -69,8 +69,8 @@ do
                 tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m
                 sleep 60
 
-                tmux kill-session -t $session
-                sleep 3
+                #tmux kill-session -t $session
+                #sleep 3
 
                 session="waypoint"
                 tmux new-session -d -s $session
@@ -124,8 +124,8 @@ do
                         echo "Lastest waypoint fetched successfully!"
                         echo ""
 
-                        #tmux kill-session -t $session
-                        #sleep 3
+                        tmux kill-session -t $session
+                        sleep 5
 
                         G=1
                         H=10
@@ -308,9 +308,9 @@ do
                                     sleep 1
                                     rm /home/node/bin/keygen.txt && rm /home/node/bin/waylength.txt && rm /home/node/bin/waypoint.txt
                                     echo ""
-                                    echo ""
-                                    echo -e "\e[1m\e[32mDone!! \e[0m"
-                                    echo ""
+                                    #echo ""
+                                    #echo -e "\e[1m\e[32mDone!! \e[0m"
+                                    #echo ""
                                     A=15
                                     E=15
                                     G=15
