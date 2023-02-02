@@ -19,8 +19,6 @@ sleep 2
 curl -sL https://raw.githubusercontent.com/OLSF/libra/main/ol/util/setup.sh | bash
 echo ""
 echo ""
-echo ""
-echo ""
 echo "All required packages installed."
 echo ""
 echo ""
