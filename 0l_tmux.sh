@@ -114,7 +114,7 @@ do
                 E=1
                 F=10
                 W=73
-                #waylength=$(cat /home/node/bin/waylength.txt)
+                waylength=$(cat /home/node/bin/waylength.txt)
                 while [ $E -lt $F ]
                 do
                     sleep 60
