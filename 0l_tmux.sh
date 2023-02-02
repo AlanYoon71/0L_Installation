@@ -59,9 +59,24 @@ do
                 echo "Genesis proof created successfully!"
                 echo ""
                 sleep 3
-                
-                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/.0L && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m  
-                sleep 180
+
+                session="restore"
+                tmux new-session -d -s $session
+                window=0
+                tmux rename-window -t $session:$window 'restore'
+                sleep 1
+
+                tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m
+                sleep 60
+
+                tmux kill-session -t $session
+                sleep 3
+
+                session="waypoint"
+                tmux new-session -d -s $session
+                window=0
+                tmux rename-window -t $session:$window 'waypoint'
+                sleep 1
 
                 tmux send-keys -t $session:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt' C-m
                 sleep 10
@@ -109,8 +124,8 @@ do
                         echo "Lastest waypoint fetched successfully!"
                         echo ""
 
-                        tmux kill-session -t $session
-                        sleep 3
+                        #tmux kill-session -t $session
+                        #sleep 3
 
                         G=1
                         H=10
