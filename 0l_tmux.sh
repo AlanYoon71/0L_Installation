@@ -78,7 +78,7 @@ do
                 tmux rename-window -t $session:$window 'waypoint'
                 sleep 1
 
-                tmux send-keys -t $session:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt && sleep 2 && waylength=$(cat /home/node/bin/waylength.txt)' C-m
+                tmux send-keys -t $session:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt' C-m
                 sleep 10
 
                 echo ""
@@ -114,11 +114,12 @@ do
                 E=1
                 F=10
                 W=73
-                waylength=$(cat /home/node/bin/waylength.txt)
+                #waylength=$(cat /home/node/bin/waylength.txt)
                 while [ $E -lt $F ]
                 do
                     sleep 60
-                    if [ "$waylength" == "$W" ]
+                    #if [ "$waylength" == "$W" ]
+                    if [[ -n `grep $W /home/node//bin/waylength.txt` ]]
                     then
                         echo ""
                         echo "Lastest waypoint fetched successfully!"
