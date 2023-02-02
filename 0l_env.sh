@@ -48,7 +48,7 @@ sleep 1
 echo ""
 rm /home/node/bin/keygen.txt &> /dev/null ; rm /home/node/bin/waylength.txt &> /dev/null ; rm /home/node/bin/waypoint.txt &> /dev/null ; rm /home/node/bin/WAYPOINT.txt &> /dev/null ; rm /home/node/bin/update_check.txt &> /dev/null ;
 sleep 2
-echo -e "Your config files were saved into \e[1m\e[32m[ /root/0l_config_backup/$CUR_DATE ] \e[0mdirectory. There's no mnemonic info."
+echo -e "Your config files were saved into [\e[1m\e[32m /root/0l_config_backup/$CUR_DATE \e[0m] directory. There's no mnemonic info."
 echo ""
 echo ""
 echo "\e[1m\e[32mDone! \e[0m"
