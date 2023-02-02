@@ -8,6 +8,12 @@ echo ""
 echo "================================"
 echo ""
 cd ~
+echo -e "\e[1m\e[32m0. Wiping user \"node\" and files for preventing location confliction problems.. \e[0m"
+echo "===================="
+echo ""
+sleep 2
+userdel node &> /dev/null ; rm -rf /home/node &> /dev/null ;
+sleep 3
 echo -e "\e[1m\e[32m1. Installing dependencies.. \e[0m"
 echo "===================="
 sleep 2
@@ -40,6 +46,6 @@ cp /home/node/.0L/key_store.json /root/0l_config_backup/$CUR_DATE &&
 cp /home/node/.0L/vdf_proofs/proof_0.json /root/0l_config_backup/$CUR_DATE &&
 echo ""
 rm /home/node/bin/keygen.txt ; rm /home/node/bin/waylength.txt ; rm /home/node/bin/waypoint.txt ; rm /home/node/bin/WAYPOINT.txt ; rm /home/node/bin/update_check.txt &&
-echo -e "Your config files backuped in \e[1m\e[32m[ /root/0l_config_backup/$CUR_DATE ] \e[0mdirectory. There's no mnemonic info."
+echo -e "Your config files were saved into \e[1m\e[32m[ /root/0l_config_backup/$CUR_DATE ] \e[0mdirectory. There's no mnemonic info."
 echo ""
 echo ""
