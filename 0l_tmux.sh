@@ -1,4 +1,7 @@
 #!/bin/bash
+tmux kill-server &> /dev/null ; killall diem-node &> /dev/null ;
+sleep 3
+ 
 session="onboarding"
 tmux new-session -d -s $session
 window=0
