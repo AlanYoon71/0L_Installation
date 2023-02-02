@@ -42,7 +42,7 @@ echo ""
 echo -e "Your config files backuped in \e[1m\e[32m[ /root/0l_config_backup/$CUR_DATE ] \e[0mdirectory. There's no mnemonic info."
 echo ""
 sleep 2
-echo "So if you didn't write down your mnemonic yet, goto running sessions and check screen. mnemonic!"
+echo "So if you didn't write down your mnemonic yet, goto running sessions and check screen."
 echo ""
 echo ""
 sleep 2
