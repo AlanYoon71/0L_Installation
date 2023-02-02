@@ -119,7 +119,8 @@ do
                 do
                     sleep 60
                     #if [ "$waylength" == "$W" ]
-                    if [[ -n `grep 73 /home/node/bin/waylength.txt` ]]
+                    W=73
+                    if [[ -n `grep $W /home/node/bin/waylength.txt` ]]
                     then
                         echo ""
                         echo "Lastest waypoint fetched successfully!"
@@ -155,9 +156,15 @@ do
                                 sleep 3
                                 tmux send-keys -t $session:$window 'sed -i "s/tx = 1000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
                                 sleep 3
+                                tmux send-keys -t $session:$window 'grep $WAY /home/node/.0L/0L.toml > /home/node/bin/WAYPOINT.txt && WAY2=$(cat /home/node/bin/WAYPOINT.txt) && echo ${#WAY2} > /home/node/bin/WAYLENGTH.txt && sleep 2 && cmp -s /home/node/bin/waypoint.txt /home/node/bin/WAYPOINT.txt > /home/node/bin/update_check.txt' C-m
+                                sleep 3
 
-                                if [[ -n `grep $WAY /home/node/.0L/0L.toml` ]]
+                                if [ -s /home/node/bin/update_check.txt ]
                                 then
+                                    echo ""
+                                    echo ">>> Configuration update failed... <<<"
+                                    exit
+                                else
                                     echo ""
                                     echo "Fullnode configuration updated!"
                                     echo ""
@@ -324,10 +331,6 @@ do
                                         echo ">>> Fullnode failed to start... <<<"
                                         exit
                                     fi
-                                else
-                                    echo ""
-                                    echo ">>> Configuration update failed... <<<"
-                                    exit
                                 fi
                             fi
                         done
