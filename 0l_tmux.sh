@@ -6,7 +6,11 @@ session="onboarding"
 tmux new-session -d -s $session
 window=0
 tmux rename-window -t $session:$window 'onboarding'
+sleep 1
 
+echo ""
+echo "Script for TMUX background started!"
+echo ""
 sleep 1
 
 tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd /home/node/libra && make bins install' C-m
@@ -205,23 +209,25 @@ do
                                         echo ""
                                         echo "Fullnode started!"
                                         echo ""
-                                        sleep 180
+                                        sleep 2
 
                                         echo ""
                                         echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
                                         echo "===================="
                                         echo ""
                                         syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                        sleep 3
                                         sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                         echo $syn &&
                                         echo $sync &&
                                         syn1=$(echo $syn | grep -o '[0-9]*') &&
                                         sync1=$(echo $sync | grep -o '[0-9]*') &&
-                                        sleep 30
                                         echo ""
-                                        echo "Checking synced versions in 30 seconds interval" &&
+                                        echo "Checking synced versions in 60 seconds interval" &&
                                         echo ""
+                                        sleep 60
                                         syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                        sleep 3
                                         sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                         echo $syn &&
                                         echo $sync &&
@@ -278,7 +284,7 @@ do
                                         sleep 5
 
                                         echo ""
-                                        echo -e "Open your tmux session \e[1m\e[32m[ tmux attach -t $session ] \e[0min a new terminal by user node(not root), copy and paste your mnemonic."
+                                        echo -e "Open your tmux session [ \e[1m\e[32mtmux attach -t $session \e[0m] in a new terminal by user node(not root), copy and paste your mnemonic."
                                         sleep 2
 
                                         if [ -s /home/node/.0L/logs/tower.log ]
@@ -309,11 +315,11 @@ do
                                         echo "Monitor started!"
                                         echo ""
                                         echo ""
-                                        echo -e "From now, you can monitor your node in browser by typing \e[1m\e[32m[ http://your_IP:3030 ] \e[0m"
+                                        echo -e "From now, you can monitor your node in browser by typing [ \e[1m\e[32mhttp://your_IP:3030 \e[0m]"
                                         echo ""
                                         AUTH=$(sed -n '7p' /home/node/bin/keygen.txt)
                                         echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
-                                        echo -e "\e[1m\e[32m[ txs create-account --authkey $AUTH --coins 1 ] \e[0m"
+                                        echo -e "[ \e[1m\e[32mtxs create-account --authkey $AUTH --coins 1 \e[0m]"
                                         sleep 2
 
                                         echo ""
@@ -328,19 +334,16 @@ do
                                         echo "If you didn't write down your mnemonic yet, check this terminal screen and write down right now."
                                         echo ""
                                         echo ""
-                                        
-                                        rm /home/node/bin/keygen.txt &> /dev/null ; rm /home/node/bin/waylength.txt &> /dev/null ; rm /home/node/bin/waypoint.txt &> /dev/null ; rm /home/node/bin/WAYPOINT.txt &> /dev/null ; rm /home/node/bin/update_check.txt &> /dev/null ;
-                                        sleep 2
-
-                                        echo ""
-                                        echo ""
-                                        echo -e "Script for TMUX completed!"
+                                        echo -e "\e[1m\e[32mScript for TMUX completed! Installation is successful! \e[0m"
                                         echo ""
                                         A=15
                                         E=15
                                         G=15
                                     else
                                         echo ""
+                                        echo ">>> Fullnode failed to start... It's critical! <<<"
+                                        echo ""
+                                        sleep 1
                                         echo ">>> Fullnode failed to start... It's critical! <<<"
                                         exit
                                     fi
