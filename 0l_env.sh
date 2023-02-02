@@ -19,7 +19,7 @@ sleep 2
 curl -sL https://raw.githubusercontent.com/OLSF/libra/main/ol/util/setup.sh | bash
 echo ""
 echo ""
-echo "All required packages installed."
+echo "All required linux packages installed."
 echo ""
 echo ""
 echo -e "\e[1m\e[32m3. Compiling 0l binary files.. \e[0m"
