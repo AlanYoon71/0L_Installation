@@ -316,8 +316,8 @@ do
                                         export SIZE=$(stat -c%s "$PROOF")
                                         while [ $Y -lt $Z ]
                                         do
-                                            sleep 30
-                                            if [[ $SIZE -gt 900  ]]
+                                            sleep 15
+                                            if [[ $SIZE -gt 800  ]]
                                             then
                                                 echo ""
                                                 echo ""
@@ -327,14 +327,6 @@ do
                                                 echo "Tower can start to submit proofs on chain after onboarded and fully synced."
                                                 echo ""
                                                 Y=15
-                                            else
-                                                echo ""
-                                                echo -e ">>> Tower not works normally. Open $session session and check tower.log [ \e[1m\e[32mtail -f tower.log \e[0m]. <<<"
-                                                echo ""
-                                                echo "Did you input mnemonic for starting tower?"
-                                                echo "If you input wrong mnemonic, then try start command again and input correct mnemonic."
-                                                echo ""
-                                                echo ""
                                             fi
                                         done
                                         session="monitor"
