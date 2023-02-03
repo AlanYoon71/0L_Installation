@@ -11,22 +11,23 @@ cd ~
 echo -e "\e[1m\e[32m0. Wiping user \"node\" and files for preventing confliction. \e[0m"
 echo "===================="
 echo ""
-echo "Wiped."
+sudo pgrep -f node | sudo xargs kill &> /dev/null ; sleep 1 ; sudo pgrep -f node | sudo xargs kill &> /dev/null ;
+sudo userdel node &> /dev/null ; sudo rm -rf /home/node &> /dev/null ; sudo rm 0l_fullnode_installation &> /dev/null ;
+echo "Wiped all."
+echo ""
 echo ""
 sleep 2
-userdel node &> /dev/null ; rm -rf /home/node &> /dev/null ; rm 0l_fullnode_installation &> /dev/null ;
-sleep 3
 echo -e "\e[1m\e[32m1. Installing dependencies.. \e[0m"
 echo "===================="
 echo ""
 sleep 2
-apt install -y git vim zip unzip bc jq build-essential cmake clang llvm libgmp-dev secure-delete pkg-config libssl-dev lld tmux
+sudo apt install -y git vim zip unzip bc jq build-essential cmake clang llvm libgmp-dev secure-delete pkg-config libssl-dev lld tmux
 echo ""
 echo -e "\e[1m\e[32m2. Installing required linux packages.. \e[0m"
 echo "===================="
 echo ""
 sleep 2
-curl -sL https://raw.githubusercontent.com/OLSF/libra/main/ol/util/setup.sh | bash
+sudo curl -sL https://raw.githubusercontent.com/OLSF/libra/main/ol/util/setup.sh | bash
 echo ""
 echo "All required linux packages installed."
 echo ""
