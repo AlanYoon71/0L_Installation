@@ -14,7 +14,6 @@ echo ""
 sleep 1
 
 tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd /home/node/libra && make bins install' C-m
-
 sleep 1
 
 tmux send-keys -t $session:$window '\n
@@ -34,7 +33,6 @@ do
     sleep 60
     fi
 done
-
 
 tmux send-keys -t $session:$window 'cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
 sleep 1
@@ -95,69 +93,24 @@ do
                 echo "===================="
                 echo ""
 
-                #tmux kill-session -t $session
-                #sleep 3
-                
-                # session="restoring"
-                # tmux new-session -d -s $session
-                # window=0
-                # tmux rename-window -t $session:$window 'restoring'
-                # sleep 1
-
-                # tmux send-keys -t $session:$window 'killall diem-node > /dev/null ; sleep 3 && ulimit -n 100000 && /home/node/bin/ol restore && diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
-                # sleep 60
-
-                # session="waypoint"
-                # tmux new-session -d -s $session
-                # window=0
-                # tmux rename-window -t $session:$window 'waypoint'
-                # sleep 1
-
-                # tmux send-keys -t $session:$window 'cd /home/node/.0L && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt && cat /home/node/bin/keygen.txt && /home/node/bin/ol init --key-store --waypoint $WAY' C-m
-                # sleep 60
-
-                # echo ""
-                # echo -e "Open your tmux session \e[1m\e[32m[ tmux attach -t $session ] \e[0min a new terminal by user node(not root), copy and paste your mnemonic."
-                # echo ""
-
                 E=1
                 F=10
-                #W=73
-                #waylength=$(cat /home/node/bin/waylength.txt)
                 while [ $E -lt $F ]
                 do
                     sleep 60
-                    #if [ "$waylength" == "$W" ]
                     W=73
                     if [[ -n `grep $W /home/node/bin/waylength.txt` ]]
                     then
                         echo "Lastest waypoint fetched successfully!"
                         echo ""
 
-                        #tmux kill-session -t $session
-                        #sleep 5
-
                         G=1
                         H=10
-                        #waylength=$(cat /home/node/bin/waylength.txt)
                         while [ $G -lt $H ]
-                        do                        
+                        do
                             sleep 60
-                            #WAY=$(cat /home/node/bin/waypoint.txt)
                             if [ -f /home/node/.0L/key_store.json ]
-                            #if [[ -n `grep $WAY /home/node//bin/waypoint.txt` ]]
                             then
-                                #echo ""
-                                #echo "Configuration of key_store.json updated!"
-                                #echo ""
-                                # session="update"
-                                # tmux new-session -d -s $session
-                                # window=0
-                                # tmux rename-window -t $session:$window 'update'
-                                # sleep 1
-
-                                #tmux send-keys -t $session:$window 'cd /home/node/.0L && /home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt)' C-m
-                                #sleep 10
                                 tmux send-keys -t $session2:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" /home/node/.0L/0L.toml' C-m
                                 sleep 5
                                 tmux send-keys -t $session2:$window 'sed -i "s/tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
@@ -192,18 +145,18 @@ do
                                     window=0
                                     tmux rename-window -t $session:$window 'fullnode'
                                     sleep 1
-                                    
+
                                     tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                                     sleep 180
-                                    
+
                                     session="node_log"
                                     tmux new-session -d -s $session
                                     window=0
                                     tmux rename-window -t $session:$window 'node_log'
                                     sleep 1
-                                    
+
                                     tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
-                                    
+
                                     if [ -s /home/node/.0L/logs/node.log ]
                                     then
                                         echo "Fullnode started!"
@@ -245,9 +198,8 @@ do
                                         done
 
                                         delt=$((syn2 - syn1)) &&
-                                        #TP=$((delt / 30)) &&
-                                        TP=$(echo "scale=2; $delt / 30" | bc) &&
-                                        delta=$((sync2 - sync1)) &&
+                                        export TP=$(echo "scale=2; $delt / 30" | bc) &&
+                                        export delta=$((sync2 - sync1)) &&
                                         if [ $delta -gt 0 ]
                                         then
                                             echo ""
@@ -258,17 +210,17 @@ do
                                             echo ">>> Fullnode not works normally. Syncing stopped... It's critical! <<<"
                                             exit
                                         fi
-                                        
-                                        TPS=$(echo "scale=2; $delta / 30" | bc) &&
+
+                                        export TPS=$(echo "scale=2; $delta / 30" | bc) &&
                                         echo ""
                                         echo "===================="
                                         echo -e "Network TPS : \e[1m\e[32m$TP \e[0m[tx/s]"
                                         echo -e "Local   TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
                                         echo "===================="
                                         echo ""
-                                        LAG=$(syn2 - sync2) &&
-                                        SPEED=$(echo "scale=2; $TPS - $TP" | bc) &&
-                                        CATCH=$(echo "scale=2; $LAG / $SPEEED / 3600" | bc) &&
+                                        export LAG=$((syn2 - sync2)) &&
+                                        export SPEED=$(echo "scale=2; $TPS - $TP" | bc) &&
+                                        export CATCH=$(echo "scale=2; $LAG / $SPEEED / 3600" | bc) &&
                                         echo "===================="
                                         echo -e "Syncing Lag    (current) : \e[1m\e[35m$LAG \e[0m"
                                         echo -e "Catch Up Time(estimated) : \e[1m\e[35m$CATCH \e[0m[Hr]"
@@ -276,7 +228,7 @@ do
                                         echo ""
                                         echo ""
                                         echo -e "\e[1m\e[32m8. Starting tower and monitor.. \e[0m"
-                                        echo "===================="                    
+                                        echo "===================="
                                         echo ""
 
                                         session="tower"
@@ -284,10 +236,10 @@ do
                                         window=0
                                         tmux rename-window -t $session:$window 'tower'
                                         sleep 1
-                                        
+
                                         tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
                                         sleep 1
-                                        
+
                                         tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
                                         sleep 1
 
@@ -311,18 +263,18 @@ do
                                             echo ""
                                             exit
                                         fi
-                                        
+
                                         session="monitor"
                                         tmux new-session -d -s $session
                                         window=0
                                         tmux rename-window -t $session:$window 'monitor'
                                         sleep 1
-                                        
+
                                         tmux send-keys -t $session:$window 'tmux ls > /home/node/bin/tmux_status.txt' C-m
                                         sleep 1
-                                        
+
                                         tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
-                                        
+
                                         echo ""
                                         echo "Monitor started!"
                                         echo ""
@@ -344,7 +296,7 @@ do
                                         echo ""
                                         cat /home/node/bin/keygen.txt
                                         sleep 1
-                                        
+
                                         echo ""
                                         echo -e "\e[1m\e[32mScript for TMUX completed! Installation is successful! \e[0m"
                                         echo ""
