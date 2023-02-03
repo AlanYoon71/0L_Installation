@@ -49,6 +49,7 @@ echo ""
 echo -e "Open a new terminal and change user to \"node\" [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], 
 copy and paste your mnemonic and answer questions for basic configuration."
 echo ""
+echo ""
 echo "And then just wait until your first mining is completed. This mining takes 20 ~ 40min, up to server's CPU performance."
 echo ""
 
@@ -130,7 +131,6 @@ do
                     W=73
                     if [[ -n `grep $W /home/node/bin/waylength.txt` ]]
                     then
-                        echo ""
                         echo "Lastest waypoint fetched successfully!"
                         echo ""
 
@@ -206,7 +206,6 @@ do
                                     
                                     if [ -s /home/node/.0L/logs/node.log ]
                                     then
-                                        echo ""
                                         echo "Fullnode started!"
                                         echo ""
                                         sleep 2
@@ -223,7 +222,7 @@ do
                                         syn1=$(echo $syn | grep -o '[0-9]*') &&
                                         sync1=$(echo $sync | grep -o '[0-9]*') &&
                                         echo ""
-                                        echo "Checking synced versions in 60 seconds interval" &&
+                                        echo "Checking synced versions until figures increase.." &&
                                         echo ""
                                         S=1
                                         SS=300
@@ -267,12 +266,12 @@ do
                                         echo -e "Local   TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
                                         echo "===================="
                                         echo ""
-                                        LAG=$((syn2 - sync2)) &&
+                                        LAG=$(syn2 - sync2) &&
                                         SPEED=$(echo "scale=2; $TPS - $TP" | bc) &&
                                         CATCH=$(echo "scale=2; $LAG / $SPEEED / 3600" | bc) &&
                                         echo "===================="
-                                        echo -e "Syncing Lag(current) : \e[1m\e[35m$LAG \e[0m"
-                                        echo -e "Catch Up Time  (est) : \e[1m\e[35m$CATCH \e[0m[Hr]"
+                                        echo -e "Syncing Lag    (current) : \e[1m\e[35m$LAG \e[0m"
+                                        echo -e "Catch Up Time(estimated) : \e[1m\e[35m$CATCH \e[0m[Hr]"
                                         echo "===================="
                                         echo ""
                                         echo ""
@@ -295,14 +294,15 @@ do
                                         tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start >> ~/.0L/logs/tower.log 2>&1' C-m
                                         sleep 5
 
-                                        echo ""
                                         echo -e "Open your tmux session [ \e[1m\e[32mtmux attach -t $session \e[0m] in a new terminal by user node(not root), copy and paste your mnemonic."
                                         sleep 2
 
                                         if [ -s /home/node/.0L/logs/tower.log ]
                                         then
                                             echo ""
+                                            echo ""
                                             echo "Tower started!"
+                                            echo ""
                                             echo "Tower can start to submit proofs on chain after fullnode finish catch up for fully syncing."
                                             echo ""
                                         else
@@ -330,10 +330,12 @@ do
                                         echo -e "From now, you can monitor your node in browser by typing [ \e[1m\e[32mhttp://your_IP:3030 \e[0m]"
                                         echo ""
                                         AUTH=$(sed -n '7p' /home/node/bin/keygen.txt)
+                                        echo ""
                                         echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
                                         echo -e "[ \e[1m\e[32mtxs create-account --authkey $AUTH --coins 1 \e[0m]"
                                         sleep 2
 
+                                        echo ""
                                         echo ""
                                         echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
                                         echo "===================="
