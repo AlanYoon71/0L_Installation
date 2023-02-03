@@ -324,10 +324,10 @@ do
                                         Y=1
                                         Z=10
                                         export PROOF=/home/node/.0L/logs/tower.log
-                                        export SIZE=$(stat -c%s "$PROOF")
                                         while [ $Y -lt $Z ]
                                         do
                                             sleep 15
+                                            export SIZE=$(stat -c%s "$PROOF")                                            
                                             if [[ $SIZE -gt 800  ]]
                                             then
                                                 echo "Tower mining started!"
