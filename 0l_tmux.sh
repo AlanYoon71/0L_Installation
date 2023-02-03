@@ -202,7 +202,7 @@ do
                                         done
 
                                         export delt=$((syn2 - syn1)) &&
-                                        export TP=$(echo "scale=2; $delt / ( 10 * $S )" | bc) &&
+                                        export TP=$(echo "scale=3; $delt / ( 10 * $S )" | bc) &&
                                         #export delta=$((sync2 - sync1)) &&
                                         if [ $delt -gt 0 ]
                                         then
@@ -255,11 +255,11 @@ do
                                             echo ""
                                         else
                                             echo ""
-                                            echo ">>> Fullnode synced version is not changed during 5 minutes.. It's critical! <<<"
+                                            echo ">>> Fullnode synced version is not changed at all during 5 minutes.. It's critical! <<<"
                                             exit
                                         fi
 
-                                        export TPS=$(echo "scale=2; $delta / ( 10 * $S )" | bc) &&
+                                        export TPS=$(echo "scale=3; $delta / ( 10 * $S )" | bc) &&
                                         export SPEED=$(echo "scale=3; $TPS - $TP" | bc) &> /dev/null &&
                                         echo ""
                                         echo "===================="
@@ -267,9 +267,9 @@ do
                                         echo -e "Local   TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
                                         echo "===================="
                                         echo ""
-                                        if [ $SPEED -lt 0 ]
+                                        if [[ `echo "$SPEED > 0" | bc` -eq 0 ]]
                                         then
-                                            echo ">>> Local fullnode is syncing but very slow, it need to be restore and restarted later! <<<"
+                                            echo ">>> Fullnode is syncing but too slow to catch up, so you need to restore and restarted manually later! <<<"
                                             echo ""
                                         fi
 
@@ -280,7 +280,7 @@ do
                                         export synced1=$(echo $synced | grep -o '[0-9]*') &&
                                         sleep 1
                                         export LAG=$((highest1 - synced1)) &&
-                                        export CATCH=$(echo "scale=3; ( $LAG / $SPEEED ) / 3600" | bc) &&
+                                        export CATCH=$(echo "scale=3; ( $LAG / $SPEED ) / 3600" | bc) &&
 
                                         echo "===================="
                                         echo -e "Syncing Lag     (current) : \e[1m\e[35m$LAG \e[0m"
@@ -308,28 +308,35 @@ do
                                         sleep 5
 
                                         echo -e "Open your tmux session [ \e[1m\e[32mtmux attach -t $session \e[0m] in a new terminal by user node(not root), copy and paste your mnemonic."
-                                        sleep 2
+                                        sleep 30
 
-                                        export PROOF="Mining VDF Proof # 1"
-                                        if [[ -n `grep $PROOF /home/node/.0L/logs/tower.log` ]]
-                                        then
-                                            echo ""
-                                            echo ""
-                                            echo "Tower mining started!"
-                                            echo ""
-                                            echo ""
-                                            echo "Tower can start to submit proofs on chain after onboarded and fully synced."
-                                            echo ""
-                                        else
-                                            echo ""
-                                            echo -e "\e[1m\e[32m>>> Tower not works normally. check out $session session... <<< \e[0m"
-                                            echo ""
-                                            sleep 1
-                                            echo -e "\e[1m\e[32m>>> Tower not works normally. check out $session session... <<< \e[0m"
-                                            echo ""
-                                            exit
-                                        fi
-
+                                        Y=1
+                                        Z=10
+                                        export PROOF=/home/node/.0L/logs/tower.log
+                                        export SIZE=$(stat -c%s "$PROOF")
+                                        while [ $Y -lt $Z ]
+                                        do
+                                            sleep 30
+                                            if [[ $SIZE -gt 900  ]]
+                                            then
+                                                echo ""
+                                                echo ""
+                                                echo "Tower mining started!"
+                                                echo ""
+                                                echo ""
+                                                echo "Tower can start to submit proofs on chain after onboarded and fully synced."
+                                                echo ""
+                                                Y=15
+                                            else
+                                                echo ""
+                                                echo -e ">>> Tower not works normally. Open $session session and check tower.log [ \e[1m\e[32mtail -f tower.log \e[0m]. <<<"
+                                                echo ""
+                                                echo "Did you input mnemonic for starting tower?"
+                                                echo "If you input wrong mnemonic, then try start command again and input correct mnemonic."
+                                                echo ""
+                                                echo ""
+                                            fi
+                                        done
                                         session="monitor"
                                         tmux new-session -d -s $session
                                         window=0
