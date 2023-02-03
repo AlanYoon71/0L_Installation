@@ -37,7 +37,7 @@ echo ""
 echo "This script includes genesis mining and tower, so it takes 1 hour more entirely until all processes completed, so be patient, please."
 echo ""
 sudo useradd node -m -s /bin/bash
-\cp -f ./0l_tmux.sh /home/node
+\cp -f ./0l_tmux.sh /home/node &> /dev/null ;
 chmod +x /home/node/0l_tmux.sh
 chmod go+rw /home/node/0l_tmux.sh
 sudo -u node /home/node/0l_tmux.sh &&
