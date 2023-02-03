@@ -11,6 +11,8 @@ cd ~
 echo -e "\e[1m\e[32m0. Wiping user \"node\" and files for preventing confliction. \e[0m"
 echo "===================="
 echo ""
+echo "Wiped."
+echo ""
 sleep 2
 userdel node &> /dev/null ; rm -rf /home/node &> /dev/null ; rm 0l_fullnode_installation &> /dev/null ;
 sleep 3
