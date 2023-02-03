@@ -63,8 +63,10 @@ do
             if [ -f /home/node/.0L/vdf_proofs/proof_0.json ]
             then
                 echo ""
-                echo "Genesis proof created successfully!"
+                echo "Account and genesis proof created successfully!"
                 echo ""
+                echo ""
+                echo "Your account is on local fullnode now and will not be found on chain until onboarded and fully synced."
                 sleep 3
 
                 tmux kill-session -t $session
@@ -167,6 +169,10 @@ do
                                         echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
                                         echo "===================="
                                         echo ""
+                                        echo "Waiting fullnode is stabled and start syncing.. Be patient, please."
+                                        echo ""
+                                        sleep 300
+
                                         syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                         #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                         echo $syn &&
@@ -245,7 +251,7 @@ do
                                         if [ $delta -gt 0 ]
                                         then
                                             echo ""
-                                            echo "Your fullnode is syncing well now!"
+                                            echo "Your fullnode is syncing now!"
                                             echo ""
                                         else
                                             echo ""
@@ -254,14 +260,18 @@ do
                                         fi
 
                                         export TPS=$(echo "scale=2; $delta / ( 10 * $S )" | bc) &&
-
-                                        export SPEED=$(echo "scale=3; $TPS - $TP" | bc) &&
+                                        export SPEED=$(echo "scale=3; $TPS - $TP" | bc) &> /dev/null &&
                                         echo ""
                                         echo "===================="
                                         echo -e "Network TPS : \e[1m\e[32m$TP \e[0m[tx/s]"
                                         echo -e "Local   TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
                                         echo "===================="
                                         echo ""
+                                        if [ $SPEED -lt 0 ]
+                                        then
+                                            echo ">>> Local fullnode is syncing but very slow, it need to be restore and restarted later! <<<"
+                                            echo ""
+                                        fi
 
                                         export highest=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                         export synced=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
@@ -300,13 +310,15 @@ do
                                         echo -e "Open your tmux session [ \e[1m\e[32mtmux attach -t $session \e[0m] in a new terminal by user node(not root), copy and paste your mnemonic."
                                         sleep 2
 
-                                        if [ -s /home/node/.0L/logs/tower.log ]
+                                        export PROOF="Mining VDF Proof # 1"
+                                        if [[ -n `grep $PROOF /home/node/.0L/logs/tower.log` ]]
                                         then
                                             echo ""
                                             echo ""
-                                            echo "Tower started!"
+                                            echo "Tower mining started!"
                                             echo ""
-                                            echo "Tower can start to submit proofs on chain after fullnode finish catch up for fully syncing."
+                                            echo ""
+                                            echo "Tower can start to submit proofs on chain after onboarded and fully synced."
                                             echo ""
                                         else
                                             echo ""
