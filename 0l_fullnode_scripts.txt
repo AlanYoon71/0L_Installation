@@ -1,0 +1,2 @@
+https://github.com/shyoon71/0L_Fullnode_installation/blob/main/0l_env.sh
+https://github.com/shyoon71/0L_Fullnode_installation/blob/main/0l_tmux.sh
