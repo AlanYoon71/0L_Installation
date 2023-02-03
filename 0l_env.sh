@@ -12,7 +12,7 @@ echo -e "\e[1m\e[32m0. Wiping user \"node\" and files for preventing confliction
 echo "===================="
 echo ""
 sleep 2
-userdel node &> /dev/null ; rm -rf /home/node &> /dev/null ;
+userdel node &> /dev/null ; rm -rf /home/node &> /dev/null ; rm 0l_fullnode_installation &> /dev/null ;
 sleep 3
 echo -e "\e[1m\e[32m1. Installing dependencies.. \e[0m"
 echo "===================="
