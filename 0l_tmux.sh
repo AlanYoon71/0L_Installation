@@ -261,6 +261,9 @@ do
                                             echo ""
                                             echo -e "\e[1m\e[32m>>> Tower not works normally. check out $session session... <<< \e[0m"
                                             echo ""
+                                            sleep 1
+                                            echo -e "\e[1m\e[32m>>> Tower not works normally. check out $session session... <<< \e[0m"
+                                            echo ""
                                             exit
                                         fi
 
