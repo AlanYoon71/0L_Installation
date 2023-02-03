@@ -1,5 +1,5 @@
 #!/bin/bash
-tmux kill-server &> /dev/null ; killall diem-node &> /dev/null ;
+killall diem-node &> /dev/null ;
 sleep 3
 
 session="onboarding"
