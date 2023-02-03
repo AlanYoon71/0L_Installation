@@ -312,6 +312,14 @@ do
                                         echo ""
                                         sleep 30
 
+                                        session="tower_log"
+                                        tmux new-session -d -s $session
+                                        window=0
+                                        tmux rename-window -t $session:$window 'tower_log'
+                                        sleep 1
+
+                                        tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/tower.log' C-m
+                                        
                                         Y=1
                                         Z=10
                                         export PROOF=/home/node/.0L/logs/tower.log
