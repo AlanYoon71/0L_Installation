@@ -41,7 +41,7 @@ tmux send-keys -t $session:$window '/home/node/bin/ol init -a && cd $HOME/.0L &&
 sleep 5
 
 echo ""
-echo -e "\e[1m\e[32m4. Preparing account and genesis proof.. \e[0m"
+echo -e "\e[1m\e[32m4. Creating account and genesis proof.. \e[0m"
 echo "===================="
 echo ""
 echo -e "Open a new terminal and change user to \"node\" [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], 
