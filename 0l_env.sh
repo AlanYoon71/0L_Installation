@@ -7,7 +7,6 @@ echo "Script by  //-\ ][_ //-\ ][\[ ";
 echo ""
 echo "=============================="
 echo ""
-cd ~
 echo -e "\e[1m\e[32m0. Wiping user \"node\" and files for preventing confliction. \e[0m"
 echo "===================="
 echo ""
