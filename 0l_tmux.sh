@@ -265,12 +265,12 @@ do
 
                                         export highest=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                         export synced=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
-                                        export LAG=$((highest2 - synced2)) &&
+                                        export LAG=$((highest - synced)) &&
                                         export CATCH=$(echo "scale=3; ( $LAG / $SPEEED ) / 3600" | bc) &&
 
                                         echo "===================="
-                                        echo -e "Syncing Lag    (current) : \e[1m\e[35m$LAG \e[0m"
-                                        echo -e "Catch Up Time(estimated) : \e[1m\e[35m$CATCH \e[0m[Hr]"
+                                        echo -e "Syncing Lag     (current) : \e[1m\e[35m$LAG \e[0m"
+                                        echo -e "Catch Up Time (estimated) : \e[1m\e[35m$CATCH \e[0m[Hr]"
                                         echo "===================="
                                         echo ""
                                         echo ""
