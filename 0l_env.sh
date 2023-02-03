@@ -12,7 +12,9 @@ echo -e "\e[1m\e[32m0. Wiping user \"node\" and files for preventing confliction
 echo "===================="
 echo ""
 sudo pgrep -f node | sudo xargs kill &> /dev/null ; sleep 1 ; sudo pgrep -f node | sudo xargs kill &> /dev/null ;
+sleep 1
 sudo userdel node &> /dev/null ; sudo rm -rf /home/node &> /dev/null ; sudo rm 0l_fullnode_installation &> /dev/null ;
+sleep 1
 echo "Wiped all."
 echo ""
 echo ""
