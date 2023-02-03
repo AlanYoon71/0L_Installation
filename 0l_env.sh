@@ -31,6 +31,7 @@ echo ""
 echo -e "\e[1m\e[32m3. Compiling 0l binary files.. \e[0m"
 echo "===================="
 echo ""
+echo ""
 echo "This script includes genesis mining and tower, so it takes 1 hour more entirely until all processes completed, so be patient, please."
 echo ""
 sudo useradd node -m -s /bin/bash
