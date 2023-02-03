@@ -308,6 +308,8 @@ do
                                         sleep 5
 
                                         echo -e "Open your tmux session [ \e[1m\e[32mtmux attach -t $session \e[0m] in a new terminal by user node(not root), copy and paste your mnemonic."
+                                        echo ""
+                                        echo ""
                                         sleep 30
 
                                         Y=1
@@ -319,8 +321,6 @@ do
                                             sleep 15
                                             if [[ $SIZE -gt 800  ]]
                                             then
-                                                echo ""
-                                                echo ""
                                                 echo "Tower mining started!"
                                                 echo ""
                                                 echo ""
