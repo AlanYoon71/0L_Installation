@@ -24,13 +24,11 @@ echo "===================="
 sleep 2
 curl -sL https://raw.githubusercontent.com/OLSF/libra/main/ol/util/setup.sh | bash
 echo ""
-echo ""
 echo "All required linux packages installed."
 echo ""
 echo ""
 echo -e "\e[1m\e[32m3. Compiling 0l binary files.. \e[0m"
 echo "===================="
-echo ""
 echo ""
 echo "This script includes genesis mining and tower, so it takes 1 hour more entirely until all processes completed, so be patient, please."
 echo ""
