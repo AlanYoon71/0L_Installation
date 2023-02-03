@@ -265,6 +265,7 @@ do
 
                                         export highest=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                         export synced=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                        sleep 1
                                         export LAG=$((highest - synced)) &&
                                         export CATCH=$(echo "scale=3; ( $LAG / $SPEEED ) / 3600" | bc) &&
 
