@@ -168,59 +168,106 @@ do
                                         echo "===================="
                                         echo ""
                                         syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                                        sleep 3
-                                        sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                        #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                         echo $syn &&
-                                        echo $sync &&
-                                        syn1=$(echo $syn | grep -o '[0-9]*') &&
-                                        sync1=$(echo $sync | grep -o '[0-9]*') &&
+                                        #echo $sync &&
+                                        export syn1=$(echo $syn | grep -o '[0-9]*') &&
+                                        #export sync1=$(echo $sync | grep -o '[0-9]*') &&
                                         echo ""
-                                        echo "Checking synced versions until figures increase.." &&
+                                        echo "Checking highest versions until figures increase.." &&
                                         echo ""
                                         S=1
-                                        SS=300
+                                        SS=30
                                         while [ $S -lt $SS ]
                                         do
                                             sleep 10
                                             syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                                            sleep 3
-                                            sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                            #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                             echo $syn &&
-                                            echo $sync &&
-                                            syn2=$(echo $syn | grep -o '[0-9]*') &&
-                                            sync2=$(echo $sync | grep -o '[0-9]*') &&
+                                            #echo $sync &&
+                                            export syn2=$(echo $syn | grep -o '[0-9]*') &&
+                                            #export sync2=$(echo $sync | grep -o '[0-9]*') &&
                                             if [ $syn2 == $syn1 ]
                                             then
-                                                S=`expr $S + 1`
+                                                export S=`expr $S + 1`
                                             else
-                                                S=400
+                                                SS=1
                                             fi
                                         done
 
-                                        delt=$((syn2 - syn1)) &&
-                                        export TP=$(echo "scale=2; $delt / 30" | bc) &&
+                                        export delt=$((syn2 - syn1)) &&
+                                        export TP=$(echo "scale=2; $delt / ( 10 * $S )" | bc) &&
+                                        #export delta=$((sync2 - sync1)) &&
+                                        if [ $delt -gt 0 ]
+                                        then
+                                            echo ""
+                                            echo "Network alive!"
+                                            echo ""
+                                        else
+                                            echo ""
+                                            echo ">>> Network highest version is not changed during 5 minutes.. Checking skipped. <<<"
+                                        fi
+
+                                        #export TPS=$(echo "scale=2; $delta / ( 10 * $S )" | bc) &&
+
+                                        #syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                        sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                        #echo $syn &&
+                                        echo $sync &&
+                                        #export syn1=$(echo $syn | grep -o '[0-9]*') &&
+                                        export sync1=$(echo $sync | grep -o '[0-9]*') &&
+                                        echo ""
+                                        echo "Checking synced versions until figures increase.." &&
+                                        echo ""
+
+                                        S=1
+                                        SS=30
+                                        while [ $S -lt $SS ]
+                                        do
+                                            sleep 10
+                                            #syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                            sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                            #echo $syn &&
+                                            echo $sync &&
+                                            #export syn2=$(echo $syn | grep -o '[0-9]*') &&
+                                            export sync2=$(echo $sync | grep -o '[0-9]*') &&
+                                            if [ $sync2 == $sync1 ]
+                                            then
+                                                export S=`expr $S + 1`
+                                            else
+                                                SS=1
+                                            fi
+                                        done
+
+                                        #export delt=$((syn2 - syn1)) &&
+                                        #export TP=$(echo "scale=2; $delt / ( 10 * $S )" | bc) &&
                                         export delta=$((sync2 - sync1)) &&
                                         if [ $delta -gt 0 ]
                                         then
                                             echo ""
-                                            echo "Fullnode syncing works!!"
+                                            echo "Your fullnode is syncing well now!"
                                             echo ""
                                         else
                                             echo ""
-                                            echo ">>> Fullnode not works normally. Syncing stopped... It's critical! <<<"
+                                            echo ">>> Fullnode synced version is not changed during 5 minutes.. It's critical! <<<"
                                             exit
                                         fi
 
-                                        export TPS=$(echo "scale=2; $delta / 30" | bc) &&
+                                        export TPS=$(echo "scale=2; $delta / ( 10 * $S )" | bc) &&
+
+                                        export SPEED=$(echo "scale=3; $TPS - $TP" | bc) &&
                                         echo ""
                                         echo "===================="
                                         echo -e "Network TPS : \e[1m\e[32m$TP \e[0m[tx/s]"
                                         echo -e "Local   TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
                                         echo "===================="
                                         echo ""
-                                        export LAG=$((syn2 - sync2)) &&
-                                        export SPEED=$(echo "scale=2; $TPS - $TP" | bc) &&
-                                        export CATCH=$(echo "scale=2; $LAG / $SPEEED / 3600" | bc) &&
+
+                                        export highest=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                        export synced=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                        export LAG=$((highest2 - synced2)) &&
+                                        export CATCH=$(echo "scale=3; ( $LAG / $SPEEED ) / 3600" | bc) &&
+
                                         echo "===================="
                                         echo -e "Syncing Lag    (current) : \e[1m\e[35m$LAG \e[0m"
                                         echo -e "Catch Up Time(estimated) : \e[1m\e[35m$CATCH \e[0m[Hr]"
