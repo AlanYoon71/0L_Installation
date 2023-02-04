@@ -207,7 +207,7 @@ do
                                         if [ $delt -gt 0 ]
                                         then
                                             echo ""
-                                            echo "Network alive!"
+                                            echo -e "\e[1m\e[32mNetwork alive! \e[0m"
                                             echo ""
                                             echo ""
                                         else
@@ -252,7 +252,7 @@ do
                                         if [ $delta -gt 0 ]
                                         then
                                             echo ""
-                                            echo "Your fullnode is syncing now!"
+                                            echo -e "\e[1m\e[32mYour fullnode is syncing now! \e[0m"
                                             echo ""
                                         else
                                             echo ""
