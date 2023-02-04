@@ -56,7 +56,7 @@ sleep 2
 echo -e "Your config files were saved into [\e[1m\e[32m /root/0l_config_backup/$CUR_DATE \e[0m] directory. There's no mnemonic info."
 echo ""
 echo ""
-cd ~
-echo -e "\e[1m\e[32mDone! \e[0m"
+cd ~ &&
+echo "Done!"
 echo ""
 echo ""
