@@ -332,7 +332,7 @@ do
                                                 echo "Tower mining started!"
                                                 echo ""
                                                 echo ""
-                                                echo "Tower can start to submit proofs on chain after onboarded and fully synced."
+                                                echo "Tower can start to submit proofs on chain after onboarded and fully synced. After fully synced, you need to restart tower."
                                                 echo ""
                                                 Y=15
                                             fi
