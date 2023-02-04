@@ -371,7 +371,7 @@ do
                                         sleep 1
 
                                         echo ""
-                                        echo -e "\e[1m\e[32mScript for TMUX completed! Installation is successful! \e[0m"
+                                        echo "Script for TMUX completed! Installation is successful!"
                                         echo ""
                                         A=15
                                         E=15
