@@ -186,7 +186,7 @@ do
                                         SS=30
                                         while [ $S -lt $SS ]
                                         do
-                                            sleep 10
+                                            sleep 30
                                             syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                             #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                             echo $syn &&
@@ -202,7 +202,7 @@ do
                                         done
 
                                         export delt=$((syn2 - syn1)) &&
-                                        export TP=$(echo "scale=3; $delt / ( 10 * $S )" | bc) &&
+                                        export TP=$(echo "scale=3; $delt / ( 30 * $S )" | bc) &&
                                         #export delta=$((sync2 - sync1)) &&
                                         if [ $delt -gt 0 ]
                                         then
@@ -230,7 +230,7 @@ do
                                         SS=30
                                         while [ $S -lt $SS ]
                                         do
-                                            sleep 10
+                                            sleep 30
                                             #syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                             sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                             #echo $syn &&
@@ -259,7 +259,7 @@ do
                                             exit
                                         fi
 
-                                        export TPS=$(echo "scale=3; $delta / ( 10 * $S )" | bc) &&
+                                        export TPS=$(echo "scale=3; $delta / ( 30 * $S )" | bc) &&
                                         export SPEED=$(echo "scale=3; $TPS - $TP" | bc) &> /dev/null &&
                                         echo ""
                                         echo "===================="
