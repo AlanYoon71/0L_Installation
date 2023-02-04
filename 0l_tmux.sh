@@ -209,6 +209,7 @@ do
                                             echo ""
                                             echo "Network alive!"
                                             echo ""
+                                            echo ""
                                         else
                                             echo ""
                                             echo ">>> Network highest version is not changed during 5 minutes.. Checking skipped. <<<"
