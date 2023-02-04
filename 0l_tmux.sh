@@ -329,10 +329,13 @@ do
                                             export SIZE=$(stat -c%s "$PROOF")                                            
                                             if [[ $SIZE -gt 800  ]]
                                             then
-                                                echo "Tower mining started!"
+                                                echo "Tower started!"
                                                 echo ""
                                                 echo ""
-                                                echo "Tower can start to submit proofs on chain after onboarded and fully synced. After fully synced, you need to restart tower."
+                                                echo "Tower can start to submit proofs on chain only after onboarded and fully synced. After fully synced, you need to restart tower."
+                                                echo ""
+                                                sleep 2
+                                                echo "Even if tower fails to start now, the tower can be started after syncing is finished. Don't worry."
                                                 echo ""
                                                 Y=15
                                             fi
