@@ -151,10 +151,10 @@ do
                                     tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                                     sleep 180
 
-                                    session="node_log"
+                                    session="fullnode_log"
                                     tmux new-session -d -s $session
                                     window=0
-                                    tmux rename-window -t $session:$window 'node_log'
+                                    tmux rename-window -t $session:$window 'fullnode_log'
                                     sleep 1
 
                                     tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
