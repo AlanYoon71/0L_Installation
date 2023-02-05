@@ -13,7 +13,7 @@ echo ""
 #sudo pgrep -f node | sudo xargs kill &> /dev/null ; sleep 1 ; sudo pgrep -f node | sudo xargs kill &> /dev/null ;
 sleep 1
 #sudo sysadminctl interactive -deleteUser node -secure &> /dev/null ;
-sudo rm -rf /Users/node/* &> /dev/null ; sudo rm -rf $HOME/0L_Fullnode_installation &> /dev/null ;
+sudo rm -rf /Users/node/* &> /dev/null ;
 sleep 1
 echo "Wiped all."
 echo ""
@@ -60,7 +60,6 @@ echo -e "Your config files were saved into [\e[1m\e[32m $HOME/0l_config_backup/$
 echo ""
 echo ""
 cd $HOME &&
-sudo rm -r 0L_Fullnode_installation &> /dev/null ;
 echo "Done!"
 echo ""
 echo ""
