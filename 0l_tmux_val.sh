@@ -13,7 +13,7 @@ echo "Script for TMUX background started."
 echo ""
 sleep 1
 
-tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd /home/node/libra && make bins install' C-m
+tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd $HOME/libra && make bins install' C-m
 sleep 1
 
 tmux send-keys -t $session:$window '\n
@@ -23,7 +23,7 @@ C=1
 D=10
 while [ $C -lt $D ]
 do
-    if [ -f /home/node/bin/onboard ]
+    if [ -f $HOME/bin/onboard ]
     then
         echo ""
         echo "0l Binary files compiled successfully!"
@@ -34,10 +34,10 @@ do
     fi
 done
 
-tmux send-keys -t $session:$window 'cd /home/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+tmux send-keys -t $session:$window 'cd && export PATH="/home/node/bin" && . ~/.bashrc && ol serve --update && onboard keygen > $HOME/bin/keygen.txt && cat $HOME/bin/keygen.txt && MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
 sleep 1
 
-tmux send-keys -t $session:$window '/home/node/bin/ol init -a && cd $HOME/.0L && mkdir logs && /home/node/bin/onboard user' C-m
+tmux send-keys -t $session:$window 'cd $HOME/.0L && mkdir logs && onboard val' C-m
 sleep 5
 
 echo ""
@@ -56,17 +56,17 @@ B=10
 while [ $A -lt $B ]
 do
     sleep 60
-    if [ -f /home/node/.0L/0L.toml ]
+    if [ -f $HOME/.0L/0L.toml ]
     then
-        if [ -f /home/node/.0L/account.json ]
+        if [ -f $HOME/.0L/account.json ]
         then
-            if [ -f /home/node/.0L/vdf_proofs/proof_0.json ]
+            if [ -f $HOME/.0L/vdf_proofs/proof_0.json ]
             then
                 echo ""
                 echo "Account and genesis proof created successfully!"
                 echo ""
                 echo ""
-                echo "Your account is on local fullnode now and will not be found on chain until onboarded and fully synced."
+                echo "Your account is on local validator now and will not be found on chain until onboarded and fully synced."
                 sleep 3
 
                 tmux kill-session -t $session
@@ -78,7 +78,7 @@ do
                 tmux rename-window -t $session1:$window 'restore'
                 sleep 1
 
-                tmux send-keys -t $session1:$window 'ulimit -n 100000 && /home/node/bin/ol restore && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m
+                tmux send-keys -t $session1:$window 'ulimit -n 100000 && ol restore && diem-node --config ~/.0L/fullnode.node.yaml' C-m
                 sleep 60
 
                 session2="waypoint"
@@ -87,11 +87,11 @@ do
                 tmux rename-window -t $session2:$window 'waypoint'
                 sleep 1
 
-                tmux send-keys -t $session2:$window '/home/node/bin/ol --config /home/node/.0L/0L.toml query --epoch > /home/node/bin/waypoint.txt && sleep 20 && STR=$(cat /home/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /home/node/bin/waypoint.txt && WAY=$(cat /home/node/bin/waypoint.txt) && echo ${#WAY} > /home/node/bin/waylength.txt' C-m
+                tmux send-keys -t $session2:$window 'ol --config $HOME/.0L/0L.toml query --epoch > $HOME/bin/waypoint.txt && sleep 20 && STR=$(cat $HOME/bin/waypoint.txt) && echo "${STR:(-73)}" > $HOME/bin/waypoint.txt && WAY=$(cat $HOME/bin/waypoint.txt) && echo ${#WAY} > $HOME/bin/waylength.txt' C-m
                 sleep 10
 
                 echo ""
-                echo -e "\e[1m\e[32m5. Updating fullnode configurations.. \e[0m"
+                echo -e "\e[1m\e[32m5. Updating validator configurations.. \e[0m"
                 echo "===================="
                 echo ""
 
@@ -101,7 +101,7 @@ do
                 do
                     sleep 60
                     W=73
-                    if [[ -n `grep $W /home/node/bin/waylength.txt` ]]
+                    if [[ -n `grep $W $HOME/bin/waylength.txt` ]]
                     then
                         echo "Lastest waypoint fetched successfully!"
                         echo ""
@@ -111,18 +111,18 @@ do
                         while [ $G -lt $H ]
                         do
                             sleep 60
-                            if [ -f /home/node/.0L/key_store.json ]
+                            if [ -f $HOME/.0L/key_store.json ]
                             then
-                                tmux send-keys -t $session2:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" /home/node/.0L/0L.toml' C-m
+                                tmux send-keys -t $session2:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" $HOME/.0L/0L.toml' C-m
                                 sleep 5
-                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 10000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 10000/tx = 20000/g" $HOME/.0L/0L.toml' C-m
                                 sleep 3
-                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 1000/tx = 20000/g" /home/node/.0L/0L.toml' C-m
+                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 1000/tx = 20000/g" $HOME/.0L/0L.toml' C-m
                                 sleep 3
-                                tmux send-keys -t $session2:$window 'grep $WAY /home/node/.0L/0L.toml > /home/node/bin/WAYPOINT.txt && WAY2=$(cat /home/node/bin/WAYPOINT.txt) && echo ${#WAY2} > /home/node/bin/WAYLENGTH.txt && sleep 2 && cmp -s /home/node/bin/waypoint.txt /home/node/bin/WAYPOINT.txt > /home/node/bin/update_check.txt' C-m
+                                tmux send-keys -t $session2:$window 'grep $WAY $HOME/.0L/0L.toml > $HOME/bin/WAYPOINT.txt && WAY2=$(cat $HOME/bin/WAYPOINT.txt) && echo ${#WAY2} > $HOME/bin/WAYLENGTH.txt && sleep 2 && cmp -s $HOME/bin/waypoint.txt $HOME/bin/WAYPOINT.txt > $HOME/bin/update_check.txt' C-m
                                 sleep 3
 
-                                if [ -s /home/node/bin/update_check.txt ]
+                                if [ -s $HOME/bin/update_check.txt ]
                                 then
                                     echo ""
                                     echo ">>> Configuration update failed... <<<"
@@ -138,28 +138,28 @@ do
                                     sleep 2
 
                                     echo ""
-                                    echo -e "\e[1m\e[32m6. Starting fullnode.. \e[0m"
+                                    echo -e "\e[1m\e[32m6. Starting validator.. \e[0m"
                                     echo "===================="
                                     echo ""
 
-                                    session="fullnode"
+                                    session="validator"
                                     tmux new-session -d -s $session
                                     window=0
-                                    tmux rename-window -t $session:$window 'fullnode'
+                                    tmux rename-window -t $session:$window 'validator'
                                     sleep 1
 
-                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat /home/node/bin/waypoint.txt) && rm -Rf ~/.0L/db && sleep 10 && /home/node/bin/ol restore && sleep 20 && /home/node/bin/ol init --key-store --waypoint $WAY && sleep 10 && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf ~/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && $HOME/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                                     sleep 180
 
-                                    session="fullnode_log"
+                                    session="validator_log"
                                     tmux new-session -d -s $session
                                     window=0
-                                    tmux rename-window -t $session:$window 'fullnode_log'
+                                    tmux rename-window -t $session:$window 'validator_log'
                                     sleep 1
 
                                     tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
 
-                                    if [ -s /home/node/.0L/logs/node.log ]
+                                    if [ -s $HOME/.0L/logs/node.log ]
                                     then
                                         echo "Fullnode started!"
                                         echo ""
@@ -169,7 +169,7 @@ do
                                         echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
                                         echo "===================="
                                         echo ""
-                                        echo "Waiting fullnode is stabled and start syncing.. Be patient, please."
+                                        echo "Waiting validator is stabled and start syncing.. Be patient, please."
                                         echo ""
                                         sleep 300
 
@@ -252,7 +252,7 @@ do
                                         if [ $delta -gt 0 ]
                                         then
                                             echo ""
-                                            echo -e "\e[1m\e[32mYour fullnode is syncing now! \e[0m"
+                                            echo -e "\e[1m\e[32mYour validator is syncing now! \e[0m"
                                             echo ""
                                         else
                                             echo ""
@@ -270,7 +270,7 @@ do
                                         echo ""
                                         if [[ `echo "$SPEED > 0" | bc` -eq 0 ]]
                                         then
-                                            echo ">>> Fullnode is syncing but too slow to catch up, so you need to restore and restarted manually later! <<<"
+                                            echo ">>> Validator is syncing but too slow to catch up, so you need to restore and restarted manually later! <<<"
                                             echo ""
                                         fi
 
@@ -299,13 +299,13 @@ do
                                         tmux rename-window -t $session:$window 'tower'
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /home/node/bin/keygen.txt)' C-m
+                                        tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'cat /home/node/bin/keygen.txt' C-m
+                                        tmux send-keys -t $session:$window 'cat $HOME/bin/keygen.txt' C-m
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'export NODE_ENV=prod && /home/node/bin/tower start >> ~/.0L/logs/tower.log 2>&1' C-m
+                                        tmux send-keys -t $session:$window '$HOME/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1' C-m
                                         sleep 5
 
                                         echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
@@ -323,7 +323,7 @@ do
                                         
                                         Y=1
                                         Z=10
-                                        export PROOF=/home/node/.0L/logs/tower.log
+                                        export PROOF=$HOME/.0L/logs/tower.log
                                         while [ $Y -lt $Z ]
                                         do
                                             sleep 15
@@ -347,10 +347,10 @@ do
                                         tmux rename-window -t $session:$window 'monitor'
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'tmux ls > /home/node/bin/tmux_status.txt' C-m
+                                        tmux send-keys -t $session:$window 'tmux ls > $HOME/bin/tmux_status.txt' C-m
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'cd /home/node/libra && make web-files && /home/node/bin/ol serve -c' C-m
+                                        tmux send-keys -t $session:$window 'cd $HOME/libra && make web-files && $HOME/bin/ol serve -c' C-m
 
                                         echo ""
                                         echo "Monitor started!"
@@ -358,7 +358,7 @@ do
                                         echo ""
                                         echo -e "From now, you can monitor your node in browser by typing [ \e[1m\e[32mhttp://your_IP:3030 \e[0m]"
                                         echo ""
-                                        AUTH=$(sed -n '7p' /home/node/bin/keygen.txt)
+                                        AUTH=$(sed -n '7p' $HOME/bin/keygen.txt)
                                         echo ""
                                         echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
                                         echo -e "[ \e[1m\e[32mtxs create-account --authkey $AUTH --coins 1 \e[0m]"
@@ -368,10 +368,10 @@ do
                                         echo ""
                                         echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
                                         echo "===================="
-                                        cat -n /home/node/bin/tmux_status.txt
+                                        cat -n $HOME/bin/tmux_status.txt
                                         echo "===================="
                                         echo ""
-                                        cat /home/node/bin/keygen.txt
+                                        cat $HOME/bin/keygen.txt
                                         sleep 1
 
                                         echo ""
@@ -382,10 +382,10 @@ do
                                         G=15
                                     else
                                         echo ""
-                                        echo ">>> Fullnode failed to start... It's critical! <<<"
+                                        echo ">>> Validator failed to start... It's critical! <<<"
                                         echo ""
                                         sleep 1
-                                        echo ">>> Fullnode failed to start... It's critical! <<<"
+                                        echo ">>> Vaildator failed to start... It's critical! <<<"
                                         exit
                                     fi
                                 fi
