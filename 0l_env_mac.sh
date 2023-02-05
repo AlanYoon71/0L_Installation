@@ -48,18 +48,18 @@ sudo chmod go+rw /Users/node/0l_tmux.sh
 sudo -u node /Users/node/0l_tmux.sh &&
 CUR_DATE=`date +%Y%m%d` &&
 sudo mkdir -p /Users/node/0l_config_backup/"$CUR_DATE" &> /dev/null ;
-sudo \cp -f /Users/node/.0L/0L.toml $HOME/0l_config_backup/$CUR_DATE &> /dev/null ;
-sudo \cp -f /Users/node/.0L/account.json $HOME/0l_config_backup/$CUR_DATE &> /dev/null ;
-sudo \cp -f /Users/node/.0L/key_store.json $HOME/0l_config_backup/$CUR_DATE &> /dev/null ;
-sudo \cp -f /Users/node/.0L/vdf_proofs/proof_0.json $HOME/0l_config_backup/$CUR_DATE &> /dev/null ;
+sudo \cp -f /Users/node/.0L/0L.toml /Users/alan/0l_config_backup/$CUR_DATE &> /dev/null ;
+sudo \cp -f /Users/node/.0L/account.json /Users/alan/0l_config_backup/$CUR_DATE &> /dev/null ;
+sudo \cp -f /Users/node/.0L/key_store.json /Users/alan/0l_config_backup/$CUR_DATE &> /dev/null ;
+sudo \cp -f /Users/node/.0L/vdf_proofs/proof_0.json /Users/alan/0l_config_backup/$CUR_DATE &> /dev/null ;
 sleep 1
 echo ""
 sudo rm /Users/node/bin/keygen.txt &> /dev/null ; sudo rm /Users/node/bin/waylength.txt &> /dev/null ; sudo rm /Users/node/bin/waypoint.txt &> /dev/null ; sudo rm /Users/node/bin/WAYPOINT.txt &> /dev/null ; sudo rm /Users/node/bin/update_check.txt &> /dev/null ;
 sleep 2
-echo -e "Your config files were saved into [\e[1m\e[32m $HOME/0l_config_backup/$CUR_DATE \e[0m] directory. There's no mnemonic info."
+echo -e "Your config files were saved into [\e[1m\e[32m /Users/alan/0l_config_backup/$CUR_DATE \e[0m] directory. There's no mnemonic info."
 echo ""
 echo ""
-cd $HOME &&
+cd /Users/alan &&
 echo "Done!"
 echo ""
 echo ""
