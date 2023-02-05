@@ -40,7 +40,7 @@ echo ""
 echo "This script includes genesis mining and tower, so it takes 1 hour more entirely until all processes completed, so be patient, please."
 echo ""
 #sudo useradd node -m -s /bin/bash
-sudo sysadminctl interactive -addUser node -home /Users/node -shell /bin/bash
+sudo sysadminctl interactive -addUser node -password sojung12 -home /Users/node -shell /bin/bash
 sudo \cp -f ./0l_tmux.sh /Users/node &> /dev/null ;
 sudo chmod +x /Users/node/0l_tmux.sh
 sudo chmod go+rw /Users/node/0l_tmux.sh
