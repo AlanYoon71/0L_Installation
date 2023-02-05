@@ -5,3 +5,5 @@
   1. Fullnode with tower
   
   git clone https://github.com/shyoon71/0L_Fullnode_installation.git && cd 0L_Fullnode_installation && chmod +x 0l_env.sh && chmod +x 0l_tmux.sh && bash ./0l_env.sh
+
+  git clone https://github.com/shyoon71/0L_Fullnode_installation.git && cd 0L_Fullnode_installation && chmod +x 0l_env_mac.sh && chmod +x 0l_tmux_mac.sh && bash ./0l_env_mac.sh
