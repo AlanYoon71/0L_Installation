@@ -12,7 +12,8 @@ echo "===================="
 echo ""
 #sudo pgrep -f node | sudo xargs kill &> /dev/null ; sleep 1 ; sudo pgrep -f node | sudo xargs kill &> /dev/null ;
 sleep 1
-sudo sysadminctl interactive -deleteUser node -secure &> /dev/null ; sudo rm -rf /Users/node &> /dev/null ; sudo rm $HOME/0L_Fullnode_installation &> /dev/null ;
+#sudo sysadminctl interactive -deleteUser node -secure &> /dev/null ;
+sudo rm -rf /Users/node &> /dev/null ; sudo rm $HOME/0L_Fullnode_installation &> /dev/null ;
 sleep 1
 echo "Wiped all."
 echo ""
@@ -40,7 +41,7 @@ echo ""
 echo "This script includes genesis mining and tower, so it takes 1 hour more entirely until all processes completed, so be patient, please."
 echo ""
 #sudo useradd node -m -s /bin/bash
-sudo sysadminctl interactive -addUser node -password sojung12 -home /Users/node -shell /bin/bash
+#sudo sysadminctl interactive -addUser node -password sojung12 -home /Users/node -shell /bin/bash
 sudo \cp -f ./0l_tmux.sh /Users/node &> /dev/null ;
 sudo chmod +x /Users/node/0l_tmux.sh
 sudo chmod go+rw /Users/node/0l_tmux.sh
