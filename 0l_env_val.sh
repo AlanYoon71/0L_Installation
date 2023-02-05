@@ -12,7 +12,7 @@ echo "===================="
 echo ""
 sudo pgrep -f node | sudo xargs kill &> /dev/null ; sleep 1 ; sudo pgrep -f node | sudo xargs kill &> /dev/null ;
 sleep 1
-sudo userdel node &> /dev/null ; sudo rm -rf /home/node &> /dev/null ; sudo rm $HOME/0L_Fullnode_installation &> /dev/null ;
+sudo userdel node &> /dev/null && sudo rm -rf /home/node &> /dev/null && sudo rm $HOME/0L_Fullnode_installation &> /dev/null
 sleep 1
 echo "Wiped all."
 echo ""
@@ -38,8 +38,10 @@ echo "===================="
 echo ""
 echo "This script includes genesis mining and tower, so it takes 1 hour more entirely until all processes completed, so be patient, please."
 echo ""
-sudo useradd node -m -s /bin/bash
-sudo \cp -f ./0l_tmux.sh /home/node &> /dev/null ; sudo \cp -f ./autopay_batch.json /home/node &> /dev/null ; sudo \cp -f ./autopay_batch.json /home/node/libra &> /dev/null ; sudo \cp -f ./autopay_batch.json /home/node/.0L &> /dev/null ;
+sudo useradd node -m -s /bin/bash &&
+sleep 2
+sudo \cp -f ./0l_tmux.sh /home/node &> /dev/null ; sudo \cp -f ./autopay_batch.json /home/node &> /dev/null ;
+sleep 2
 sudo chmod +x /home/node/0l_tmux.sh
 sudo chmod go+rw /home/node/0l_tmux.sh
 sudo -u node /home/node/0l_tmux.sh &&
