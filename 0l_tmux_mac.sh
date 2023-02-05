@@ -13,7 +13,7 @@ echo "Script for TMUX background started."
 echo ""
 sleep 1
 
-tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd $HOME/libra && make bins install' C-m
+tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd /Users/node/libra && make bins install' C-m
 sleep 1
 
 tmux send-keys -t $session:$window '\n
@@ -23,7 +23,7 @@ C=1
 D=10
 while [ $C -lt $D ]
 do
-    if [ -f $HOME/bin/onboard ]
+    if [ -f /Users/node/bin/onboard ]
     then
         echo ""
         echo "0l Binary files compiled successfully!"
@@ -34,10 +34,10 @@ do
     fi
 done
 
-tmux send-keys -t $session:$window 'cd $HOME/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
+tmux send-keys -t $session:$window 'cd /Users/node/bin && ./ol serve --update && ./onboard keygen > keygen.txt && cat keygen.txt && MNEM=$(sed -n '11p' /Users/node/bin/keygen.txt)' C-m
 sleep 1
 
-tmux send-keys -t $session:$window '$HOME/bin/ol init -a && cd $HOME/.0L && mkdir logs && $HOME/bin/onboard user' C-m
+tmux send-keys -t $session:$window '/Users/node/bin/ol init -a && cd /Users/node/.0L && mkdir logs && /Users/node/bin/onboard user' C-m
 sleep 5
 
 echo ""
@@ -56,11 +56,11 @@ B=10
 while [ $A -lt $B ]
 do
     sleep 60
-    if [ -f $HOME/.0L/0L.toml ]
+    if [ -f /Users/node/.0L/0L.toml ]
     then
-        if [ -f $HOME/.0L/account.json ]
+        if [ -f /Users/node/.0L/account.json ]
         then
-            if [ -f $HOME/.0L/vdf_proofs/proof_0.json ]
+            if [ -f /Users/node/.0L/vdf_proofs/proof_0.json ]
             then
                 echo ""
                 echo "Account and genesis proof created successfully!"
@@ -78,7 +78,7 @@ do
                 tmux rename-window -t $session1:$window 'restore'
                 sleep 1
 
-                tmux send-keys -t $session1:$window 'ulimit -n 100000 && $HOME/bin/ol restore && $HOME/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m
+                tmux send-keys -t $session1:$window 'ulimit -n 100000 && /Users/node/bin/ol restore && /Users/node/bin/diem-node --config ~/.0L/fullnode.node.yaml' C-m
                 sleep 60
 
                 session2="waypoint"
@@ -87,7 +87,7 @@ do
                 tmux rename-window -t $session2:$window 'waypoint'
                 sleep 1
 
-                tmux send-keys -t $session2:$window '$HOME/bin/ol --config $HOME/.0L/0L.toml query --epoch > $HOME/bin/waypoint.txt && STR=$(cat $HOME/bin/waypoint.txt) && echo "${STR:(-73)}" > $HOME/bin/waypoint.txt && WAY=$(cat $HOME/bin/waypoint.txt) && echo ${#WAY} > $HOME/bin/waylength.txt' C-m
+                tmux send-keys -t $session2:$window '/Users/node/bin/ol --config /Users/node/.0L/0L.toml query --epoch > /Users/node/bin/waypoint.txt && STR=$(cat /Users/node/bin/waypoint.txt) && echo "${STR:(-73)}" > /Users/node/bin/waypoint.txt && WAY=$(cat /Users/node/bin/waypoint.txt) && echo ${#WAY} > /Users/node/bin/waylength.txt' C-m
                 sleep 10
 
                 echo ""
@@ -101,7 +101,7 @@ do
                 do
                     sleep 60
                     W=73
-                    if [[ -n `grep $W $HOME/bin/waylength.txt` ]]
+                    if [[ -n `grep $W /Users/node/bin/waylength.txt` ]]
                     then
                         echo "Lastest waypoint fetched successfully!"
                         echo ""
@@ -111,18 +111,18 @@ do
                         while [ $G -lt $H ]
                         do
                             sleep 60
-                            if [ -f $HOME/.0L/key_store.json ]
+                            if [ -f /Users/node/.0L/key_store.json ]
                             then
-                                tmux send-keys -t $session2:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" $HOME/.0L/0L.toml' C-m
+                                tmux send-keys -t $session2:$window 'sed -i'' -r -e "/tx_configs.baseline_cost/i\base_waypoint = \"$WAY\"" /Users/node/.0L/0L.toml' C-m
                                 sleep 5
-                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 10000/tx = 20000/g" $HOME/.0L/0L.toml' C-m
+                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 10000/tx = 20000/g" /Users/node/.0L/0L.toml' C-m
                                 sleep 3
-                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 1000/tx = 20000/g" $HOME/.0L/0L.toml' C-m
+                                tmux send-keys -t $session2:$window 'sed -i "s/tx = 1000/tx = 20000/g" /Users/node/.0L/0L.toml' C-m
                                 sleep 3
-                                tmux send-keys -t $session2:$window 'grep $WAY $HOME/.0L/0L.toml > $HOME/bin/WAYPOINT.txt && WAY2=$(cat $HOME/bin/WAYPOINT.txt) && echo ${#WAY2} > $HOME/bin/WAYLENGTH.txt && sleep 2 && cmp -s $HOME/bin/waypoint.txt $HOME/bin/WAYPOINT.txt > $HOME/bin/update_check.txt' C-m
+                                tmux send-keys -t $session2:$window 'grep $WAY /Users/node/.0L/0L.toml > /Users/node/bin/WAYPOINT.txt && WAY2=$(cat /Users/node/bin/WAYPOINT.txt) && echo ${#WAY2} > /Users/node/bin/WAYLENGTH.txt && sleep 2 && cmp -s /Users/node/bin/waypoint.txt /Users/node/bin/WAYPOINT.txt > /Users/node/bin/update_check.txt' C-m
                                 sleep 3
 
-                                if [ -s $HOME/bin/update_check.txt ]
+                                if [ -s /Users/node/bin/update_check.txt ]
                                 then
                                     echo ""
                                     echo ">>> Configuration update failed... <<<"
@@ -148,7 +148,7 @@ do
                                     tmux rename-window -t $session:$window 'fullnode'
                                     sleep 1
 
-                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && $HOME/bin/ol restore && sleep 3 && cd $HOME/.0L && $HOME/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && /Users/node/bin/ol restore && sleep 3 && cd /Users/node/.0L && /Users/node/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                                     sleep 180
 
                                     session="fullnode_log"
@@ -159,7 +159,7 @@ do
 
                                     tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
 
-                                    if [ -s $HOME/.0L/logs/node.log ]
+                                    if [ -s /Users/node/.0L/logs/node.log ]
                                     then
                                         echo "Fullnode started!"
                                         echo ""
@@ -299,13 +299,13 @@ do
                                         tmux rename-window -t $session:$window 'tower'
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
+                                        tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' /Users/node/bin/keygen.txt)' C-m
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'cat $HOME/bin/keygen.txt' C-m
+                                        tmux send-keys -t $session:$window 'cat /Users/node/bin/keygen.txt' C-m
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'export NODE_ENV=prod && $HOME/bin/tower start >> ~/.0L/logs/tower.log 2>&1' C-m
+                                        tmux send-keys -t $session:$window 'export NODE_ENV=prod && /Users/node/bin/tower start >> ~/.0L/logs/tower.log 2>&1' C-m
                                         sleep 5
 
                                         echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
@@ -323,7 +323,7 @@ do
                                         
                                         Y=1
                                         Z=10
-                                        export PROOF=$HOME/.0L/logs/tower.log
+                                        export PROOF=/Users/node/.0L/logs/tower.log
                                         while [ $Y -lt $Z ]
                                         do
                                             sleep 15
@@ -347,10 +347,10 @@ do
                                         tmux rename-window -t $session:$window 'monitor'
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'tmux ls > $HOME/bin/tmux_status.txt' C-m
+                                        tmux send-keys -t $session:$window 'tmux ls > /Users/node/bin/tmux_status.txt' C-m
                                         sleep 1
 
-                                        tmux send-keys -t $session:$window 'cd $HOME/libra && make web-files && $HOME/bin/ol serve -c' C-m
+                                        tmux send-keys -t $session:$window 'cd /Users/node/libra && make web-files && /Users/node/bin/ol serve -c' C-m
 
                                         echo ""
                                         echo "Monitor started!"
@@ -358,7 +358,7 @@ do
                                         echo ""
                                         echo -e "From now, you can monitor your node in browser by typing [ \e[1m\e[32mhttp://your_IP:3030 \e[0m]"
                                         echo ""
-                                        AUTH=$(sed -n '7p' $HOME/bin/keygen.txt)
+                                        AUTH=$(sed -n '7p' /Users/node/bin/keygen.txt)
                                         echo ""
                                         echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
                                         echo -e "[ \e[1m\e[32mtxs create-account --authkey $AUTH --coins 1 \e[0m]"
@@ -368,10 +368,10 @@ do
                                         echo ""
                                         echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
                                         echo "===================="
-                                        cat -n $HOME/bin/tmux_status.txt
+                                        cat -n /Users/node/bin/tmux_status.txt
                                         echo "===================="
                                         echo ""
-                                        cat $HOME/bin/keygen.txt
+                                        cat /Users/node/bin/keygen.txt
                                         sleep 1
 
                                         echo ""
