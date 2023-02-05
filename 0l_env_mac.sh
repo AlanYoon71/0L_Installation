@@ -22,7 +22,8 @@ echo -e "\e[1m\e[32m1. Installing dependencies.. \e[0m"
 echo "===================="
 echo ""
 sleep 2
-brew install git vim zip unzip bc jq cmake clang llvm libgmp-dev secure-delete pkg-config libssl-dev lld tmux
+brew install --cask clay &&
+brew install git vim zip unzip bc jq cmake llvm libgmp-dev secure-delete pkg-config libssl-dev lld tmux
 echo ""
 echo -e "\e[1m\e[32m2. Installing required linux packages.. \e[0m"
 echo "===================="
