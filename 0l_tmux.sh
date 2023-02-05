@@ -148,7 +148,7 @@ do
                                     tmux rename-window -t $session:$window 'fullnode'
                                     sleep 1
 
-                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && /home/node/bin/ol restore && sleep 3 && cd /home/node/.0L && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat /home/node/bin/waypoint.txt) && rm -Rf ~/.0L/db && sleep 10 && /home/node/bin/ol restore && sleep 20 && /home/node/bin/ol init --key-store --waypoint $WAY && sleep 10 && /home/node/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                                     sleep 180
 
                                     session="fullnode_log"
