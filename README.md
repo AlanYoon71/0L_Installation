@@ -5,3 +5,7 @@
   1. Fullnode with tower
   
   cd && git clone https://github.com/shyoon71/0L_Fullnode_installation.git && cd 0L_Fullnode_installation && chmod +x 0l_env.sh && chmod +x 0l_tmux.sh && bash ./0l_env.sh
+
+  2. Validator with tower
+  
+  cd && git clone https://github.com/shyoon71/0L_Fullnode_installation.git && cd 0L_Fullnode_installation && chmod +x 0l_env_val.sh && chmod +x 0l_tmux_val.sh && bash ./0l_env_val.sh
