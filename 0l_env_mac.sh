@@ -13,7 +13,7 @@ echo ""
 #sudo pgrep -f node | sudo xargs kill &> /dev/null ; sleep 1 ; sudo pgrep -f node | sudo xargs kill &> /dev/null ;
 sleep 1
 #sudo sysadminctl interactive -deleteUser node -secure &> /dev/null ;
-sudo rm -rf /Users/node &> /dev/null ; sudo rm $HOME/0L_Fullnode_installation &> /dev/null ;
+sudo rm -rf /Users/node/* &> /dev/null ; sudo rm -rf $HOME/0L_Fullnode_installation &> /dev/null ;
 sleep 1
 echo "Wiped all."
 echo ""
