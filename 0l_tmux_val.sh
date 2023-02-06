@@ -129,7 +129,7 @@ do
                                     exit
                                 else
                                     echo ""
-                                    echo "Fullnode configuration updated!"
+                                    echo "Validator configuration updated!"
                                     echo ""
 
                                     tmux kill-session -t $session1 &&
@@ -151,6 +151,11 @@ do
                                     tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf ~/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && $HOME/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                                     sleep 180
 
+                                    echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
+                                    echo ""
+                                    echo ""
+                                    sleep 30
+
                                     session="validator_log"
                                     tmux new-session -d -s $session
                                     window=0
@@ -159,236 +164,236 @@ do
 
                                     tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
 
-                                    if [ -s $HOME/.0L/logs/node.log ]
-                                    then
-                                        echo "Fullnode started!"
-                                        echo ""
-                                        sleep 2
+                                    J=1
+                                    K=10
+                                    while [ $J -lt $K ]
+                                    do                                    
+                                        if [ -s $HOME/.0L/logs/node.log ]
+                                        then
+                                            echo "Validator started! It is run as \"fullnode mode\" now."
+                                            echo "You can restart node as validator mode after onboarded by other an active validator."
+                                            echo ""
+                                            sleep 2
 
-                                        echo ""
-                                        echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
-                                        echo "===================="
-                                        echo ""
-                                        echo "Waiting validator is stabled and start syncing.. Be patient, please."
-                                        echo ""
-                                        sleep 300
+                                            echo ""
+                                            echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
+                                            echo "===================="
+                                            echo ""
+                                            echo "Waiting validator is stabled and start syncing.. Be patient, please."
+                                            echo ""
+                                            sleep 300
 
-                                        export syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                                        #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
-                                        echo $syn &&
-                                        #echo $sync &&
-                                        export syn1=$(echo $syn | grep -o '[0-9]*') &&
-                                        #export sync1=$(echo $sync | grep -o '[0-9]*') &&
-                                        echo ""
-                                        echo "Checking highest versions until figures increase.." &&
-                                        echo ""
-                                        S=1
-                                        SS=30
-                                        while [ $S -lt $SS ]
-                                        do
-                                            sleep 30
                                             export syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                             #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                             echo $syn &&
                                             #echo $sync &&
-                                            export syn2=$(echo $syn | grep -o '[0-9]*') &&
-                                            #export sync2=$(echo $sync | grep -o '[0-9]*') &&
-                                            if [ $syn2 == $syn1 ]
+                                            export syn1=$(echo $syn | grep -o '[0-9]*') &&
+                                            #export sync1=$(echo $sync | grep -o '[0-9]*') &&
+                                            echo ""
+                                            echo "Checking highest versions until figures increase.." &&
+                                            echo ""
+                                            S=1
+                                            SS=30
+                                            while [ $S -lt $SS ]
+                                            do
+                                                sleep 30
+                                                export syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                                #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                                echo $syn &&
+                                                #echo $sync &&
+                                                export syn2=$(echo $syn | grep -o '[0-9]*') &&
+                                                #export sync2=$(echo $sync | grep -o '[0-9]*') &&
+                                                if [ $syn2 == $syn1 ]
+                                                then
+                                                    export S=`expr $S + 1`
+                                                else
+                                                    SS=1
+                                                fi
+                                            done
+
+                                            export delt=$((syn2 - syn1)) &&
+                                            export TP=$(echo "scale=3; $delt / ( 30 * $S )" | bc) &&
+                                            #export delta=$((sync2 - sync1)) &&
+                                            if [ $delt -gt 0 ]
                                             then
-                                                export S=`expr $S + 1`
+                                                echo ""
+                                                echo -e "\e[1m\e[32mNetwork alive! \e[0m"
+                                                echo ""
+                                                echo ""
                                             else
-                                                SS=1
+                                                echo ""
+                                                echo ">>> Network highest version is not changed during 5 minutes.. Checking skipped. <<<"
                                             fi
-                                        done
 
-                                        export delt=$((syn2 - syn1)) &&
-                                        export TP=$(echo "scale=3; $delt / ( 30 * $S )" | bc) &&
-                                        #export delta=$((sync2 - sync1)) &&
-                                        if [ $delt -gt 0 ]
-                                        then
-                                            echo ""
-                                            echo -e "\e[1m\e[32mNetwork alive! \e[0m"
-                                            echo ""
-                                            echo ""
-                                        else
-                                            echo ""
-                                            echo ">>> Network highest version is not changed during 5 minutes.. Checking skipped. <<<"
-                                        fi
+                                            #export TPS=$(echo "scale=2; $delta / ( 10 * $S )" | bc) &&
 
-                                        #export TPS=$(echo "scale=2; $delta / ( 10 * $S )" | bc) &&
-
-                                        #syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                                        export sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
-                                        #echo $syn &&
-                                        echo $sync &&
-                                        #export syn1=$(echo $syn | grep -o '[0-9]*') &&
-                                        export sync1=$(echo $sync | grep -o '[0-9]*') &&
-                                        echo ""
-                                        echo "Checking synced versions until figures increase.." &&
-                                        echo ""
-
-                                        S=1
-                                        SS=30
-                                        while [ $S -lt $SS ]
-                                        do
-                                            sleep 30
                                             #syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                             export sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                             #echo $syn &&
                                             echo $sync &&
-                                            #export syn2=$(echo $syn | grep -o '[0-9]*') &&
-                                            export sync2=$(echo $sync | grep -o '[0-9]*') &&
-                                            if [ $sync2 == $sync1 ]
+                                            #export syn1=$(echo $syn | grep -o '[0-9]*') &&
+                                            export sync1=$(echo $sync | grep -o '[0-9]*') &&
+                                            echo ""
+                                            echo "Checking synced versions until figures increase.." &&
+                                            echo ""
+
+                                            S=1
+                                            SS=30
+                                            while [ $S -lt $SS ]
+                                            do
+                                                sleep 30
+                                                #syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                                export sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                                #echo $syn &&
+                                                echo $sync &&
+                                                #export syn2=$(echo $syn | grep -o '[0-9]*') &&
+                                                export sync2=$(echo $sync | grep -o '[0-9]*') &&
+                                                if [ $sync2 == $sync1 ]
+                                                then
+                                                    export S=`expr $S + 1`
+                                                else
+                                                    SS=1
+                                                fi
+                                            done
+
+                                            #export delt=$((syn2 - syn1)) &&
+                                            #export TP=$(echo "scale=2; $delt / ( 10 * $S )" | bc) &&
+                                            export delta=$((sync2 - sync1)) &&
+                                            if [ $delta -gt 0 ]
                                             then
-                                                export S=`expr $S + 1`
+                                                echo ""
+                                                echo -e "\e[1m\e[32mYour validator is syncing now! \e[0m"
+                                                echo ""
                                             else
-                                                SS=1
+                                                echo ""
+                                                echo ">>> Validator synced version is not changed at all during 5 minutes.. It's critical! <<<"
+                                                exit
                                             fi
-                                        done
 
-                                        #export delt=$((syn2 - syn1)) &&
-                                        #export TP=$(echo "scale=2; $delt / ( 10 * $S )" | bc) &&
-                                        export delta=$((sync2 - sync1)) &&
-                                        if [ $delta -gt 0 ]
-                                        then
+                                            export TPS=$(echo "scale=3; $delta / ( 30 * $S )" | bc) &&
+                                            export SPEED=$(echo "scale=3; $TPS - $TP" | bc) &> /dev/null &&
                                             echo ""
-                                            echo -e "\e[1m\e[32mYour validator is syncing now! \e[0m"
+                                            echo "===================="
+                                            echo -e "Network TPS : \e[1m\e[32m$TP \e[0m[tx/s]"
+                                            echo -e "Local   TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
+                                            echo "===================="
                                             echo ""
-                                        else
-                                            echo ""
-                                            echo ">>> Fullnode synced version is not changed at all during 5 minutes.. It's critical! <<<"
-                                            exit
-                                        fi
-
-                                        export TPS=$(echo "scale=3; $delta / ( 30 * $S )" | bc) &&
-                                        export SPEED=$(echo "scale=3; $TPS - $TP" | bc) &> /dev/null &&
-                                        echo ""
-                                        echo "===================="
-                                        echo -e "Network TPS : \e[1m\e[32m$TP \e[0m[tx/s]"
-                                        echo -e "Local   TPS : \e[1m\e[32m$TPS \e[0m[tx/s]"
-                                        echo "===================="
-                                        echo ""
-                                        if [[ `echo "$SPEED > 0" | bc` -eq 0 ]]
-                                        then
-                                            echo ">>> Validator is syncing but too slow to catch up, so you need to restore and restarted manually later! <<<"
-                                            echo ""
-                                        fi
-
-                                        export highest=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                                        export synced=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
-                                        sleep 1
-                                        export highest1=$(echo $highest | grep -o '[0-9]*') &&
-                                        export synced1=$(echo $synced | grep -o '[0-9]*') &&
-                                        sleep 1
-                                        export LAG=$((highest1 - synced1)) &&
-                                        export CATCH=$(echo "scale=3; ( $LAG / $SPEED ) / 3600" | bc) &&
-
-                                        echo "===================="
-                                        echo -e "Syncing Lag     (current) : \e[1m\e[35m$LAG \e[0m"
-                                        echo -e "Catch Up Time (estimated) : \e[1m\e[35m$CATCH \e[0m[Hr]"
-                                        echo "===================="
-                                        echo ""
-                                        echo ""
-                                        echo -e "\e[1m\e[32m8. Starting tower and monitor.. \e[0m"
-                                        echo "===================="
-                                        echo ""
-
-                                        session="tower"
-                                        tmux new-session -d -s $session
-                                        window=0
-                                        tmux rename-window -t $session:$window 'tower'
-                                        sleep 1
-
-                                        tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
-                                        sleep 1
-
-                                        tmux send-keys -t $session:$window 'cat $HOME/bin/keygen.txt' C-m
-                                        sleep 1
-
-                                        tmux send-keys -t $session:$window '$HOME/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1' C-m
-                                        sleep 5
-
-                                        echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
-                                        echo ""
-                                        echo ""
-                                        sleep 30
-
-                                        session="tower_log"
-                                        tmux new-session -d -s $session
-                                        window=0
-                                        tmux rename-window -t $session:$window 'tower_log'
-                                        sleep 1
-
-                                        tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/tower.log' C-m
-                                        
-                                        Y=1
-                                        Z=10
-                                        export PROOF=$HOME/.0L/logs/tower.log
-                                        while [ $Y -lt $Z ]
-                                        do
-                                            sleep 15
-                                            export SIZE=$(stat -c%s "$PROOF")                                            
-                                            if [[ $SIZE -gt 800  ]]
+                                            if [[ `echo "$SPEED > 0" | bc` -eq 0 ]]
                                             then
-                                                echo "Tower started!"
+                                                echo ">>> Validator is syncing but too slow to catch up, so you need to restore and restarted manually later! <<<"
                                                 echo ""
-                                                echo ""
-                                                echo "Tower can start to submit proofs on chain only after onboarded and fully synced. After fully synced, you need to restart tower."
-                                                echo ""
-                                                sleep 2
-                                                echo "Even if tower fails to start now, the tower can be started after syncing is finished. Don't worry."
-                                                echo ""
-                                                Y=15
                                             fi
-                                        done
-                                        session="monitor"
-                                        tmux new-session -d -s $session
-                                        window=0
-                                        tmux rename-window -t $session:$window 'monitor'
-                                        sleep 1
 
-                                        tmux send-keys -t $session:$window 'tmux ls > $HOME/bin/tmux_status.txt' C-m
-                                        sleep 1
+                                            export highest=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                            export synced=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                            sleep 1
+                                            export highest1=$(echo $highest | grep -o '[0-9]*') &&
+                                            export synced1=$(echo $synced | grep -o '[0-9]*') &&
+                                            sleep 1
+                                            export LAG=$((highest1 - synced1)) &&
+                                            export CATCH=$(echo "scale=3; ( $LAG / $SPEED ) / 3600" | bc) &&
 
-                                        tmux send-keys -t $session:$window 'cd $HOME/libra && make web-files && $HOME/bin/ol serve -c' C-m
+                                            echo "===================="
+                                            echo -e "Syncing Lag     (current) : \e[1m\e[35m$LAG \e[0m"
+                                            echo -e "Catch Up Time (estimated) : \e[1m\e[35m$CATCH \e[0m[Hr]"
+                                            echo "===================="
+                                            echo ""
+                                            echo ""
+                                            echo -e "\e[1m\e[32m8. Starting tower and monitor.. \e[0m"
+                                            echo "===================="
+                                            echo ""
 
-                                        echo ""
-                                        echo "Monitor started!"
-                                        echo ""
-                                        echo ""
-                                        echo -e "From now, you can monitor your node in browser by typing [ \e[1m\e[32mhttp://your_IP:3030 \e[0m]"
-                                        echo ""
-                                        AUTH=$(sed -n '7p' $HOME/bin/keygen.txt)
-                                        echo ""
-                                        echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
-                                        echo -e "[ \e[1m\e[32mtxs create-validator --account-file $HOME/.0L/\e[1m\e[33m\"your_account.json\"\e[0m \e[0m]"
-                                        echo "Go to $HOME/.0L directory, get your accout.json file and send it to anyone who can onboard you."
-                                        sleep 2
+                                            session="tower"
+                                            tmux new-session -d -s $session
+                                            window=0
+                                            tmux rename-window -t $session:$window 'tower'
+                                            sleep 1
 
-                                        echo ""
-                                        echo ""
-                                        echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
-                                        echo "===================="
-                                        cat -n $HOME/bin/tmux_status.txt
-                                        echo "===================="
-                                        echo ""
-                                        cat $HOME/bin/keygen.txt
-                                        sleep 1
+                                            tmux send-keys -t $session:$window 'MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
+                                            sleep 1
 
-                                        echo ""
-                                        echo "Script for TMUX completed! Installation is successful!"
-                                        echo ""
-                                        A=15
-                                        E=15
-                                        G=15
-                                    else
-                                        echo ""
-                                        echo ">>> Validator failed to start... It's critical! <<<"
-                                        echo ""
-                                        sleep 1
-                                        echo ">>> Vaildator failed to start... It's critical! <<<"
-                                        exit
-                                    fi
+                                            tmux send-keys -t $session:$window 'cat $HOME/bin/keygen.txt' C-m
+                                            sleep 1
+
+                                            tmux send-keys -t $session:$window '$HOME/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1' C-m
+                                            sleep 5
+
+                                            echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
+                                            echo ""
+                                            echo ""
+                                            sleep 30
+
+                                            session="tower_log"
+                                            tmux new-session -d -s $session
+                                            window=0
+                                            tmux rename-window -t $session:$window 'tower_log'
+                                            sleep 1
+
+                                            tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/tower.log' C-m
+                                            
+                                            Y=1
+                                            Z=10
+                                            export PROOF=$HOME/.0L/logs/tower.log
+                                            while [ $Y -lt $Z ]
+                                            do
+                                                sleep 15
+                                                export SIZE=$(stat -c%s "$PROOF")                                            
+                                                if [[ $SIZE -gt 800  ]]
+                                                then
+                                                    echo "Tower started!"
+                                                    echo ""
+                                                    echo ""
+                                                    echo "Tower can start to submit proofs on chain only after onboarded and fully synced. After fully synced, you need to restart tower."
+                                                    echo ""
+                                                    sleep 2
+                                                    echo "Even if tower fails to start now, the tower can be started after syncing is finished. Don't worry."
+                                                    echo ""
+                                                    Y=15
+                                                fi
+                                            done
+                                            session="monitor"
+                                            tmux new-session -d -s $session
+                                            window=0
+                                            tmux rename-window -t $session:$window 'monitor'
+                                            sleep 1
+
+                                            tmux send-keys -t $session:$window 'tmux ls > $HOME/bin/tmux_status.txt' C-m
+                                            sleep 1
+
+                                            tmux send-keys -t $session:$window 'cd $HOME/libra && make web-files && $HOME/bin/ol serve -c' C-m
+
+                                            echo ""
+                                            echo "Monitor started!"
+                                            echo ""
+                                            echo ""
+                                            echo -e "From now, you can monitor your node in browser by typing [ \e[1m\e[32mhttp://your_IP:3030 \e[0m]"
+                                            echo ""
+                                            AUTH=$(sed -n '7p' $HOME/bin/keygen.txt)
+                                            echo ""
+                                            echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
+                                            echo -e "[ \e[1m\e[32mtxs create-validator --account-file $HOME/.0L/\e[1m\e[33m\"your_account.json\"\e[0m \e[0m]"
+                                            echo "Go to $HOME/.0L directory, get your accout.json file and send it to anyone who can onboard you."
+                                            sleep 2
+
+                                            echo ""
+                                            echo ""
+                                            echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
+                                            echo "===================="
+                                            cat -n $HOME/bin/tmux_status.txt
+                                            echo "===================="
+                                            echo ""
+                                            cat $HOME/bin/keygen.txt
+                                            sleep 1
+
+                                            echo ""
+                                            echo "Script for TMUX completed! Installation is successful!"
+                                            echo ""
+                                            A=15
+                                            E=15
+                                            G=15
+                                            J=15
+                                        fi
+                                    done
                                 fi
                             fi
                         done
