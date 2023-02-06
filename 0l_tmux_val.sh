@@ -34,7 +34,7 @@ do
     fi
 done
 
-tmux send-keys -t $session:$window 'cd && export PATH="/home/node/bin" && . ~/.bashrc && ol serve --update && onboard keygen > $HOME/bin/keygen.txt && cat $HOME/bin/keygen.txt && MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
+tmux send-keys -t $session:$window 'cd && PATH=$PATH:/home/node/bin && . ~/.bashrc && ol serve --update && onboard keygen > $HOME/bin/keygen.txt && cat $HOME/bin/keygen.txt && MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
 sleep 1
 
 tmux send-keys -t $session:$window 'cd $HOME/.0L && mkdir logs && onboard val' C-m
