@@ -372,12 +372,12 @@ do
                                             echo ""
                                             echo -e "From now, you can monitor your node in browser by typing [ \e[1m\e[32mhttp://your_IP:3030 \e[0m]"
                                             echo ""
-                                            #AUTH=$(sed -n '7p' $HOME/bin/keygen.txt)
+                                            AUTH=$(sed -n '7p' $HOME/bin/keygen.txt)
                                             echo ""
                                             echo "To run tower and mine successfully, you should be onboarded by someone who can onboard you with a transaction below."
-                                            echo -e "[ \e[1m\e[32mtxs create-validator --account-file $HOME/.0L/\e[1m\e[33m\"your_account.json\"\e[0m \e[0m]"
+                                            echo -e "[ \e[1m\e[32mtxs create-validator --account-file /path/to/\"your_account.json\" \e[0m] if you want to run \"validator\""
+                                            echo -e "[ \e[1m\e[32mtxs create-account --authkey $AUTH --coins 1 \e[0m] if you want to run \"fullnode\" mode only"
                                             echo ""
-                                            echo "Go to $HOME/.0L directory, get your accout.json file and send it to someone who can onboard you."
                                             sleep 2
 
                                             echo ""
