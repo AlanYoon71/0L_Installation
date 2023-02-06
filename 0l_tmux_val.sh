@@ -148,7 +148,7 @@ do
                                     tmux rename-window -t $session:$window 'validator'
                                     sleep 1
 
-                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf ~/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && $HOME/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf ~/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && cat $HOME/bin/keygen.txt && $HOME/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
                                     sleep 180
 
                                     echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
