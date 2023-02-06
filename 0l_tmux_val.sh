@@ -376,6 +376,7 @@ do
                                             echo ""
                                             echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
                                             echo -e "[ \e[1m\e[32mtxs create-validator --account-file $HOME/.0L/\e[1m\e[33m\"your_account.json\"\e[0m \e[0m]"
+                                            echo ""
                                             echo "Go to $HOME/.0L directory, get your accout.json file and send it to anyone who can onboard you."
                                             sleep 2
 
