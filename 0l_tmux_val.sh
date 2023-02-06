@@ -372,12 +372,12 @@ do
                                             echo ""
                                             echo -e "From now, you can monitor your node in browser by typing [ \e[1m\e[32mhttp://your_IP:3030 \e[0m]"
                                             echo ""
-                                            AUTH=$(sed -n '7p' $HOME/bin/keygen.txt)
+                                            #AUTH=$(sed -n '7p' $HOME/bin/keygen.txt)
                                             echo ""
-                                            echo "To run tower and mine successfully, you should be onboarded by anyone who can onboard you with a transaction below."
+                                            echo "To run tower and mine successfully, you should be onboarded by someone who can onboard you with a transaction below."
                                             echo -e "[ \e[1m\e[32mtxs create-validator --account-file $HOME/.0L/\e[1m\e[33m\"your_account.json\"\e[0m \e[0m]"
                                             echo ""
-                                            echo "Go to $HOME/.0L directory, get your accout.json file and send it to anyone who can onboard you."
+                                            echo "Go to $HOME/.0L directory, get your accout.json file and send it to someone who can onboard you."
                                             sleep 2
 
                                             echo ""
@@ -387,7 +387,7 @@ do
                                             cat -n $HOME/bin/tmux_status.txt
                                             echo "===================="
                                             echo ""
-                                            cat $HOME/bin/keygen.txt
+                                            #cat $HOME/bin/keygen.txt
                                             sleep 1
 
                                             echo ""
