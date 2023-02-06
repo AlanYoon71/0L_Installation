@@ -187,7 +187,7 @@ do
                                             echo ""
                                             sleep 300
 
-                                            export syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                            syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                             #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                             echo $syn &&
                                             #echo $sync &&
@@ -232,7 +232,7 @@ do
                                             #export TPS=$(echo "scale=2; $delta / ( 10 * $S )" | bc) &&
 
                                             #syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                                            export sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
+                                            sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                             #echo $syn &&
                                             echo $sync &&
                                             #export syn1=$(echo $syn | grep -o '[0-9]*') &&
