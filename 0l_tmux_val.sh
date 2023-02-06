@@ -375,8 +375,8 @@ do
                                             AUTH=$(sed -n '7p' $HOME/bin/keygen.txt)
                                             echo ""
                                             echo "To run tower and mine successfully, you should be onboarded by someone who can onboard you with a transaction below."
-                                            echo -e "[ \e[1m\e[32mtxs create-validator --account-file /path/to/\"your_account.json\" \e[0m] if you want to run \"validator\""
-                                            echo -e "[ \e[1m\e[32mtxs create-account --authkey $AUTH --coins 1 \e[0m] if you want to run \"fullnode\" mode only"
+                                            echo -e "[ \e[1m\e[32mtxs create-validator --account-file /path/to/\"your_account.json\" \e[0m] if you want to run \e[1m\e[33m\"validator\" \e[0m"
+                                            echo -e "[ \e[1m\e[32mtxs create-account --authkey $AUTH --coins 1 \e[0m] if you want to run \e[1m\e[33m\"fullnode\" \e[0mmode only"
                                             echo ""
                                             sleep 2
 
