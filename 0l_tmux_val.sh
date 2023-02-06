@@ -322,7 +322,7 @@ do
                                             tmux send-keys -t $session:$window '$HOME/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1' C-m
                                             sleep 5
 
-                                            echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
+                                            #echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
                                             echo ""
                                             echo ""
                                             sleep 30
