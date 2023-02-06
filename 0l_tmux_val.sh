@@ -66,7 +66,7 @@ do
                 echo "Account and genesis proof created successfully!"
                 echo ""
                 echo ""
-                echo "Your account is on local validator now and will not be found on chain until onboarded and fully synced."
+                echo "Your account is on local yet now and will not be found on chain until onboarded and fully synced."
                 sleep 3
 
                 tmux kill-session -t $session
