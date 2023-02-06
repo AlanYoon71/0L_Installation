@@ -34,6 +34,9 @@ do
     fi
 done
 
+PATH=$PATH:/home/node/bin &&
+. ~/.bashrc &&
+
 tmux send-keys -t $session:$window 'cd && PATH=$PATH:/home/node/bin && . ~/.bashrc && ol serve --update && onboard keygen > $HOME/bin/keygen.txt && cat $HOME/bin/keygen.txt && MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
 sleep 1
 
