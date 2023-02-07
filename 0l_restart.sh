@@ -1,5 +1,4 @@
 #!/bin/bash
-
 J=1
 K=10
 while [ $J -lt $K ]
