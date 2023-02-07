@@ -3,7 +3,6 @@ J=1
 K=10
 while [ $J -lt $K ]
 do
-    pgrep -f "tower -o start" || (nohup ~/bin/tower -o start &)
     HOUR=$(date "+%H")
     MIN=$(date "+%M")
     if [ $MIN -lt 20 ]
@@ -25,12 +24,15 @@ do
                 then
                     UP=0
                     echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 ~/.0L/logs/node" | at $UP:00 &&
-                    sleep 120
+                    sleep 1140
                 else
                     echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 ~/.0L/logs/node" | at $UP:00 &&
-                    sleep 120
+                    sleep 1140
                 fi
             fi
+        else
+            SLEEPING50=$(expr \( 60 - $MIN + 19 \) \* 60)
+            sleep $SLEEPING50
         fi
     fi
 done
