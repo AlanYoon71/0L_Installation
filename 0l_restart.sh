@@ -26,10 +26,10 @@ do
                     then
                         UP=0
                         echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 ~/.0L/logs/node" | at $UP:00 &&
-                        sleep 1140
+                        sleep 1145
                     else
                         echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 ~/.0L/logs/node" | at $UP:00 &&
-                        sleep 1140
+                        sleep 1145
                     fi
                 fi
             else
