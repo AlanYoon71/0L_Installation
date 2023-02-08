@@ -385,10 +385,10 @@ do
 
                                             tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/restart.log' C-m
 
-                                            Y=1
-                                            Z=10
+                                            YY=1
+                                            ZZ=10
                                             export RESTART=$HOME/.0L/logs/restart.log
-                                            while [ $Y -lt $Z ]
+                                            while [ $YY -lt $ZZ ]
                                             do
                                                 sleep 15
                                                 export SIZE=$(stat -c%s "$RESTART")                                            
@@ -400,9 +400,9 @@ do
                                                     echo "If network block height increase stopped during 30minutes, your validator will be restarted at every hour on the hour until block height increases"
                                                     echo ""
                                                     echo ""
-                                                    Y=15
+                                                    YY=15
                                                 fi
-
+                                            done
                                             echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
                                             echo "===================="
                                             cat -n $HOME/bin/tmux_status.txt
