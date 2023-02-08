@@ -42,9 +42,9 @@ sudo useradd node -m -s /bin/bash &&
 sleep 2
 sudo \cp -f ./0l_tmux_val.sh /home/node &> /dev/null ; sudo \cp -f ./autopay_batch.json /home/node &> /dev/null ;
 sleep 2
-sudo chmod +x /home/node/0l_tmux_val.sh
-sudo chmod go+rw /home/node/0l_tmux_val.sh
-sudo -u node /home/node/0l_tmux_val.sh &&
+sudo chmod +x /home/node/0l_tmux_val.sh && sudo chmod +x /home/node/0l_restart.sh &&
+sudo chmod go+rw /home/node/0l_tmux_val.sh && sudo chmod go+rw /home/node/0l_restart.sh &&
+sudo -u node /home/node/0l_tmux_val.sh && sudo -u node /home/node/0l_restart.sh
 CUR_DATE=`date +%Y%m%d` &&
 sudo mkdir -p $HOME/0l_config_backup/"$CUR_DATE" &> /dev/null ;
 sudo \cp -f /home/node/.0L/0L.toml $HOME/0l_config_backup/$CUR_DATE &> /dev/null ;
