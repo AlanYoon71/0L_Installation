@@ -174,8 +174,8 @@ do
                                     do                                    
                                         if [ -s $HOME/.0L/logs/node.log ]
                                         then
-                                            echo "Validator started! It is run as \"fullnode mode\" now."
-                                            echo "You can restart node as validator mode after fully synced and onboarded by other an active validator."
+                                            echo -e "Validator started! It is run as \e[1m\e[33m\"fullnode mode\" \e[0mnow."
+                                            echo "You can restart node as \"validator\" mode after fully synced and onboarded by other an active validator."
                                             echo ""
                                             sleep 2
 
@@ -322,7 +322,6 @@ do
                                             tmux send-keys -t $session:$window '$HOME/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1' C-m
                                             sleep 5
 
-                                            #echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
                                             echo ""
                                             echo ""
                                             sleep 30
@@ -382,6 +381,22 @@ do
 
                                             echo ""
                                             echo ""
+                                            session="restart"
+                                            tmux new-session -d -s $session
+                                            window=0
+                                            tmux rename-window -t $session:$window 'restart'
+                                            sleep 1
+
+                                            tmux send-keys -t $session:$window '$HOME/0l_restart.sh  >> ~/.0L/logs/restart.log 2>&1' C-m
+                                            sleep 1
+
+                                            echo ""
+                                            echo "Restart script started!"
+                                            echo ""
+                                            echo "If network block height increase stopped during 30minutes, your validator will be restarted at every hour on the hour until block height increases"
+                                            echo ""
+                                            echo ""
+
                                             echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
                                             echo "===================="
                                             cat -n $HOME/bin/tmux_status.txt
