@@ -345,9 +345,6 @@ do
                                             tmux rename-window -t $session:$window 'monitor'
                                             sleep 1
 
-                                            tmux send-keys -t $session:$window 'tmux ls > $HOME/bin/tmux_status.txt' C-m
-                                            sleep 1
-
                                             tmux send-keys -t $session:$window 'cd $HOME/libra && make web-files && $HOME/bin/ol serve -c' C-m
 
                                             echo ""
@@ -404,6 +401,9 @@ do
                                                     YY=15
                                                 fi
                                             done
+                                            
+                                            tmux ls > $HOME/bin/tmux_status.txt &&
+                                            sleep 2
                                             echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
                                             echo "===================="
                                             cat -n $HOME/bin/tmux_status.txt
