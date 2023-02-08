@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "This script was created only for restarting validator."
 echo ""
+sleep 3
 echo "Started."
 J=1
 K=10
