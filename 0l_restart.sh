@@ -1,5 +1,7 @@
 #!/bin/bash
 echo "This script was created only for restarting validator."
+echo ""
+echo "Started."
 J=1
 K=10
 while [ $J -lt $K ]
