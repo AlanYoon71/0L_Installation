@@ -20,16 +20,24 @@ do
                 sleep 540
                 if [ $syn50 == $syn20 ]
                 then
-                    echo "/usr/bin/killall diem-node" | at $HOUR:59 &&
+                    echo "/usr/bin/killall diem-node" | at $HOUR:59 &> /dev/null ;
                     UP=$(expr $HOUR + 1)
                     sleep 60
                     if [ $UP -gt 22 ]
                     then
                         UP=0
-                        echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 ~/.0L/logs/node" | at $UP:00 &&
+                        pgrep diem-node || echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 ~/.0L/logs/node" | at $UP:00 &&
+                        echo "========================================= \e[1m\e[33mRestarted!! \e[0m========================================="
+                        echo "Network block height stuck at $syn50"
+                        date
+                        echo "========================================= \e[1m\e[33mRestarted!! \e[0m========================================="
                         sleep 1140
                     else
-                        echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 ~/.0L/logs/node" | at $UP:00 &&
+                        pgrep diem-node || echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 ~/.0L/logs/node" | at $UP:00 &&
+                        echo "========================================= \e[1m\e[33mRestarted!! \e[0m========================================="
+                        echo "Network block height stuck at $syn50"
+                        date
+                        echo "========================================= \e[1m\e[33mRestarted!! \e[0m========================================="
                         sleep 1140
                     fi
                 fi
