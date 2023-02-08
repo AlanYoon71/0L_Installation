@@ -175,7 +175,7 @@ do
                                         if [ -s $HOME/.0L/logs/node.log ]
                                         then
                                             echo "Validator started! It is run as \"fullnode mode\" now."
-                                            echo "You can restart node as validator mode after onboarded by other an active validator."
+                                            echo "You can restart node as validator mode after fully synced and onboarded by other an active validator."
                                             echo ""
                                             sleep 2
 
