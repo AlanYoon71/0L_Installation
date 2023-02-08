@@ -189,11 +189,8 @@ do
                                             sleep 300
 
                                             syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                                            #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                             echo $syn &&
-                                            #echo $sync &&
                                             export syn1=$(echo $syn | grep -o '[0-9]*') &&
-                                            #export sync1=$(echo $sync | grep -o '[0-9]*') &&
                                             echo ""
                                             echo "Checking highest versions until figures increase.." &&
                                             echo ""
@@ -203,11 +200,8 @@ do
                                             do
                                                 sleep 20
                                                 export syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
-                                                #sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                                 echo $syn &&
-                                                #echo $sync &&
                                                 export syn2=$(echo $syn | grep -o '[0-9]*') &&
-                                                #export sync2=$(echo $sync | grep -o '[0-9]*') &&
                                                 if [ $syn2 == $syn1 ]
                                                 then
                                                     export S=`expr $S + 1`
@@ -218,7 +212,6 @@ do
 
                                             export delt=$((syn2 - syn1)) &&
                                             export TP=$(echo "scale=3; $delt / ( 20 * $S )" | bc) &&
-                                            #export delta=$((sync2 - sync1)) &&
                                             if [ $delt -gt 0 ]
                                             then
                                                 echo ""
@@ -231,13 +224,8 @@ do
                                                 echo ""
                                             fi
 
-                                            #export TPS=$(echo "scale=2; $delta / ( 10 * $S )" | bc) &&
-
-                                            #syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                             sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
-                                            #echo $syn &&
                                             echo $sync &&
-                                            #export syn1=$(echo $syn | grep -o '[0-9]*') &&
                                             export sync1=$(echo $sync | grep -o '[0-9]*') &&
                                             echo ""
                                             echo "Checking synced versions until figures increase.." &&
@@ -248,11 +236,8 @@ do
                                             while [ $S -lt $SS ]
                                             do
                                                 sleep 20
-                                                #syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
                                                 export sync=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
-                                                #echo $syn &&
                                                 echo $sync &&
-                                                #export syn2=$(echo $syn | grep -o '[0-9]*') &&
                                                 export sync2=$(echo $sync | grep -o '[0-9]*') &&
                                                 if [ $sync2 == $sync1 ]
                                                 then
@@ -262,8 +247,6 @@ do
                                                 fi
                                             done
 
-                                            #export delt=$((syn2 - syn1)) &&
-                                            #export TP=$(echo "scale=2; $delt / ( 10 * $S )" | bc) &&
                                             export delta=$((sync2 - sync1)) &&
                                             if [ $delta -gt 0 ]
                                             then
@@ -394,19 +377,37 @@ do
                                             tmux send-keys -t $session:$window '$HOME/0l_restart.sh  >> $HOME/.0L/logs/restart.log 2>&1' C-m
                                             sleep 1
 
-                                            echo "Restart script started!"
-                                            echo ""
-                                            echo ""
-                                            echo "If network block height increase stopped during 30minutes, your validator will be restarted at every hour on the hour until block height increases"
-                                            echo ""
-                                            echo ""
+                                            session="restart_log"
+                                            tmux new-session -d -s $session
+                                            window=0
+                                            tmux rename-window -t $session:$window 'restart_log'
+                                            sleep 1
+
+                                            tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/restart.log' C-m
+
+                                            Y=1
+                                            Z=10
+                                            export RESTART=$HOME/.0L/logs/restart.log
+                                            while [ $Y -lt $Z ]
+                                            do
+                                                sleep 15
+                                                export SIZE=$(stat -c%s "$RESTART")                                            
+                                                if [[ $SIZE -gt 800  ]]
+                                                then
+                                                    echo "Restart script started!"
+                                                    echo ""
+                                                    echo ""
+                                                    echo "If network block height increase stopped during 30minutes, your validator will be restarted at every hour on the hour until block height increases"
+                                                    echo ""
+                                                    echo ""
+                                                    Y=15
+                                                fi
 
                                             echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
                                             echo "===================="
                                             cat -n $HOME/bin/tmux_status.txt
                                             echo "===================="
                                             echo ""
-                                            #cat $HOME/bin/keygen.txt
                                             sleep 1
 
                                             echo ""
