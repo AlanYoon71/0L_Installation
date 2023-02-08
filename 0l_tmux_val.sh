@@ -184,7 +184,7 @@ do
                                             echo -e "\e[1m\e[32m7. Checking sync status.. \e[0m"
                                             echo "===================="
                                             echo ""
-                                            echo "Waiting validator is stabled and start syncing.. Wait 5 minutes, please."
+                                            echo "Waiting validator is stabled and start syncing.. Be patient, please."
                                             echo ""
                                             sleep 300
 
