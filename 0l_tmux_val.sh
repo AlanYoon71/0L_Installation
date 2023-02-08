@@ -165,7 +165,7 @@ do
                                     tmux new-session -d -s $session
                                     window=0
                                     tmux rename-window -t $session:$window 'validator_log'
-                                    sleep 1
+                                    sleep 10
 
                                     tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/node/current' C-m
 
@@ -390,9 +390,10 @@ do
                                             export RESTART=$HOME/.0L/logs/restart.log
                                             while [ $YY -lt $ZZ ]
                                             do
-                                                sleep 15
-                                                export SIZE=$(stat -c%s "$RESTART")                                            
-                                                if [[ $SIZE -gt 50  ]]
+                                                sleep 10
+                                                #export SIZE=$(stat -c%s "$RESTART")                                            
+                                                #if [[ $SIZE -gt 1  ]]
+                                                if [ -f $HOME/.0L/logs/restart.log ]
                                                 then
                                                     echo "Restart script started!"
                                                     echo ""
