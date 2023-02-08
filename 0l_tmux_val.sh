@@ -380,9 +380,11 @@ do
                                             echo -e "[ \e[1m\e[32mtxs create-account --authkey $AUTH --coins 1 \e[0m] if you want to run \e[1m\e[33m\"fullnode\" \e[0mmode only"
                                             echo ""
                                             sleep 2
+                                            
+                                            echo -e "\e[1m\e[32m9. Starting restart script.. \e[0m"
+                                            echo "===================="
+                                            echo ""
 
-                                            echo ""
-                                            echo ""
                                             session="restart"
                                             tmux new-session -d -s $session
                                             window=0
@@ -392,7 +394,6 @@ do
                                             tmux send-keys -t $session:$window '$HOME/0l_restart.sh  >> ~/.0L/logs/restart.log 2>&1' C-m
                                             sleep 1
 
-                                            echo ""
                                             echo "Restart script started!"
                                             echo ""
                                             echo "If network block height increase stopped during 30minutes, your validator will be restarted at every hour on the hour until block height increases"
