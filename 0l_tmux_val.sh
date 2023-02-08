@@ -227,6 +227,7 @@ do
                                             else
                                                 echo ""
                                                 echo ">>> Network highest version is not changed during 5 minutes.. Checking skipped. <<<"
+                                                echo ""
                                             fi
 
                                             #export TPS=$(echo "scale=2; $delta / ( 10 * $S )" | bc) &&
