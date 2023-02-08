@@ -45,7 +45,7 @@ sleep 2
 sudo chmod +x /home/node/0l_tmux_val.sh && sudo chmod +x /home/node/0l_restart.sh &&
 sudo chmod go+rw /home/node/0l_tmux_val.sh && sudo chmod go+rw /home/node/0l_restart.sh &&
 sudo -u node /home/node/0l_tmux_val.sh &&
-CUR_DATE=`date +%Y%m%d` &&
+CUR_DATE=`date +%Y%m%d_%I%M%S_%p` &&
 sudo mkdir -p $HOME/0l_config_backup/"$CUR_DATE" &> /dev/null ;
 sudo \cp -f /home/node/.0L/0L.toml $HOME/0l_config_backup/$CUR_DATE &> /dev/null ;
 sudo \cp -f /home/node/.0L/account.json $HOME/0l_config_backup/$CUR_DATE &> /dev/null ;
@@ -53,9 +53,6 @@ sudo \cp -f /home/node/.0L/key_store.json $HOME/0l_config_backup/$CUR_DATE &> /d
 sudo \cp -f /home/node/.0L/vdf_proofs/proof_0.json $HOME/0l_config_backup/$CUR_DATE &> /dev/null ;
 sleep 1
 echo ""
-cd &&
-sudo rm -r 0L_Fullnode_installation &> /dev/null ;
-sleep 2
 sudo rm /home/node/bin/keygen.txt &> /dev/null ; sudo rm /home/node/bin/waylength.txt &> /dev/null ; sudo rm /home/node/bin/waypoint.txt &> /dev/null ; sudo rm /home/node/bin/WAYPOINT.txt &> /dev/null ; sudo rm /home/node/bin/update_check.txt &> /dev/null ;
 sleep 2
 echo -e "Your config files were saved into [\e[1m\e[32m $HOME/0l_config_backup/$CUR_DATE \e[0m] directory. There's no mnemonic info."
