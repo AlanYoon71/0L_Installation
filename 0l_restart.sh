@@ -10,11 +10,13 @@ do
         if [ $MIN -lt 20 ]
         then
             echo "syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")" | at $HOUR:20 && export syn20=$(echo $syn1 | grep -o '[0-9]*') &&
+            if [ -z $syn20 ] ; then syn20=0 ; fi
             sleep 1800
         else
             if [ $MIN -lt 50 ]
             then
                 echo "syn2=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")" | at $HOUR:50 && export syn50=$(echo $syn2 | grep -o '[0-9]*') &&
+                if [ -z $syn50 ] ; then syn50=0 ; fi
                 sleep 540
                 if [ $syn50 == $syn20 ]
                 then
