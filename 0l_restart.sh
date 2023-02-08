@@ -5,7 +5,7 @@ while [ $J -lt $K ]
 do
     HOUR=$(date "+%H")
     MIN=$(date "+%M")
-    if [ $MIN -gt 18 ]
+    if [ $MIN == 19 ]
     then
         if [ $MIN -lt 20 ]
         then
@@ -13,6 +13,7 @@ do
             if [ -z $syn20 ] ; then syn20=0 ; fi
             sleep 1800
         else
+            if [ $MIN == 20 ] ; then sleep 1740 ; fi
             if [ $MIN -lt 50 ]
             then
                 echo "syn2=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")" | at $HOUR:50 && export syn50=$(echo $syn2 | grep -o '[0-9]*') &&
