@@ -4,4 +4,4 @@
 
   1. Validator(fullnode) with tower
   
-  cd ~ && git clone https://github.com/shyoon71/0L_Installation.git && cp 0L_Installation/* ./ && chmod +x *sh && bash ./0l_env_val.sh
+  cd ~ && git clone https://github.com/shyoon71/0L_Installation.git && \cp -f 0L_Installation/* ./ && chmod +x *sh && bash ./0l_env_val.sh
