@@ -392,7 +392,7 @@ do
                                             do
                                                 sleep 15
                                                 export SIZE=$(stat -c%s "$RESTART")                                            
-                                                if [[ $SIZE -gt 800  ]]
+                                                if [[ $SIZE -gt 50  ]]
                                                 then
                                                     echo "Restart script started!"
                                                     echo ""
