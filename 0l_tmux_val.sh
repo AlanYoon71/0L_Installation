@@ -13,7 +13,7 @@ echo "Script for TMUX background started."
 echo ""
 sleep 1
 
-tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd $HOME/libra && make bins install' C-m
+tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . $HOME/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd $HOME/libra && make bins install' C-m
 sleep 1
 
 tmux send-keys -t $session:$window '\n
@@ -35,9 +35,9 @@ do
 done
 
 PATH=$PATH:/home/node/bin &&
-. ~/.bashrc &&
+. $HOME/.bashrc &&
 
-tmux send-keys -t $session:$window 'cd && PATH=$PATH:/home/node/bin && . ~/.bashrc && ol serve --update && onboard keygen > $HOME/bin/keygen.txt && cat $HOME/bin/keygen.txt && MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
+tmux send-keys -t $session:$window 'cd && PATH=$PATH:/home/node/bin && . $HOME/.bashrc && ol serve --update && onboard keygen > $HOME/bin/keygen.txt && cat $HOME/bin/keygen.txt && MNEM=$(sed -n '11p' $HOME/bin/keygen.txt)' C-m
 sleep 1
 
 tmux send-keys -t $session:$window 'cd $HOME/.0L && mkdir logs && onboard val' C-m
@@ -51,7 +51,7 @@ echo -e "Open a new terminal and change user to \"node\" [ \e[1m\e[32msudo su no
 copy and paste your mnemonic and answer questions for basic configuration."
 echo ""
 echo ""
-echo "And then just wait until your first mining is completed. This mining takes 20 ~ 40min, up to server's CPU performance."
+echo "And then just wait until your first mining is completed. This mining takes 20 $HOME 40min, up to server's CPU performance."
 echo ""
 
 A=1
@@ -81,7 +81,7 @@ do
                 tmux rename-window -t $session1:$window 'restore'
                 sleep 1
 
-                tmux send-keys -t $session1:$window 'ulimit -n 100000 && ol restore && diem-node --config ~/.0L/fullnode.node.yaml' C-m
+                tmux send-keys -t $session1:$window 'ulimit -n 100000 && ol restore && diem-node --config $HOME/.0L/fullnode.node.yaml' C-m
                 sleep 60
 
                 session2="waypoint"
@@ -133,7 +133,7 @@ do
                                     exit
                                 else
                                     echo ""
-                                    echo "Validator configuration updated!"
+                                    echo "Configuration updated!"
                                     echo ""
 
                                     tmux kill-session -t $session1 &&
@@ -152,7 +152,7 @@ do
                                     tmux rename-window -t $session:$window 'validator'
                                     sleep 1
 
-                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf ~/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && cat $HOME/bin/keygen.txt && $HOME/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1' C-m
+                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf $HOME/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && cat $HOME/bin/keygen.txt && $HOME/bin/diem-node --config $HOME/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 $HOME/.0L/logs/node' C-m
                                     sleep 180
 
                                     cat $HOME/bin/keygen.txt &&
@@ -167,13 +167,13 @@ do
                                     tmux rename-window -t $session:$window 'validator_log'
                                     sleep 1
 
-                                    tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/node.log' C-m
+                                    tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/node/current' C-m
 
                                     J=1
                                     K=10
                                     while [ $J -lt $K ]
                                     do                                    
-                                        if [ -s $HOME/.0L/logs/node.log ]
+                                        if [ -s $HOME/.0L/logs/node/current ]
                                         then
                                             echo -e "Validator started! It is run as \e[1m\e[33m\"fullnode mode\" \e[0mnow."
                                             echo "You can restart node as \"validator\" mode after fully synced and onboarded by other an active validator."
@@ -321,7 +321,7 @@ do
                                             tmux send-keys -t $session:$window 'cat $HOME/bin/keygen.txt' C-m
                                             sleep 1
 
-                                            tmux send-keys -t $session:$window '$HOME/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1' C-m
+                                            tmux send-keys -t $session:$window '$HOME/bin/tower -o start >> $HOME/.0L/logs/tower.log 2>&1' C-m
                                             sleep 5
 
                                             echo ""
@@ -334,7 +334,7 @@ do
                                             tmux rename-window -t $session:$window 'tower_log'
                                             sleep 1
 
-                                            tmux send-keys -t $session:$window 'tail -f ~/.0L/logs/tower.log' C-m
+                                            tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/tower.log' C-m
                                             
                                             Y=1
                                             Z=10
@@ -391,7 +391,7 @@ do
                                             tmux rename-window -t $session:$window 'restart'
                                             sleep 1
 
-                                            tmux send-keys -t $session:$window '$HOME/0l_restart.sh  >> ~/.0L/logs/restart.log 2>&1' C-m
+                                            tmux send-keys -t $session:$window '$HOME/0l_restart.sh  >> $HOME/.0L/logs/restart.log 2>&1' C-m
                                             sleep 1
 
                                             echo "Restart script started!"
