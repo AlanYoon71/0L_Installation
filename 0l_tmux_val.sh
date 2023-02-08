@@ -227,7 +227,7 @@ do
                                                 echo ""
                                             else
                                                 echo ""
-                                                echo ">>> Network highest version is not changed during 5 minutes.. Checking skipped. <<<"
+                                                echo ">>> Network highest version is not changed during 10 minutes.. Checking skipped. <<<"
                                                 echo ""
                                             fi
 
@@ -272,7 +272,7 @@ do
                                                 echo ""
                                             else
                                                 echo ""
-                                                echo ">>> Validator synced version is not changed at all during 5 minutes.. It's critical! <<<"
+                                                echo ">>> Validator synced version is not changed at all during 10 minutes.. It's critical! <<<"
                                                 exit
                                             fi
 
