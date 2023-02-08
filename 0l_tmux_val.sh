@@ -396,6 +396,7 @@ do
 
                                             echo "Restart script started!"
                                             echo ""
+                                            echo ""
                                             echo "If network block height increase stopped during 30minutes, your validator will be restarted at every hour on the hour until block height increases"
                                             echo ""
                                             echo ""
