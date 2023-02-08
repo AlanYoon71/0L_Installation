@@ -94,6 +94,7 @@ do
                 sleep 10
 
                 echo ""
+                echo ""
                 echo -e "\e[1m\e[32m5. Updating validator configurations.. \e[0m"
                 echo "===================="
                 echo ""
