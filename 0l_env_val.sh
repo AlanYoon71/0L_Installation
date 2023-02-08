@@ -53,7 +53,7 @@ sudo \cp -f /home/node/.0L/key_store.json $HOME/0l_config_backup/$CUR_DATE &> /d
 sudo \cp -f /home/node/.0L/vdf_proofs/proof_0.json $HOME/0l_config_backup/$CUR_DATE &> /dev/null ;
 sleep 1
 echo ""
-cd $HOME &&
+cd &&
 sudo rm -r 0L_Fullnode_installation &> /dev/null ;
 sleep 2
 sudo rm /home/node/bin/keygen.txt &> /dev/null ; sudo rm /home/node/bin/waylength.txt &> /dev/null ; sudo rm /home/node/bin/waypoint.txt &> /dev/null ; sudo rm /home/node/bin/WAYPOINT.txt &> /dev/null ; sudo rm /home/node/bin/update_check.txt &> /dev/null ;
