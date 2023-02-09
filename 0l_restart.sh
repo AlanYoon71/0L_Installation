@@ -9,7 +9,7 @@ echo "==============================";
 echo ""
 echo "This script was created only for restarting validator."
 echo ""
-echo "The tracking loop will be started every hour at 18 minutes."
+echo "Started."
 sleep 3
 echo ""
 echo ""
@@ -17,118 +17,81 @@ J=1
 K=10
 while [ $J -lt $K ]
 do
-    sleep 60
+    sleep 5
     HOUR=$(date "+%H") &&
     MIN=$(date "+%M") &&
-    E=18
+    E=20
     if [ $MIN == $E ]
     then
-        echo "syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest')" | at $HOUR:20 &&
-        F=1
-        FF=10
-        while [ $F -lt $FF ]
-        do
-            sleep 3
-            MIN=$(date "+%M") &&
-            EE=20
-            if [ $MIN == $EE ]
-            then
-                sleep 10
-                echo ""
-                export syn20=$(echo $syn1 | grep -o '[0-9]*') &&
-                echo "Block height 1: $syn20"
-                echo ""
-                F=15
-            fi
-        done
+        export syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest') &&
+        export syn20=$(echo $syn1 | grep -o '[0-9]*') &&
+        echo "Block height 1: $syn20" &&
+        echo ""
         if [ -z $syn20 ] ; then syn20=0 ; fi
-        sleep 1760
+        sleep 1780
     else
-        EEE=48
+        EEE=50
         if [ $MIN == $EEE ]
         then
-            echo "syn2=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest')" | at $HOUR:50 &&
-            G=1
-            GG=10
-            while [ $G -lt $GG ]
-            do
-                sleep 3
-                MIN=$(date "+%M") &&
-                T=50
-                if [ $MIN == $T ]
-                then
-                    sleep 5
-                    echo ""
-                    export syn50=$(echo $syn2 | grep -o '[0-9]*') &&
-                    echo "Block height 2: $syn50"
-                    echo ""
-                    G=15
-                fi
-            done
-            if [ -z $syn20 ] ; then syn20=0 ; fi
+            export syn2=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest') &&
+            export syn50=$(echo $syn2 | grep -o '[0-9]*') &&
+            echo "Block height 2: $syn50"
+            echo ""
             if [ -z $syn50 ] ; then syn50=0 ; fi
             if [ $syn50 == $syn20 ]
             then
-                echo ""
-                echo ""
                 echo ">>> Block height stuck at $syn50 !! <<<"
+                echo "Validator will be restarted on the hour."
                 echo ""
-                echo "Your validator will be restarted on the hour."
-                echo ""
-                echo ""
-                sleep 500
-                echo "/usr/bin/killall diem-node" | at $HOUR:59 &&
+                export UP=$(expr $HOUR + 1) &&
+                sleep 580
                 P=1
                 PP=10
                 while [ $P -lt $PP ]
                 do
-                    sleep 3
+                    sleep 5
                     MIN=$(date "+%M") &&
                     TT=59
                     if [ $MIN == $TT ]
                     then
-                        sleep 5
-                        echo ""
+                        /usr/bin/killall diem-node &&
+                        sleep 2
                         D=$(pgrep diem-node)
                         if [ -z $D ]
                         then 
-                            echo "Validator killed"
+                            echo "Validator killed."
                             echo ""
                             P=15
+                        else
+                            echo ">>> Failed to kill validator. <<<"
                         fi
                     fi
                 done
-                UP=$(expr $HOUR + 1) &&
-                if [ $UP -gt 22 ]
-                then
-                    UP=0
-                fi
-                echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/node.log 2>&1" | at $UP:00 &&
                 R=1
                 RR=10
                 while [ $R -lt $RR ]
                 do
-                    sleep 3
-                    MIN=$(date "+%M")
+                    sleep 5
+                    MIN=$(date "+%M") &&
                     TTT=0
                     if [ $MIN == $TTT ]
                     then
-                        sleep 5
-                        echo ""
-                        diem=$(pgrep diem-node)
-                        if [ -n $diem ]
+                        ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/node.log 2>&1
+                        sleep 2
+                        D=$(pgrep diem-node)
+                        if [ -n $D ]
                         then
-                            echo "Network block height stuck at $syn50"
                             date '+%Y/%m/%d %I:%M %p UTC'
-                            echo -e "================= \e[1m\e[33mRestarted successfully!! \e[0m================="
+                            echo -e "========= \e[1m\e[33mRestarted successfully!! \e[0m========="
                             R=15
-                            sleep 1080
+                            sleep 1180
+                        else
+                            echo -e "\e[1m\e[32m>>> Failed to restart... <<<\e[0m"
                         fi
                     fi
                 done
             else
-                echo "Block height is increasing now. $syn20 >>> $syn50"
-                echo ""
+                echo "Block height is increasing. $syn20 >>> $syn50"
                 echo ""
             fi
         fi
