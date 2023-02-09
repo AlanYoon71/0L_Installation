@@ -24,7 +24,7 @@ do
         then
             echo "syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")" | at $HOUR:20 && export syn20=$(echo $syn1 | grep -o '[0-9]*') &&
             if [ -z $syn20 ] ; then syn20=0 ; fi
-            sleep 1760
+            sleep 1730
         fi
     else
         if [ $MIN == 49 ]
@@ -49,7 +49,7 @@ do
                     echo 'echo "Network block height stuck at $syn50"' | at $UP:00 &&
                     echo "date" | at $UP:00 &&
                     echo 'echo -e "================= \e[1m\e[33mRestarted!! \e[0m================="' | at $UP:00 &&
-                    sleep 1140
+                    sleep 1130
                 fi
             fi
         fi
