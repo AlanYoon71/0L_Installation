@@ -9,8 +9,8 @@ echo "==============================";
 echo ""
 echo "This script was created only for restarting validator."
 echo ""
+echo "The tracking loop will be started every hour at 18 minutes."
 sleep 3
-echo "Started."
 echo ""
 echo ""
 J=1
