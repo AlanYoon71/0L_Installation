@@ -90,9 +90,6 @@ do
                         fi
                     fi
                 done
-            else
-                echo "Block height is increasing. $syn20 >>> $syn50"
-                echo ""
             fi
         fi
     fi
