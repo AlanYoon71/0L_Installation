@@ -1,8 +1,5 @@
 #!/bin/bash
-
 clear
-echo ""
-echo ""
 echo ""
 echo "==============================";
 echo ""
@@ -26,7 +23,7 @@ do
     E=18
     if [ $MIN == $E ]
     then
-        echo "syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\")" | at $HOUR:20 &&
+        echo "syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest')" | at $HOUR:20 &&
         F=1
         FF=10
         while [ $F -lt $FF ]
@@ -50,7 +47,7 @@ do
         EEE=48
         if [ $MIN == $EEE ]
         then
-            echo "syn2=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\")" | at $HOUR:50 &&
+            echo "syn2=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest')" | at $HOUR:50 &&
             G=1
             GG=10
             while [ $G -lt $GG ]
