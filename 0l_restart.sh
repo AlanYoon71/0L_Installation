@@ -7,7 +7,7 @@ echo "Script by  //-\ ][_ //-\ ][\[ ";
 echo ""
 echo "==============================";
 echo ""
-echo "This script was created only for restarting validator."
+echo "This script was created only for restarting \"validator\"."
 echo ""
 echo "Started."
 sleep 3
