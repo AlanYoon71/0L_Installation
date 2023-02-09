@@ -23,7 +23,8 @@ do
     sleep 60
     HOUR=$(date "+%H") &&
     MIN=$(date "+%M") &&
-    if [ $MIN == 18 ]
+    E=18
+    if [ $MIN == $E ]
     then
         echo "syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\")" | at $HOUR:20 &&
         F=1
@@ -32,7 +33,8 @@ do
         do
             sleep 3
             MIN=$(date "+%M") &&
-            if [ $MIN == 20 ]
+            EE=20
+            if [ $MIN == $EE ]
             then
                 sleep 5
                 echo ""
@@ -45,7 +47,8 @@ do
         if [ -z $syn20 ] ; then syn20=0 ; fi
         sleep 1760
     else
-        if [ $MIN == 48 ]
+        EEE=48
+        if [ $MIN == $EEE ]
         then
             echo "syn2=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\")" | at $HOUR:50 &&
             G=1
@@ -54,7 +57,8 @@ do
             do
                 sleep 3
                 MIN=$(date "+%M") &&
-                if [ $MIN == 50 ]
+                T=50
+                if [ $MIN == $T ]
                 then
                     sleep 5
                     echo ""
@@ -83,7 +87,8 @@ do
                 do
                     sleep 3
                     MIN=$(date "+%M") &&
-                    if [ $MIN == 59 ]
+                    TT=59
+                    if [ $MIN == $TT ]
                     then
                         sleep 5
                         echo ""
@@ -108,7 +113,8 @@ do
                 do
                     sleep 3
                     MIN=$(date "+%M")
-                    if [ $MIN == 0 ]
+                    TTT=0
+                    if [ $MIN == $TTT ]
                     then
                         sleep 5
                         echo ""
