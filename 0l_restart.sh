@@ -18,8 +18,8 @@ K=10
 while [ $J -lt $K ]
 do
     sleep 60
-    HOUR=$(date "+%H" --utc) &&
-    MIN=$(date "+%M" --utc) &&
+    HOUR=$(date "+%H") &&
+    MIN=$(date "+%M") &&
     E=18
     if [ $MIN == $E ]
     then
@@ -29,11 +29,11 @@ do
         while [ $F -lt $FF ]
         do
             sleep 3
-            MIN=$(date "+%M" --utc) &&
+            MIN=$(date "+%M") &&
             EE=20
             if [ $MIN == $EE ]
             then
-                sleep 5
+                sleep 10
                 echo ""
                 export syn20=$(echo $syn1 | grep -o '[0-9]*') &&
                 echo "Block height 1: $syn20"
@@ -53,7 +53,7 @@ do
             while [ $G -lt $GG ]
             do
                 sleep 3
-                MIN=$(date "+%M" --utc) &&
+                MIN=$(date "+%M") &&
                 T=50
                 if [ $MIN == $T ]
                 then
@@ -83,7 +83,7 @@ do
                 while [ $P -lt $PP ]
                 do
                     sleep 3
-                    MIN=$(date "+%M" --utc) &&
+                    MIN=$(date "+%M") &&
                     TT=59
                     if [ $MIN == $TT ]
                     then
@@ -109,7 +109,7 @@ do
                 while [ $R -lt $RR ]
                 do
                     sleep 3
-                    MIN=$(date "+%M" --utc)
+                    MIN=$(date "+%M")
                     TTT=0
                     if [ $MIN == $TTT ]
                     then
@@ -119,7 +119,7 @@ do
                         if [ -n $diem ]
                         then
                             echo "Network block height stuck at $syn50"
-                            date '+%Y/%m/%d %I:%M %p UTC' --utc
+                            date '+%Y/%m/%d %I:%M %p UTC'
                             echo -e "================= \e[1m\e[33mRestarted successfully!! \e[0m================="
                             R=15
                             sleep 1080
