@@ -42,7 +42,7 @@ do
                 then
                     UP=0
                 fi
-                echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml  >> ~/.0L/logs/node.log 2>&1" | at $UP:00 &&
+                echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/node.log 2>&1" | at $UP:00 &&
                 MIN=$(date "+%M")
                 if [ $MIN == 0 ]
                 then
