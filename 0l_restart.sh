@@ -104,6 +104,8 @@ do
                     MIN=$(date "+%M")
                     if [ $MIN == 0 ]
                     then
+                        echo ""
+                        echo ""
                         echo "Network block height stuck at $syn50"
                         date '+%Y/%m/%d %I:%M %p UTC' --utc
                         echo -e "================= \e[1m\e[33mRestarted!! \e[0m================="
