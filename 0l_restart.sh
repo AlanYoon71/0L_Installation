@@ -58,7 +58,6 @@ do
                         then 
                             TIME=$(date +%Y-%m-%dT%I:%M:%S)
                             echo "$TIME [INFO] Validator killed successfully."
-                            echo ""
                             P=15
                         else
                             TIME=$(date +%Y-%m-%dT%I:%M:%S)
