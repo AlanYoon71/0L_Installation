@@ -46,10 +46,12 @@ do
                     fi
                     pgrep diem-node || echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml 2>&1 | multilog s50000000 n10 ~/.0L/logs/node" | at $UP:00 &&
                     echo 'echo -e "================= \e[1m\e[33mRestarted!! \e[0m================="' | at $UP:00 &&
-                    echo 'echo "Network block height stuck at $syn50"' | at $UP:00 &&
+                    echo "echo "Network block height stuck at $syn50"" | at $UP:00 &&
                     echo "date" | at $UP:00 &&
                     echo 'echo -e "================= \e[1m\e[33mRestarted!! \e[0m================="' | at $UP:00 &&
                     sleep 1130
+                then
+                    echo "Good. $syn20 >>> $syn50 increasing now!"
                 fi
             fi
         fi
