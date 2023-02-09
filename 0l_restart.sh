@@ -81,6 +81,18 @@ do
                         then
                             TIME=$(date +%Y-%m-%dT%I:%M:%S)
                             echo -e "$TIME [INFO] ========= \e[1m\e[33mRestarted successfully. \e[0m========="
+                            DD=$(pgrep tower)
+                            if [ -z $DD ]
+                            then
+                                ~/bin/tower -o start >> $HOME/.0L/logs/tower.log 2>&1
+                                sleep 2
+                                DD=$(pgrep tower)
+                                if [ -n $DD ]
+                                then
+                                    TIME=$(date +%Y-%m-%dT%I:%M:%S)
+                                    echo "$TIME [INFO] Tower restarted, too."
+                                fi
+                            fi
                             R=15
                             sleep 1080
                         else
