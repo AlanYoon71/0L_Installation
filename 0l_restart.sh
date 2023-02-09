@@ -18,8 +18,8 @@ K=10
 while [ $J -lt $K ]
 do
     sleep 60
-    HOUR=$(date "+%H") &&
-    MIN=$(date "+%M") &&
+    HOUR=$(date "+%H" --utc) &&
+    MIN=$(date "+%M" --utc) &&
     E=18
     if [ $MIN == $E ]
     then
@@ -29,14 +29,14 @@ do
         while [ $F -lt $FF ]
         do
             sleep 3
-            MIN=$(date "+%M") &&
+            MIN=$(date "+%M" --utc) &&
             EE=20
             if [ $MIN == $EE ]
             then
                 sleep 5
                 echo ""
                 export syn20=$(echo $syn1 | grep -o '[0-9]*') &&
-                echo "Current height : $syn20"
+                echo "Block height 1: $syn20"
                 echo ""
                 F=15
             fi
@@ -53,14 +53,14 @@ do
             while [ $G -lt $GG ]
             do
                 sleep 3
-                MIN=$(date "+%M") &&
+                MIN=$(date "+%M" --utc) &&
                 T=50
                 if [ $MIN == $T ]
                 then
                     sleep 5
                     echo ""
                     export syn50=$(echo $syn2 | grep -o '[0-9]*') &&
-                    echo "Current height : $syn50"
+                    echo "Block height 2: $syn50"
                     echo ""
                     G=15
                 fi
@@ -83,7 +83,7 @@ do
                 while [ $P -lt $PP ]
                 do
                     sleep 3
-                    MIN=$(date "+%M") &&
+                    MIN=$(date "+%M" --utc) &&
                     TT=59
                     if [ $MIN == $TT ]
                     then
@@ -109,7 +109,7 @@ do
                 while [ $R -lt $RR ]
                 do
                     sleep 3
-                    MIN=$(date "+%M")
+                    MIN=$(date "+%M" --utc)
                     TTT=0
                     if [ $MIN == $TTT ]
                     then
