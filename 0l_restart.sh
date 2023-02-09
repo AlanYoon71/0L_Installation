@@ -1,4 +1,12 @@
 #!/bin/bash
+clear
+echo ""
+echo "=============================="
+echo ""
+echo "Script by  //-\ ][_ //-\ ][\[ ";
+echo ""
+echo "=============================="
+echo ""
 echo "This script was created only for restarting validator."
 echo ""
 sleep 3
