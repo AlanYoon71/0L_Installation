@@ -9,8 +9,10 @@
       - start script by root directory.
 
     2) Concept:
+      - This script Faithfully followed official installation documentation.
+      - Validator and fullnode all can be installed and run by selecting onboard method. 
       - Create TMUX background sessions for installation and run all processes for running tower in TMUX sessions.
-      - Check network block height by curl command every 30 minutes(--:20, --:50 fixed), restart validator at every hour on the hour if block height not increases. 
       - Create log sessions for validator(fullnode), tower and restart script.
+      - Check network block height by curl command every 30 minutes(--:20, --:50 fixed), restart validator at every hour on the hour if block height not increases. 
+      - Calculate TPS(sync [tx/s]) between network and local after starting validator(fullnode), display remained catchup complete time(estimated).
       - Mnemonic and answers for question should be input by user twice manually to prove not malicious bot or script.
-      - Calculate TPS(sync [tx/s]) between network and local after starting validator(fullnode), display remained catchup complete time(estimated).   
