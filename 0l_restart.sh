@@ -25,7 +25,7 @@ do
     MIN=$(date "+%M") &&
     if [ $MIN == 18 ]
     then
-        echo "syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\")" | at $HOUR:20 && 
+        echo "syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\")" | at $HOUR:20 &&
         F=1
         FF=10
         while [ $F -lt $FF ]
@@ -87,9 +87,13 @@ do
                     then
                         sleep 5
                         echo ""
-                        pgrep diem-node || echo "Validator killed" &&
-                        echo ""
-                        P=15
+                        D=$(pgrep diem-node)
+                        if [ -z $D ]
+                        then 
+                            echo "Validator killed"
+                            echo ""
+                            P=15
+                        fi
                     fi
                 done
                 UP=$(expr $HOUR + 1) &&
@@ -108,12 +112,15 @@ do
                     then
                         sleep 5
                         echo ""
-                        echo ""
-                        echo "Network block height stuck at $syn50"
-                        date '+%Y/%m/%d %I:%M %p UTC' --utc
-                        echo -e "================= \e[1m\e[33mRestarted!! \e[0m================="
-                        R=15
-                        sleep 1080
+                        diem=$(pgrep diem-node)
+                        if [ -n $diem ]
+                        then
+                            echo "Network block height stuck at $syn50"
+                            date '+%Y/%m/%d %I:%M %p UTC' --utc
+                            echo -e "================= \e[1m\e[33mRestarted successfully!! \e[0m================="
+                            R=15
+                            sleep 1080
+                        fi
                     fi
                 done
             else
