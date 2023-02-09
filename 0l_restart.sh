@@ -7,6 +7,7 @@ J=1
 K=10
 while [ $J -lt $K ]
 do
+    sleep 60
     HOUR=$(date "+%H")
     MIN=$(date "+%M")
     if [ $MIN == 19 ]
@@ -15,19 +16,25 @@ do
         then
             echo "syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")" | at $HOUR:20 && export syn20=$(echo $syn1 | grep -o '[0-9]*') &&
             if [ -z $syn20 ] ; then syn20=0 ; fi
-            sleep 1800
-        else
-            if [ $MIN == 20 ] ; then sleep 1740 ; fi
+            sleep 1795
+
+
+                fi
+            fi
+        fi
+    else
+        if [ $MIN == 49 ]
+        then
             if [ $MIN -lt 50 ]
             then
                 echo "syn2=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\")" | at $HOUR:50 && export syn50=$(echo $syn2 | grep -o '[0-9]*') &&
                 if [ -z $syn50 ] ; then syn50=0 ; fi
-                sleep 540
+                sleep 535
                 if [ $syn50 == $syn20 ]
                 then
                     echo "/usr/bin/killall diem-node" | at $HOUR:59 &> /dev/null ;
                     UP=$(expr $HOUR + 1)
-                    sleep 60
+                    sleep 55
                     if [ $UP -gt 22 ]
                     then
                         UP=0
@@ -41,7 +48,5 @@ do
                 fi
             fi
         fi
-    else
-        sleep 60
     fi
 done
