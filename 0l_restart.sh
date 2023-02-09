@@ -66,6 +66,8 @@ do
             if [ -z $syn50 ] ; then syn50=0 ; fi
             if [ $syn50 == $syn20 ]
             then
+                echo ""
+                echo ""
                 echo ">>> Block height stuck at $syn50 !! <<<"
                 echo ""
                 echo "Your validator will be restarted on the hour."
