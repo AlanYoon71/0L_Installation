@@ -1,4 +1,5 @@
 #!/bin/bash
+
 clear
 echo ""
 echo "=============================="
@@ -11,6 +12,8 @@ echo "This script was created only for restarting validator."
 echo ""
 sleep 3
 echo "Started."
+echo ""
+echo ""
 J=1
 K=10
 while [ $J -lt $K ]
@@ -35,6 +38,11 @@ do
             sleep 530
             if [ $syn50 == $syn20 ]
             then
+                echo ">>> Block height stuck at $syn50 !! <<<"
+                echo ""
+                echo "Your validator will be restarted on the hour."
+                echo ""
+                echo ""
                 echo "/usr/bin/killall diem-node" | at $HOUR:59 &&
                 UP=$(expr $HOUR + 1)
                 sleep 55
@@ -44,16 +52,24 @@ do
                 fi
                 echo "~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/node.log 2>&1" | at $UP:00 &&
                 MIN=$(date "+%M")
-                if [ $MIN == 0 ]
-                then
-                    echo -e "================= \e[1m\e[33mRestarted!! \e[0m================="
-                    echo "Network block height stuck at $syn50"
-                    date '+%Y/%m/%d %I:%M %p UTC' --utc
-                    echo -e "================= \e[1m\e[33mRestarted!! \e[0m================="
-                    sleep 1130
-                fi
+                R=1
+                RR=10
+                while [ $R -lt $RR ]
+                do
+                    if [ $MIN == 0 ]
+                    then
+                        echo -e "================= \e[1m\e[33mRestarted!! \e[0m================="
+                        echo "Network block height stuck at $syn50"
+                        date '+%Y/%m/%d %I:%M %p UTC' --utc
+                        echo -e "================= \e[1m\e[33mRestarted!! \e[0m================="
+                        R=15
+                        sleep 1130
+                    fi
+                done
             else
                 echo "Good. Block height is increasing now. $syn20 >>> $syn50"
+                echo ""
+                echo ""
             fi
         fi
     fi
