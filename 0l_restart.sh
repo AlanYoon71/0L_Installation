@@ -16,6 +16,8 @@ K=10
 while [ $J -lt $K ]
 do
     sleep 60
+    syn20=0
+    syn50=0
     HOUR=$(date "+%H")
     MIN=$(date "+%M")
     if [ $MIN == 19 ]
