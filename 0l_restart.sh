@@ -34,7 +34,7 @@ do
             MIN=$(date "+%M") &&
             if [ $MIN == 20 ]
             then
-                sleep 1
+                sleep 5
                 echo ""
                 export syn20=$(echo $syn1 | grep -o '[0-9]*') &&
                 echo "Current height : $syn20"
@@ -56,7 +56,7 @@ do
                 MIN=$(date "+%M") &&
                 if [ $MIN == 50 ]
                 then
-                    sleep 1
+                    sleep 5
                     echo ""
                     export syn50=$(echo $syn2 | grep -o '[0-9]*') &&
                     echo "Current height : $syn50"
@@ -85,7 +85,7 @@ do
                     MIN=$(date "+%M") &&
                     if [ $MIN == 59 ]
                     then
-                        sleep 3
+                        sleep 5
                         echo ""
                         pgrep diem-node || echo "Validator killed" &&
                         echo ""
@@ -106,6 +106,7 @@ do
                     MIN=$(date "+%M")
                     if [ $MIN == 0 ]
                     then
+                        sleep 5
                         echo ""
                         echo ""
                         echo "Network block height stuck at $syn50"
