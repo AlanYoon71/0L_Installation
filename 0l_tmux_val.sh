@@ -388,8 +388,6 @@ do
                                             while [ $YY -lt $ZZ ]
                                             do
                                                 sleep 10
-                                                #export SIZE=$(stat -c%s "$RESTART")                                            
-                                                #if [[ $SIZE -gt 1  ]]
                                                 if [ -f $HOME/.0L/logs/restart.log ]
                                                 then
                                                     echo "Restart script started!"
