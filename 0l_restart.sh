@@ -26,7 +26,6 @@ do
         export syn1=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest') &&
         export syn20=$(echo $syn1 | grep -o '[0-9]*') &&
         echo "Block height 1: $syn20" &&
-        echo ""
         if [ -z $syn20 ] ; then syn20=0 ; fi
         sleep 1780
     else
