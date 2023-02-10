@@ -24,7 +24,7 @@ do
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
         export syn20=`echo $syn1 | grep -o '[0-9]*'` &&
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-        echo "$TIME [INFO] Block height : $syn20" &&
+        echo "$TIME [INFO] Block height1 : $syn20" &&
         if [ -z $syn20 ] ; then syn20=0 ; fi
         sleep 1780
     else
@@ -34,13 +34,13 @@ do
             export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
             export syn50=`echo $syn2 | grep -o '[0-9]*'` &&
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            echo "$TIME [INFO] Block height : $syn50"
+            echo "$TIME [INFO] Block height2 : $syn50"
             if [ -z $syn20 ] ; then syn20=0 ; fi
             if [ -z $syn50 ] ; then syn50=0 ; fi
             if [ $syn50 == $syn20 ]
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo "$TIME [ERROR] Block height stuck!! Validator will be restarted on the hour."
+                echo "$TIME [WARN] Block height stuck!! Validator will be restarted on the hour."
                 export UP=`expr $HOUR + 1` &&
                 sleep 430
                 P=1
@@ -87,17 +87,19 @@ do
                             sleep 1080
                         else
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                            echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator restarted. \e[0m========="
+                            echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator restarted. \e[0m========="
                             export DD=`pgrep tower`
                             if [ -z $DD ]
                             then
+                                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                echo "$TIME [WARN] Tower disconnected!!"
                                 ~/bin/tower -o start >> $HOME/.0L/logs/tower.log 2>&1 &
                                 sleep 2
                                 export DD=`pgrep tower`
                                 if [ -n $DD ]
                                 then
                                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                                    echo "$TIME [INFO] Tower restarted, too."
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[33mTower restarted. \e[0m========="
                                 fi
                             fi
                             R=15
