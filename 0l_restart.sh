@@ -16,42 +16,36 @@ K=10
 while [ $J -lt $K ]
 do
     sleep 5
-    export HOUR=`date "+%H"` &&
-    export MIN=`date "+%M"` &&
+    export HOUR=`date "+%H"`
+    export MIN=`date "+%M"`
     ACTION1=20
     if [ $MIN == $ACTION1 ]
     then
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-        export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version` &&
-        export sync1=`echo "$syn1"|sed -n -e '3p'` && export syn20=`echo $sync1 | grep -o '[0-9]*'`
-        if [ -z $syn20 ]
+        syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"}`
+        if [ -z $syn1 ]
         then
             pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
-            sleep 5
-            pgrep diem-node > /dev/null && echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version` &&
-            export sync1=`echo "$syn1"|sed -n -e '3p'` && export syn20=`echo $sync1 | grep -o '[0-9]*'`
+            echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
         fi
-        echo "$TIME [INFO] Block height : $syn20" &&
+        export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"}`
+        export syn20=`echo $sync1 | grep -o '[0-9]*'`
+        echo "$TIME [INFO] Block height : $syn20"
         sleep 1780
     else
         ACTION2=50
         if [ $MIN == $ACTION2 ]
         then
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version` &&
-            export sync2=`echo "$syn2"|sed -n -e '3p'` && export syn50=`echo $sync2 | grep -o '[0-9]*'`
-            if [ -z $syn50 ]
+            syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"}`
+            if [ -z $syn2 ]
             then
                 pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
-                sleep 5
-                pgrep diem-node > /dev/null && echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version` &&
-                export sync2=`echo "$syn2"|sed -n -e '3p'` && export syn50=`echo $sync2 | grep -o '[0-9]*'`
+                echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
             fi
-            echo "$TIME [INFO] Block height : $syn50" &&
+            export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"}`
+            export syn50=`echo $sync2 | grep -o '[0-9]*'`
+            echo "$TIME [INFO] Block height : $syn50"
             if [ $syn50 == $syn20 ]
             then
                 echo "$TIME [WARN] Block height stuck!! >> $syn50"
@@ -61,12 +55,12 @@ do
                 while [ $P -lt $PP ]
                 do
                     sleep 5
-                    export MIN=`date "+%M"` &&
+                    export MIN=`date "+%M"`
                     ACTION3=58
                     if [ $MIN == $ACTION3 ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        /usr/bin/killall diem-node > /dev/null &&
+                        /usr/bin/killall diem-node > /dev/null
                         sleep 1
                         export D=`pgrep diem-node`
                         if [ -z $D ]
@@ -84,7 +78,7 @@ do
                 while [ $R -lt $RR ]
                 do
                     sleep 5
-                    export MIN=`date "+%M"` &&
+                    export MIN=`date "+%M"`
                     ACTION4=00
                     if [ $MIN == $ACTION4 ]
                     then
