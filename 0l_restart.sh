@@ -24,7 +24,7 @@ do
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
         export syn20=`echo $syn1 | grep -o '[0-9]*'` &&
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-        echo "$TIME [INFO] Block height1 : $syn20" &&
+        echo "$TIME [INFO] Block height : $syn20" &&
         if [ -z $syn20 ] ; then syn20=0 ; fi
         sleep 1780
     else
@@ -34,7 +34,7 @@ do
             export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
             export syn50=`echo $syn2 | grep -o '[0-9]*'` &&
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            echo "$TIME [INFO] Block height2 : $syn50"
+            echo "$TIME [INFO] Block height : $syn50"
             if [ -z $syn20 ] ; then syn20=0 ; fi
             if [ -z $syn50 ] ; then syn50=0 ; fi
             if [ $syn50 == $syn20 ]
