@@ -33,7 +33,7 @@ do
         then
             export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
             export syn50=`echo $syn2 | grep -o '[0-9]*'` &&
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            export TIME=`date +%Y-%m-%dT%I:%M:%S` &&
             echo "$TIME [Block height] $syn50"
             if [ -z $syn50 ] ; then syn50=0 ; fi
             if [ $syn50 == $syn20 ]
@@ -104,6 +104,8 @@ do
                         fi
                     fi
                 done
+            else
+                sleep 430
             fi
         fi
     fi
