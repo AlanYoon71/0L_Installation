@@ -28,13 +28,19 @@ do
         export LOCAL1=`echo $local1 | grep -o '[0-9]*'` &&
         export lag1=`expr $LOCAL1 - $syn20` &&
         echo "$TIME [INFO] Block height : $syn20" &&
-        if [ $lag1 < -100 ]
+        if [ $lag1 -lt -100 ]
         then
             echo "$TIME [INFO] Sync lag : \e[1m\e[32m$lag1\e[0m"
         else
-            echo "$TIME [INFO] Fully synced."
+            if [ -z $syn20 ]
+            then
+                syn20=0
+                echo "$TIME [WARN] Validator is already stopped status. Restarting now."
+                pgrep diem-node || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
+            else
+                echo "$TIME [INFO] Fully synced."
+            fi
         fi
-        if [ -z $syn20 ] ; then syn20=0 ; fi
         sleep 1780
     else
         EEE=50
@@ -51,10 +57,15 @@ do
             then
                 echo "$TIME [INFO] Sync lag : \e[1m\e[32m$lag2\e[0m"
             else
-                echo "$TIME [INFO] Fully synced."
+                if [ -z $syn50 ]
+                then
+                    syn50=0
+                    echo "$TIME [WARN] Validator is already stopped status. Restarting now."
+                    pgrep diem-node || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
+                else
+                    echo "$TIME [INFO] Fully synced."
+                fi
             fi
-            if [ -z $syn20 ] ; then syn20=0 ; fi
-            if [ -z $syn50 ] ; then syn50=0 ; fi
             if [ $syn50 == $syn20 ]
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
@@ -114,7 +125,7 @@ do
                                 export DD=`pgrep tower`
                                 if [ -n $DD ]
                                 then
-                                    echo -e "$TIME [INFO] ========= \e[1m\e[33mTower restarted. \e[0m========="
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[33m  Tower restarted.   \e[0m========="
                                 fi
                             fi
                             R=15
