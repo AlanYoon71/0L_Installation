@@ -384,10 +384,9 @@ do
 
                                             YY=1
                                             ZZ=10
-                                            export RESTART=$HOME/.0L/logs/restart.log
                                             while [ $YY -lt $ZZ ]
                                             do
-                                                sleep 10
+                                                sleep 5
                                                 if [ -f $HOME/.0L/logs/restart.log ]
                                                 then
                                                     echo "Restart script started!"
