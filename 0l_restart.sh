@@ -24,7 +24,7 @@ do
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
         export syn20=`echo $syn1 | grep -o '[0-9]*'` &&
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-        echo "$TIME [Block height] $syn20" &&
+        echo "$TIME [INFO] Block height $syn20" &&
         if [ -z $syn20 ] ; then syn20=0 ; fi
         sleep 1780
     else
@@ -34,7 +34,7 @@ do
             export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
             export syn50=`echo $syn2 | grep -o '[0-9]*'` &&
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            echo "$TIME [Block height] $syn50"
+            echo "$TIME [INFO] Block height $syn50"
             if [ -z $syn20 ] ; then syn20=0 ; fi
             if [ -z $syn50 ] ; then syn50=0 ; fi
             if [ $syn50 == $syn20 ]
@@ -58,7 +58,7 @@ do
                         if [ -z $D ]
                         then 
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                            echo "$TIME [INFO] Validator killed successfully."
+                            echo "$TIME [INFO] Validator stopped."
                             P=15
                         else
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
@@ -87,7 +87,7 @@ do
                             sleep 1080
                         else
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                            echo -e "$TIME [INFO] ========= \e[1m\e[33mRestarted successfully. \e[0m========="
+                            echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator restarted. \e[0m========="
                             export DD=`pgrep tower`
                             if [ -z $DD ]
                             then
