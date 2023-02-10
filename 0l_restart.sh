@@ -25,7 +25,7 @@ do
         export local1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|synced'` &&
         if [ -z $syn1 ] && [ -z $local1 ]
         then
-            pgrep diem-node || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
+            pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
             echo "$TIME [WARN] Validator is already stopped status. Restarted."
         fi
         sleep 2
@@ -51,7 +51,7 @@ do
             export local2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|synced'` &&
             if [ -z $syn2 ] && [ -z $local2 ]
             then
-                pgrep diem-node || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
+                pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
                 echo "$TIME [WARN] Validator is already stopped status. Restarted."
             fi
             sleep 2            
