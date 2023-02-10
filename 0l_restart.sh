@@ -23,6 +23,8 @@ do
     then
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
         export local1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|synced'` &&
+        export syn20=`echo $syn1 | grep -o '[0-9]*'` &&
+        export local20=`echo $local1 | grep -o '[0-9]*'` &&
         if [ -z $syn1 ] && [ -z $local1 ]
         then
             pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
@@ -49,6 +51,8 @@ do
         then
             export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
             export local2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|synced'` &&
+            export syn50=`echo $syn2 | grep -o '[0-9]*'` &&
+            export local50=`echo $local2 | grep -o '[0-9]*'` &&
             if [ -z $syn2 ] && [ -z $local2 ]
             then
                 pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
