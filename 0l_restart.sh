@@ -9,7 +9,7 @@ echo "==============================";
 echo ""
 echo "This script was created only for restarting \"validator\"."
 echo ""
-export TIME='date +%Y-%m-%dT%I:%M:%S'
+export TIME=`date +%Y-%m-%dT%I:%M:%S`
 echo "$TIME [INFO] Started."
 J=1
 K=10
