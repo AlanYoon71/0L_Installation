@@ -35,6 +35,7 @@ do
             export syn50=`echo $syn2 | grep -o '[0-9]*'` &&
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
             echo "$TIME [Block height] $syn50"
+            if [ -z $syn20 ] ; then syn20=0 ; fi
             if [ -z $syn50 ] ; then syn50=0 ; fi
             if [ $syn50 == $syn20 ]
             then
