@@ -76,7 +76,7 @@ do
                     TTT=00
                     if [ $MIN == $TTT ]
                     then
-                        ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 & &&
+                        ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
                         sleep 5
                         export D=`pgrep diem-node`
                         if [ -z $D ]
@@ -91,7 +91,7 @@ do
                             export DD=`pgrep tower`
                             if [ -z $DD ]
                             then
-                                ~/bin/tower -o start >> $HOME/.0L/logs/tower.log 2>&1 & &&
+                                ~/bin/tower -o start >> $HOME/.0L/logs/tower.log 2>&1 &
                                 sleep 2
                                 export DD=`pgrep tower`
                                 if [ -n $DD ]
