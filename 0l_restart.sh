@@ -18,23 +18,23 @@ do
     sleep 5
     export HOUR=`date "+%H"` &&
     export MIN=`date "+%M"` &&
-    E=20
-    if [ $MIN == $E ]
+    ACTION1=20
+    if [ $MIN == $ACTION1 ]
     then
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
         export local1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|synced'` &&
         export TIME=`date +%Y-%m-%dT%I:%M:%S` &&
         export syn20=`echo $syn1 | grep -o '[0-9]*'` &&
-        export LOCAL1=`echo $local1 | grep -o '[0-9]*'` &&
-        export lag1=`expr $LOCAL1 - $syn20` &&
+        if [ -z $syn20 ] ; then syn20=0 ; fi
+        export local20=`echo $local1 | grep -o '[0-9]*'` &&
+        export lag20=`expr $local20 - $syn20` &&
         echo "$TIME [INFO] Block height : $syn20" &&
-        if [ $lag1 -lt -100 ]
+        if [ $lag20 -lt -100 ]
         then
-            echo "$TIME [INFO] Sync lag : \e[1m\e[32m$lag1\e[0m"
+            echo "$TIME [INFO] Sync lag : \e[1m\e[32m$lag20\e[0m"
         else
             if [ -z $syn20 ]
             then
-                syn20=0
                 echo "$TIME [WARN] Validator is already stopped status. Restarting now."
                 pgrep diem-node || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
             else
@@ -43,23 +43,23 @@ do
         fi
         sleep 1780
     else
-        EEE=50
-        if [ $MIN == $EEE ]
+        ACTION2=50
+        if [ $MIN == $ACTION2 ]
         then
             export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
             export local2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|synced'` &&
             export TIME=`date +%Y-%m-%dT%I:%M:%S` &&
             export syn50=`echo $syn2 | grep -o '[0-9]*'` &&
-            export LOCAL2=`echo $local2 | grep -o '[0-9]*'` &&
-            export lag2=`expr $LOCAL2 - $syn50` &&
+            if [ -z $syn50 ] ; then syn50=0 ; fi
+            export local50=`echo $local2 | grep -o '[0-9]*'` &&
+            export lag50=`expr $local50 - $syn50` &&
             echo "$TIME [INFO] Block height : $syn50" &&
-            if [ $lag2 < -100 ]
+            if [ $lag50 < -100 ]
             then
-                echo "$TIME [INFO] Sync lag : \e[1m\e[32m$lag2\e[0m"
+                echo "$TIME [INFO] Sync lag : \e[1m\e[32m$lag50\e[0m"
             else
                 if [ -z $syn50 ]
                 then
-                    syn50=0
                     echo "$TIME [WARN] Validator is already stopped status. Restarting now."
                     pgrep diem-node || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
                 else
@@ -78,8 +78,8 @@ do
                 do
                     sleep 5
                     export MIN=`date "+%M"` &&
-                    TT=58
-                    if [ $MIN == $TT ]
+                    ACTION3=58
+                    if [ $MIN == $ACTION3 ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
                         /usr/bin/killall diem-node &&
@@ -101,8 +101,8 @@ do
                 do
                     sleep 5
                     export MIN=`date "+%M"` &&
-                    TTT=00
-                    if [ $MIN == $TTT ]
+                    ACTION4=00
+                    if [ $MIN == $ACTION4 ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
                         ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
