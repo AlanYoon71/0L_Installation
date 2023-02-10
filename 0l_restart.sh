@@ -22,9 +22,18 @@ do
     if [ $MIN == $E ]
     then
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
+        export local1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|synced'` &&
+        export TIME=`date +%Y-%m-%dT%I:%M:%S` &&
         export syn20=`echo $syn1 | grep -o '[0-9]*'` &&
-        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+        export LOCAL1=`echo $local1 | grep -o '[0-9]*'` &&
+        export lag1=`expr $LOCAL1 - $syn20` &&
         echo "$TIME [INFO] Block height : $syn20" &&
+        if [ $lag1 < -100 ]
+        then
+            echo "$TIME [INFO] Sync lag : \e[1m\e[32m$lag1\e[0m"
+        else
+            echo "$TIME [INFO] Fully synced."
+        fi
         if [ -z $syn20 ] ; then syn20=0 ; fi
         sleep 1780
     else
@@ -32,15 +41,24 @@ do
         if [ $MIN == $EEE ]
         then
             export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|highest'` &&
+            export local2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep -E 'diem_state_sync_version{type=|synced'` &&
+            export TIME=`date +%Y-%m-%dT%I:%M:%S` &&
             export syn50=`echo $syn2 | grep -o '[0-9]*'` &&
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            echo "$TIME [INFO] Block height : $syn50"
+            export LOCAL2=`echo $local2 | grep -o '[0-9]*'` &&
+            export lag2=`expr $LOCAL2 - $syn50` &&
+            echo "$TIME [INFO] Block height : $syn50" &&
+            if [ $lag2 < -100 ]
+            then
+                echo "$TIME [INFO] Sync lag : \e[1m\e[32m$lag2\e[0m"
+            else
+                echo "$TIME [INFO] Fully synced."
+            fi
             if [ -z $syn20 ] ; then syn20=0 ; fi
             if [ -z $syn50 ] ; then syn50=0 ; fi
             if [ $syn50 == $syn20 ]
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo "$TIME [WARN] Block height stuck!! Validator will be restarted on the hour."
+                echo "$TIME [WARN] Block height stuck!!"
                 export UP=`expr $HOUR + 1` &&
                 sleep 430
                 P=1
@@ -52,16 +70,15 @@ do
                     TT=58
                     if [ $MIN == $TT ]
                     then
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
                         /usr/bin/killall diem-node &&
                         sleep 2
                         export D=`pgrep diem-node`
                         if [ -z $D ]
                         then 
-                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             echo "$TIME [INFO] Validator stopped."
                             P=15
                         else
-                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             echo "$TIME [ERROR] \e[1m\e[32m>>> Failed to kill diem-node... Check and kill your validator manually. <<<\e[0m"
                             P=15
                         fi
@@ -76,17 +93,16 @@ do
                     TTT=00
                     if [ $MIN == $TTT ]
                     then
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
                         ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
                         sleep 5
                         export D=`pgrep diem-node`
                         if [ -z $D ]
                         then
-                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             echo -e "$TIME [ERROR] \e[1m\e[32m>>> Failed to restart... Check and restart your validator manually. <<<\e[0m"
                             R=15
                             sleep 1080
                         else
-                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator restarted. \e[0m========="
                             export DD=`pgrep tower`
                             if [ -z $DD ]
@@ -98,7 +114,6 @@ do
                                 export DD=`pgrep tower`
                                 if [ -n $DD ]
                                 then
-                                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
                                     echo -e "$TIME [INFO] ========= \e[1m\e[33mTower restarted. \e[0m========="
                                 fi
                             fi
