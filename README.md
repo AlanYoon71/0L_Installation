@@ -7,7 +7,7 @@
     1) Command: cd ~ && git clone https://github.com/shyoon71/0L_Installation.git && \cp -f 0L_Installation/* ./ && chmod +x *sh && bash ./0l_env_val.sh
       - Open terminal input upper one line command at root home directory, and check TMUX sessions in another terminal.
 
-    2) Concept:
+    2) Concept
       a. Installation script
         1. Faithfully followed official installation documentation.
         2. Validator and fullnode all can be installed and run by selecting onboard method.
