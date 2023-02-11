@@ -23,6 +23,7 @@ do
     then
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
         syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+        syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
         if [ -z $syn1 ]
         then
             echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
@@ -31,6 +32,13 @@ do
             sleep 1
         else
             echo "$TIME [INFO] Block height : $syn1"
+            if [ -z $syn11 ]
+            then
+                echo "$TIME [WARN] >>> Unable to get local synced height!! <<<"
+            else
+                syn111=`expr $syn11 - $syn1`
+                echo "$TIME [INFO] Synced height : $syn11, Lag : $syn111"
+            fi
         fi
         sleep 1780
     else
@@ -39,6 +47,7 @@ do
         then
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
             syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+            syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
             if [ -z $syn2 ]
             then
                 echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
@@ -47,10 +56,14 @@ do
                 sleep 1
             else
                 echo "$TIME [INFO] Block height : $syn2"
+                if [ -z $syn22 ]
+                then
+                    echo "$TIME [WARN] >>> Unable to get local synced height!! <<<"
+                else
+                    syn222=`expr $syn22 - $syn2`
+                    echo "$TIME [INFO] Synced height : $syn22, Lag : $syn222"
+                fi
             fi
-            syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-            syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-            sleep 2
             if [ -z $syn1 ] ; then syn1=0 ; fi
             if [ -z $syn2 ] ; then syn2=0 ; fi
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
@@ -81,7 +94,7 @@ do
                             echo "$TIME [INFO] Validator stopped."
                             P=15
                         else
-                            echo "$TIME [ERROR] \e[1m\e[35m>>> Failed to kill diem-node... <<<\e[0m"
+                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to kill diem-node... <<<\e[0m"
                             P=15
                         fi
                     fi
