@@ -55,7 +55,7 @@ do
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
             if [ $syn1 == $syn2 ]
             then
-                if [ $syn2 == 0 ] ; then echo "$TIME [WARN] >>> Unable to get block height!! <<<" ; fi
+                if [ $syn2 == 0 ] ; then echo "$TIME [WARN] >>> Unable to get network block height!! <<<" ; fi
                 echo "$TIME [WARN] Block height stuck!! >> $syn2"
                 sleep 430
                 P=1
