@@ -3,7 +3,7 @@ clear
 echo ""
 echo "==============================";
 echo ""
-echo "Script by  //-\ ][_ //-\ ][\[ ";
+echo "Created by  //-\ ][_ //-\ ][\[";
 echo ""
 echo "==============================";
 echo ""
