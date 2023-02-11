@@ -34,7 +34,7 @@ do
             echo "$TIME [INFO] Block height : $syn1"
             if [ -z $syn11 ]
             then
-                echo "$TIME [WARN] >>> Unable to get local synced height!! <<<"
+                echo "$TIME [WARN] Unable to get synced height!"
             else
                 syn111=`expr $syn11 - $syn1`
                 echo "$TIME [INFO] Synced height : $syn11, Lag : $syn111"
@@ -58,7 +58,7 @@ do
                 echo "$TIME [INFO] Block height : $syn2"
                 if [ -z $syn22 ]
                 then
-                    echo "$TIME [WARN] >>> Unable to get local synced height!! <<<"
+                    echo "$TIME [WARN] Unable to get synced height!"
                 else
                     syn222=`expr $syn22 - $syn2`
                     echo "$TIME [INFO] Synced height : $syn22, Lag : $syn222"
@@ -91,7 +91,7 @@ do
                         export D=`pgrep diem-node`
                         if [ -z $D ]
                         then
-                            echo "$TIME [INFO] Validator stopped."
+                            echo "$TIME [INFO] Validator stopped for restarting."
                             P=15
                         else
                             echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to kill diem-node... <<<\e[0m"
