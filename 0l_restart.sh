@@ -73,7 +73,7 @@ do
                     if [ $MIN == $ACTION3 ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        /usr/bin/killall diem-node > /dev/null
+                        /usr/bin/killall diem-node &> /dev/null
                         sleep 1
                         export D=`pgrep diem-node`
                         if [ -z $D ]
