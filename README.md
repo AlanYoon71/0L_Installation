@@ -19,7 +19,7 @@
       b. Restart script
         1. Check network block height by curl command(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"})
            at 20 and 50 minutes on the hour, restart validator and tower at every hour on the hour if block height not increases.
-        2. Monitor the local synced height so that you can check the level of lagging.
+        2. Monitor the local synced height so that you can check the level of lagging if validator runs normally.
         3. Restart command in restart script as below.
           - Validator: ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
           - Tower: ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
