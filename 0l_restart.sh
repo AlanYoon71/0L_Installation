@@ -37,7 +37,12 @@ do
                 echo "$TIME [WARN] Unable to get synced height!"
             else
                 syn111=`expr $syn11 - $syn1`
-                echo "$TIME [INFO] Synced height : $syn11, Lag : $syn111"
+                if [ $syn111 -gt -200 ]
+                then
+                    echo "$TIME [INFO] Synced height : $syn11, Lag : $syn111"
+                else
+                    echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[35m$syn111\e[0m"
+                fi
             fi
         fi
         sleep 1780
@@ -61,7 +66,12 @@ do
                     echo "$TIME [WARN] Unable to get synced height!"
                 else
                     syn222=`expr $syn22 - $syn2`
-                    echo "$TIME [INFO] Synced height : $syn22, Lag : $syn222"
+                    if [ $syn222 -gt -200 ]
+                    then
+                        echo "$TIME [INFO] Synced height : $syn22, Lag : $syn222"
+                    else
+                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[35m$syn222\e[0m"
+                    fi
                 fi
             fi
             if [ -z $syn1 ] ; then syn1=0 ; fi
