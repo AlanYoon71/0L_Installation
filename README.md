@@ -16,7 +16,7 @@
         3. Create TMUX background sessions for installation and run all processes for running tower in TMUX sessions.
         4. Create log sessions for validator(fullnode), tower and restart script.
         5. Calculate TPS(sync transaction per second) between network and local after starting validator(fullnode),
-          display remained catchup complete time(estimated).
+           display remained catchup complete time(estimated).
         6. Mnemonic and answers for question should be input by user twice manually to prove not malicious bot or script.
     
       b. Restart script
