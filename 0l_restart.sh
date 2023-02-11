@@ -27,10 +27,9 @@ do
         then
             pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
             echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
-        else            
-            syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-            echo "$TIME [INFO] Block height : $syn1"
         fi
+        syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+        echo "$TIME [INFO] Block height : $syn1"
         sleep 1780
     else
         ACTION2=50
@@ -42,10 +41,9 @@ do
             then
                 pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
                 echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
-            else
-                syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-                echo "$TIME [INFO] Block height : $syn2"                
             fi
+            syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+            echo "$TIME [INFO] Block height : $syn2"
             if [ $syn1 == $syn2 ]
             then
                 echo "$TIME [WARN] Block height stuck!! >> $syn2"
