@@ -75,11 +75,11 @@ do
                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
                     if [ -z $syn11 ]
                     then
-                        echo "$TIME [WARN] Can't calculate TPS"
+                        echo "$TIME [INFO] Insufficient comparison data. Need to wait until next checkpoint."
                     else
                         if [ -z $syn1 ]
                         then
-                            echo "$TIME [WARN] Can't calculate TPS"
+                            echo "$TIME [INFO] Insufficient comparison data. Need to wait until next checkpoint."
                         else
                             NDIFF=`expr $syn2 - $syn1`
                             LDIFF=`expr $syn22 - $syn11`
