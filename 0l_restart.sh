@@ -22,33 +22,33 @@ do
     if [ $MIN == $ACTION1 ]
     then
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-        syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"}`
+        syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
         if [ -z $syn1 ]
         then
             pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
             echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
+        else            
+            syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+            echo "$TIME [INFO] Block height : $syn1"
         fi
-        export syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"}`
-        export syn20=`echo $sync11 | grep -o '[0-9]*'`
-        echo "$TIME [INFO] Block height : $syn20"
         sleep 1780
     else
         ACTION2=50
         if [ $MIN == $ACTION2 ]
         then
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"}`
+            syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
             if [ -z $syn2 ]
             then
                 pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
                 echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
+            else
+                syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+                echo "$TIME [INFO] Block height : $syn2"                
             fi
-            export syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"}`
-            export syn50=`echo $sync22 | grep -o '[0-9]*'`
-            echo "$TIME [INFO] Block height : $syn50"
-            if [ $syn50 == $syn20 ]
+            if [ $syn1 == $syn2 ]
             then
-                echo "$TIME [WARN] Block height stuck!! >> $syn50"
+                echo "$TIME [WARN] Block height stuck!! >> $syn2"
                 sleep 430
                 P=1
                 PP=10
