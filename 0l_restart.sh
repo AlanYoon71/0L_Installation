@@ -27,7 +27,7 @@ do
         then
             echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
             pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-            echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
+            echo "$TIME [WARN] Validator is already stopped before running this script. Restarted."
             sleep 1
         else
             echo "$TIME [INFO] Block height : $syn1"
@@ -43,7 +43,7 @@ do
             then
                 echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
                 pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-                echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
+                echo "$TIME [WARN] Validator is already stopped before running this script. Restarted."
                 sleep 1
             else
                 echo "$TIME [INFO] Block height : $syn2"
@@ -104,7 +104,7 @@ do
                             export D=`pgrep diem-node`
                             if [ -z $D ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[32m>>> Failed to restart... <<<\e[0m"
+                                echo -e "$TIME [ERROR] \e[1m\e[32m>>> Failed to restart... Check your validator manually. <<<\e[0m"
                                 R=15
                                 sleep 1080
                             else
