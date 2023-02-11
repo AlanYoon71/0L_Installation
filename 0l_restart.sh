@@ -26,10 +26,9 @@ do
         if [ -z $syn1 ]
         then
             echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
-            pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
+            pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
             echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
             sleep 1
-            syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
         else
             echo "$TIME [INFO] Block height : $syn1"
         fi
@@ -43,20 +42,26 @@ do
             if [ -z $syn2 ]
             then
                 echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
-                pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
+                pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                 echo "$TIME [WARN] Validator is already stopped before script starts. Restarted."
                 sleep 1
-                syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
             else
                 echo "$TIME [INFO] Block height : $syn2"
             fi
+            syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+            syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+            sleep 2
             if [ -z $syn1 ] ; then syn1=0 ; fi
             if [ -z $syn2 ] ; then syn2=0 ; fi
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
             if [ $syn1 == $syn2 ]
             then
-                if [ $syn2 == 0 ] ; then echo "$TIME [WARN] >>> Unable to get network block height!! <<<" ; fi
-                echo "$TIME [WARN] Block height stuck!! >> $syn2"
+                if [ $syn2 == 0 ]
+                then
+                    echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
+                else
+                    echo "$TIME [WARN] Block height stuck!! >> $syn2"
+                fi
                 sleep 430
                 P=1
                 PP=10
@@ -94,7 +99,7 @@ do
                         if [ -z $D ]
                         then
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                            ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
+                            ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                             sleep 2
                             export D=`pgrep diem-node`
                             if [ -z $D ]
