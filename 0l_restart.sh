@@ -47,7 +47,7 @@ do
         then
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
             syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-            syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+            syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
             if [ -z $syn2 ]
             then
                 echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
