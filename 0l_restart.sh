@@ -7,7 +7,8 @@ echo ""
 echo "==============================";
 echo "                    2023-02-12"
 echo ""
-echo "This script was created only for restarting \"validator\"."
+echo "This script was created only for restarting \"0L network validator\"."
+echo ""
 echo ""
 export TIME=`date +%Y-%m-%dT%I:%M:%S`
 echo "$TIME [INFO] Started."
