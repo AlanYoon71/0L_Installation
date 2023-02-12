@@ -36,12 +36,12 @@ do
             then
                 echo "$TIME [WARN] Unable to get synced height!"
             else
-                syn111=`expr $syn11 - $syn1`
-                if [ $syn111 -gt -200 ]
+                LAG=`expr $syn11 - $syn1`
+                if [ $LAG -gt -200 ]
                 then
-                    echo "$TIME [INFO] Synced height : $syn11, Lag : $syn111"
+                    echo "$TIME [INFO] Synced height : $syn11, Lag : $LAG"
                 else
-                    echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[35m$syn111\e[0m"
+                    echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[35m$LAG\e[0m"
                 fi
             fi
         fi
@@ -146,7 +146,7 @@ do
                             export D=`pgrep diem-node`
                             if [ -z $D ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[32m>>> Failed to restart... Check your validator manually. <<<\e[0m"
+                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart... Check your validator manually. <<<\e[0m"
                                 R=15
                                 sleep 1080
                             else
