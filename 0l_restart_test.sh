@@ -87,7 +87,7 @@ do
                             LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
                             SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
                             CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                            echo -e "$TIME [INFO] TPS >> Network : \e[1m\e[33m$NTPS\e[0m[tx/s], Local : \e[1m\e[33m$LTPS\e[0m[tx/s]"
+                            echo -e "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : \e[1m\e[32m$LTPS\e[0m[tx/s]"
                             echo -e "$TIME [INFO] Catchup Time >> \e[1m\e[35m$CATCH\e[0m[Hr]"
                         fi
                     fi
@@ -115,7 +115,7 @@ do
                     if [ $MIN == $ACTION3 ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        PID=$(pgrep diem-node) && kill -INT $PID &> /dev/null ; sleep 2 && kill -INT $PID &> /dev/null ; sleep 1 && kill -INT $PID &> /dev/null
+                        PID=$(pgrep diem-node) && kill $PID &> /dev/null && sleep 1 && PID=$(pgrep diem-node) && kill $PID &> /dev/null
                         sleep 1
                         export D=`pgrep diem-node`
                         if [ -z $D ]
