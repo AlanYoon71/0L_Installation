@@ -180,29 +180,29 @@ do
                     ACTION4=00
                     if [ $MIN == $ACTION4 ]
                     then
-                        export D=`pgrep diem-node`
-                        if [ -z $D ]
+                        export LL=`pgrep diem-node`
+                        if [ -z $LL ]
                         then
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-                            sleep 2
-                            export D=`pgrep diem-node`
-                            if [ -z $D ]
+                            sleep 5
+                            export MM=`pgrep diem-node`
+                            if [ -z $MM ]
                             then
                                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Check your validator manually!! <<<\e[0m"
                                 R=15
                                 sleep 1080
                             else
                                 echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator restarted. \e[0m========="
-                                export DD=`pgrep tower`
-                                if [ -z $DD ]
+                                export NN=`pgrep tower`
+                                if [ -z $NN ]
                                 then
                                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
                                     echo "$TIME [WARN] >>> Tower disconnected!! <<<"
                                     nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
                                     sleep 2
-                                    export DD=`pgrep tower`
-                                    if [ -n $DD ]
+                                    export QQ=`pgrep tower`
+                                    if [ -n $QQ ]
                                     then
                                         echo -e "$TIME [INFO] ========= \e[1m\e[33m  Tower restarted.   \e[0m========="
                                     fi
