@@ -198,7 +198,7 @@ do
                                 if [ -z $DD ]
                                 then
                                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                                    echo "$TIME [WARN] Tower disconnected!!"
+                                    echo "$TIME [WARN] >>> Tower disconnected!! <<<"
                                     nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
                                     sleep 2
                                     export DD=`pgrep tower`
