@@ -136,6 +136,7 @@ do
                     fi
                 fi
             fi
+            sleep 2
             if [ -z $syn1 ] ; then syn1=0 ; fi
             if [ -z $syn2 ] ; then syn2=0 ; fi
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
