@@ -3,8 +3,9 @@ echo ""
 echo "==============================";
 echo ""
 echo "Created by  //-\ ][_ //-\ ][\[";
-echo "                    2023-02-12"
+echo ""
 echo "==============================";
+echo "                    2023-02-12"
 echo ""
 echo "This script was created only for restarting \"validator\"."
 echo ""
@@ -34,7 +35,9 @@ do
             if [ -z $BB ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
-                ~/bin/ol restore && nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                rm -rf ~/.0L/db && ~/bin/ol restore &
+                sleep 10
+                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                 sleep 2
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 EE=`pgrep diem-node`
@@ -82,7 +85,9 @@ do
                 if [ -z $CC ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
-                    ~/bin/ol restore && nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                    rm -rf ~/.0L/db && ~/bin/ol restore &
+                    sleep 10
+                    nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                     sleep 2
                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
                     KK=`pgrep diem-node`
