@@ -129,7 +129,7 @@ do
                             echo "$TIME [INFO] Validator stopped for restarting."
                             P=15
                         else
-                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to kill diem-node... <<<\e[0m"
+                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to stop diem-node... <<<\e[0m"
                             P=15
                         fi
                     fi
