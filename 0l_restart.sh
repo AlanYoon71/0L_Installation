@@ -137,6 +137,8 @@ do
                 fi
             fi
             sleep 2
+            syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+            syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
             if [ -z $syn1 ] ; then syn1=0 ; fi
             if [ -z $syn2 ] ; then syn2=0 ; fi
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
