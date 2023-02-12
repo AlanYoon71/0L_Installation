@@ -27,7 +27,7 @@ do
         if [ -z $syn1 ]
         then
             echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
-            pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+            pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
             echo "$TIME [WARN] Validator is already stopped before running this script. Restarted."
             sleep 1
         else
@@ -57,7 +57,7 @@ do
             then
                 echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
                 echo "$TIME [WARN] Validator is already stopped before running this script."
-                pgrep diem-node > /dev/null || ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                 sleep 2
                 CC=`pgrep diem-node`
                 if [ -z $CC ]
@@ -148,7 +148,7 @@ do
                         if [ -z $D ]
                         then
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                            ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                            nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                             sleep 2
                             export D=`pgrep diem-node`
                             if [ -z $D ]
@@ -163,7 +163,7 @@ do
                                 then
                                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
                                     echo "$TIME [WARN] Tower disconnected!!"
-                                    ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
+                                    nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
                                     sleep 2
                                     export DD=`pgrep tower`
                                     if [ -n $DD ]
