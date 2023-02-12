@@ -158,7 +158,7 @@ do
                     if [ $MIN == $ACTION3 ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                         sleep 1
                         export D=`pgrep diem-node`
                         if [ -z $D ]
