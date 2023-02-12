@@ -33,7 +33,16 @@ do
             BB=`pgrep diem-node`
             if [ -z $BB ]
             then
-                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Check your validator manually!! <<<\e[0m"
+                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
+                ~/bin/ol restore && nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                sleep 2
+                EE=`pgrep diem-node`
+                if [ -z $EE ]
+                then
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check validator manually. <<<\e[0m"
+                else
+                    echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
+                fi
             else
                 echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator restarted. \e[0m========="
             fi
@@ -71,7 +80,16 @@ do
                 CC=`pgrep diem-node`
                 if [ -z $CC ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Check your validator manually!! <<<\e[0m"
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
+                    ~/bin/ol restore && nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                    sleep 2
+                    KK=`pgrep diem-node`
+                    if [ -z $KK ]
+                    then
+                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check validator manually. <<<\e[0m"
+                    else
+                        echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
+                    fi
                 else
                     echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator restarted. \e[0m========="
                 fi
