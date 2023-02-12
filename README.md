@@ -1,6 +1,11 @@
 # For beginners who want to install 0l node and experience an uncrowned king 0L network
 
-# Installation Script :
+# Installation Script
+
+  0. You should familiarize yourself with the 0L official guide documentation before using this script.
+    
+     This script is intended to provide convenience only for those who have used the official guide to install a node and understand the process.
+     Please read the official guide documentation first.
 
   1. Validator(fullnode) with tower
   
@@ -24,6 +29,7 @@
            at 20 and 50 minutes on the hour, restart validator and tower at every hour on the hour if block height not increases.
         2. Monitor the local synced height so that you can check catchup stability(lagging) and remained catchup time(estimated).
         3. Restart command in restart script as below.
-          - Validator: ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
-          - Tower: ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
+          - Validator: nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 &
+          - Tower: nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
         4. If validator was already stopped before running the restart script, the above command will automatically restart it.
+        5. Script can deleted local DB, restored it from network and restart validator if fails to restart due to a DB crash or other reasons.
