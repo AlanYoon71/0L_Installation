@@ -10,6 +10,7 @@
   1. Validator(fullnode) with tower
   
     1) one-line commands
+
         cd ~ && git clone https://github.com/shyoon71/0L_Installation.git && \cp -f 0L_Installation/* ./ && chmod +x *sh && bash ./0l_env_val.sh
         (Open terminal input upper one line command at root home directory, and check TMUX sessions in another terminal)
 
