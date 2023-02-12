@@ -86,7 +86,7 @@ do
                     LAG=`expr $syn22 - $syn2`
                     if [ $LAG -gt -200 ]
                     then
-                        echo "$TIME [INFO] Synced height : $syn22, Lag : $LAG"
+                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[35mNo lag. Fully synced.\e[0m"
                     else
                         echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[35m$LAG\e[0m"
                     fi
