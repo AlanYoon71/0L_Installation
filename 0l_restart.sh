@@ -3,7 +3,7 @@ clear
 echo ""
 echo "==============================";
 echo ""
-echo "Script by  //-\ ][_ //-\ ][\[ ";
+echo "Created by  //-\ ][_ //-\ ][\[";
 echo ""
 echo "==============================";
 echo ""
@@ -36,12 +36,12 @@ do
             then
                 echo "$TIME [WARN] Unable to get synced height!"
             else
-                syn111=`expr $syn11 - $syn1`
-                if [ $syn111 -gt -200 ]
+                LAG=`expr $syn11 - $syn1`
+                if [ $LAG -gt -200 ]
                 then
-                    echo "$TIME [INFO] Synced height : $syn11, Lag : $syn111"
+                    echo "$TIME [INFO] Synced height : $syn11, Lag : $LAG"
                 else
-                    echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[35m$syn111\e[0m"
+                    echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[35m$LAG\e[0m"
                 fi
             fi
         fi
@@ -65,12 +65,31 @@ do
                 then
                     echo "$TIME [WARN] Unable to get synced height!"
                 else
-                    syn222=`expr $syn22 - $syn2`
-                    if [ $syn222 -gt -200 ]
+                    LAG=`expr $syn22 - $syn2`
+                    if [ $LAG -gt -200 ]
                     then
-                        echo "$TIME [INFO] Synced height : $syn22, Lag : $syn222"
+                        echo "$TIME [INFO] Synced height : $syn22, Lag : $LAG"
                     else
-                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[35m$syn222\e[0m"
+                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[35m$LAG\e[0m"
+                    fi
+                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    if [ -z $syn11 ]
+                    then
+                        echo "$TIME [INFO] Insufficient comparison data. Need to wait until next checkpoint."
+                    else
+                        if [ -z $syn1 ]
+                        then
+                            echo "$TIME [INFO] Insufficient comparison data. Need to wait until next checkpoint."
+                        else
+                            NDIFF=`expr $syn2 - $syn1`
+                            LDIFF=`expr $syn22 - $syn11`
+                            NTPS=$(echo "scale=2; $NDIFF / 1800" | bc)
+                            LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
+                            SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
+                            CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
+                            echo -e "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : \e[1m\e[32m$LTPS\e[0m[tx/s]"
+                            echo -e "$TIME [INFO] Catchup Time >> \e[1m\e[35m$CATCH\e[0m[Hr]"
+                        fi
                     fi
                 fi
             fi
@@ -96,7 +115,7 @@ do
                     if [ $MIN == $ACTION3 ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        /usr/bin/killall diem-node &> /dev/null
+                        PID=$(pgrep diem-node) && kill $PID &> /dev/null && sleep 1 && PID=$(pgrep diem-node) && kill $PID &> /dev/null
                         sleep 1
                         export D=`pgrep diem-node`
                         if [ -z $D ]
@@ -127,7 +146,7 @@ do
                             export D=`pgrep diem-node`
                             if [ -z $D ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[32m>>> Failed to restart... Check your validator manually. <<<\e[0m"
+                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Check your validator manually!! <<<\e[0m"
                                 R=15
                                 sleep 1080
                             else
