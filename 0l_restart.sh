@@ -30,6 +30,7 @@ do
             echo "$TIME [WARN] Validator is already stopped before running this script."
             pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
             sleep 2
+            syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
             BB=`pgrep diem-node`
             if [ -z $BB ]
             then
@@ -42,6 +43,7 @@ do
             if [ -z $syn11 ]
             then
                 echo "$TIME [WARN] Unable to get synced height!"
+                syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
             else
                 LAG=`expr $syn11 - $syn1`
                 if [ $LAG -gt -200 ]
@@ -66,6 +68,7 @@ do
                 echo "$TIME [WARN] Validator is already stopped before running this script."
                 pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                 sleep 2
+                syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                 CC=`pgrep diem-node`
                 if [ -z $CC ]
                 then
@@ -78,6 +81,7 @@ do
                 if [ -z $syn22 ]
                 then
                     echo "$TIME [WARN] Unable to get synced height!"
+                    syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
                 else
                     LAG=`expr $syn22 - $syn2`
                     if [ $LAG -gt -200 ]
