@@ -4,7 +4,7 @@ echo ""
 echo "==============================";
 echo ""
 echo "Created by  //-\ ][_ //-\ ][\[";
-echo ""
+echo "                    2023-02-12"
 echo "==============================";
 echo ""
 echo -e "\e[1m\e[32m0. Wiping user \"node\" and files for preventing confliction. \e[0m"
