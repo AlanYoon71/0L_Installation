@@ -115,7 +115,7 @@ do
                     if [ $MIN == $ACTION3 ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        /usr/bin/killall diem-node &> /dev/null
+                        PID=$(pgrep diem-node) && kill -INT $PID &> /dev/null
                         sleep 1
                         export D=`pgrep diem-node`
                         if [ -z $D ]
@@ -146,7 +146,7 @@ do
                             export D=`pgrep diem-node`
                             if [ -z $D ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart... Check your validator manually. <<<\e[0m"
+                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Check your validator manually!! <<<\e[0m"
                                 R=15
                                 sleep 1080
                             else
