@@ -86,7 +86,7 @@ do
                 if [ -z $CC ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
-                    rm -rf ~/.0L/db && ~/bin/ol restore &
+                    rm -rf ~/.0L/db && nohup ~/bin/ol restore > /dev/null &
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                     sleep 2
