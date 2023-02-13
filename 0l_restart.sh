@@ -49,7 +49,7 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
                 fi
             else
-                echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator restarted. \e[0m========="
+                echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator started. \e[0m========="
             fi
         else
             echo "$TIME [INFO] Block height : $syn1"
@@ -99,7 +99,7 @@ do
                         echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
                     fi
                 else
-                    echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator restarted. \e[0m========="
+                    echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator started. \e[0m========="
                 fi
             else
                 echo "$TIME [INFO] Block height : $syn2"
