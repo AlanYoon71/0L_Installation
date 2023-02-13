@@ -1,4 +1,4 @@
-# For beginners who want to install 0l node and experience an uncrowned king 0L network
+# For beginners who want to install 0L node and experience a crownless emperor 0L network
 
 # Installation Script
 
@@ -9,14 +9,19 @@
 
   1. Validator(fullnode) with tower
   
-    1) one-line commands
+    1) Install script command (restart script included)
 
-        cd ~ && git clone https://github.com/shyoon71/0L_Installation.git && \cp -f 0L_Installation/* ./ && chmod +x *sh && bash ./0l_env_val.sh
-        (Open terminal input upper one line command at root home directory, and check TMUX sessions in another terminal)
+       cd ~ && git clone https://github.com/shyoon71/0L_Installation.git && \cp -f 0L_Installation/* ./ && chmod +x *sh && bash ./0l_env_val.sh
+       (Open terminal input upper one line command at root home directory, and check TMUX sessions in another terminal)
 
-    2) Concept
+    2) Restart script command (you can just download the restart script from here and run it by user "node". )
 
-      a. Installation script
+       ~/0l_restart.sh >> $HOME/.0L/logs/restart.log 2>&1
+       (Open terminal, change user to "node" and input upper command at home directory under TMUX session)
+
+    3) Concept
+
+      a. Install script
         1. Faithfully followed official installation documentation.
         2. Validator and fullnode all can be installed and run by selecting onboard method.
         3. Create TMUX background sessions for installation and run all processes for running tower in TMUX sessions.
