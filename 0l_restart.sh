@@ -189,30 +189,40 @@ do
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                             sleep 5
-                            export MM=`pgrep diem-node`
-                            if [ -z $MM ]
+                            CC=`pgrep diem-node`
+                            if [ -z $CC ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Check your validator manually!! <<<\e[0m"
-                                R=15
-                                sleep 1080
-                            else
-                                echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator restarted. \e[0m========="
-                                export NN=`pgrep tower`
-                                if [ -z $NN ]
+                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
+                                rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                                sleep 10
+                                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                                sleep 2
+                                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                KK=`pgrep diem-node`
+                                if [ -z $KK ]
                                 then
-                                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                                    echo "$TIME [WARN] >>> Tower disconnected!! <<<"
-                                    nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
-                                    sleep 2
-                                    export QQ=`pgrep tower`
-                                    if [ -n $QQ ]
-                                    then
-                                        echo -e "$TIME [INFO] ========= \e[1m\e[32m  Tower restarted.   \e[0m========="
-                                    fi
+                                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check validator manually. <<<\e[0m"
+                                else
+                                    echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
                                 fi
-                                R=15
-                                sleep 1080
+                            else
+                                echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator started. \e[0m========="
                             fi
+                            export NN=`pgrep tower`
+                            if [ -z $NN ]
+                            then
+                                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                echo "$TIME [WARN] >>> Tower disconnected!! <<<"
+                                nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
+                                sleep 2
+                                export QQ=`pgrep tower`
+                                if [ -n $QQ ]
+                                then
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[32m  Tower restarted.   \e[0m========="
+                                fi
+                            fi
+                            R=15
+                            sleep 1080
                         fi
                     fi
                 done
