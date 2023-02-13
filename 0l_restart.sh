@@ -35,7 +35,7 @@ do
             BB=`pgrep diem-node`
             if [ -z $BB ]
             then
-                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
+                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Trying to restore DB now. <<<\e[0m"
                 rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
                 nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
@@ -85,7 +85,7 @@ do
                 CC=`pgrep diem-node`
                 if [ -z $CC ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Trying to restore DB now. <<<\e[0m"
                     rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
@@ -192,7 +192,7 @@ do
                             CC=`pgrep diem-node`
                             if [ -z $CC ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
+                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Trying to restore DB now. Trying to restore DB now.<<<\e[0m"
                                 rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                                 sleep 10
                                 nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
