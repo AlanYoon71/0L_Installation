@@ -47,9 +47,13 @@ do
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check validator manually. <<<\e[0m"
                 else
                     echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
+                    sleep 2
+                    syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                 fi
             else
                 echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator started. \e[0m========="
+                sleep 2
+                syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
             fi
         else
             echo "$TIME [INFO] Block height : $syn1"
@@ -97,9 +101,13 @@ do
                         echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check validator manually. <<<\e[0m"
                     else
                         echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
+                        sleep 2
+                        syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                     fi
                 else
                     echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator started. \e[0m========="
+                    sleep 2
+                    syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                 fi
             else
                 echo "$TIME [INFO] Block height : $syn2"
@@ -136,9 +144,6 @@ do
                     fi
                 fi
             fi
-            syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-            syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-            sleep 1
             if [ -z $syn1 ] ; then syn1=0 ; fi
             if [ -z $syn2 ] ; then syn2=0 ; fi
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
