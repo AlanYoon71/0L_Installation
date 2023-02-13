@@ -27,8 +27,8 @@ do
         syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
         if [ -z $syn1 ]
         then
-            echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
-            echo "$TIME [WARN] Validator is already stopped before running this script."
+            echo "$TIME [WARN] Unable to get network block height!!"
+            echo -e "$TIME [WARN] \e[1m\e[35m>>> Validator is already stopped status now!! <<<\e[0m"
             pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
             sleep 2
             syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
@@ -36,7 +36,7 @@ do
             if [ -z $BB ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
-                rm -rf ~/.0L/db && ~/bin/ol restore &
+                rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
                 nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                 sleep 2
@@ -77,8 +77,8 @@ do
             syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
             if [ -z $syn2 ]
             then
-                echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
-                echo "$TIME [WARN] Validator is already stopped before running this script."
+                echo "$TIME [WARN] Unable to get network block height!!"
+                echo -e "$TIME [WARN] \e[1m\e[35m>>> Validator is already stopped status now!! <<<\e[0m"
                 pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                 sleep 2
                 syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
@@ -86,7 +86,7 @@ do
                 if [ -z $CC ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! <<<\e[0m"
-                    rm -rf ~/.0L/db && nohup ~/bin/ol restore > /dev/null &
+                    rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                     sleep 2
@@ -146,7 +146,7 @@ do
             then
                 if [ $syn2 == 0 ]
                 then
-                    echo "$TIME [WARN] >>> Unable to get network block height!! <<<"
+                    echo "$TIME [WARN] Unable to get network block height!!"
                 else
                     echo "$TIME [WARN] Block height stuck!! >> $syn2"
                 fi
