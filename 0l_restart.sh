@@ -148,7 +148,7 @@ do
                 then
                     echo "$TIME [WARN] Unable to get network block height!!"
                 else
-                    echo "$TIME [WARN] Block height stuck!! >> $syn2"
+                    echo "$TIME [WARN] | | | | | | Block height stuck!! >> \e[1m\e[35m$syn2\e[0m | | | | | |"
                 fi
                 sleep 430
                 P=1
