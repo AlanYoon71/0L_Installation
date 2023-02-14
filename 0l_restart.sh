@@ -226,7 +226,7 @@ do
                                 export QQ=`pgrep tower`
                                 if [ -n $QQ ]
                                 then
-                                    echo -e "$TIME [INFO] ========= \e[1m\e[32m Tower started.  \e[0m========="
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[32m  Tower started.   \e[0m========="
                                 fi
                             fi
                             R=15
