@@ -137,9 +137,13 @@ do
                             NTPS=$(echo "scale=2; $NDIFF / 1800" | bc)
                             LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
                             SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
-                            CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                            echo -e "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : $LTPS[tx/s]"
-                            echo "$TIME [INFO] Catchup Time >> $CATCH[Hr]"
+                            if [ $SPEED == 0 ]
+                            then
+                                echo -e "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : $LTPS[tx/s]"
+                            else
+                                CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
+                                echo "$TIME [INFO] Catchup Time >> $CATCH[Hr]"
+                            fi
                         fi
                     fi
                 fi
