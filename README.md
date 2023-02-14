@@ -35,10 +35,10 @@
       b. Restart script
         1. Check network block height by curl command(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"})
            at 20 and 50 minutes on the hour, restart validator and tower at every hour on the hour if block height not increases.
-        2. Monitor the local synced height so that you can check catchup stability(lagging) and remained catchup time(estimated).
-        3. Restart command in restart script as below.
+        2. Restart command in restart script as below.
           - Validator: ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1
           - Tower: ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1
-        4. If validator was already stopped before running the restart script, this script will automatically restart it.
-        5. Script can deleted local DB, restored it from network and restart validator if fails to restart due to a DB crash or other reasons.
+        3. If validator was already stopped before running the restart script, this script will automatically restart it.
+        4. Script can wipe local DB, restore it from network and restart validator if fails to restart due to a DB crash or other reasons.
            (Killing a running process can sometimes cause DB crash, so if the validator can't be restarted, restore operation is inevitable)
+        5. If DB is restored once, script start to monitor synced height so that you can check catchup status and remained catchup time(estimated).
