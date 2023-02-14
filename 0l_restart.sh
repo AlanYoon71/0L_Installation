@@ -30,7 +30,7 @@ do
         then
             echo "$TIME [WARN] Unable to get network block height!!"
             echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
-            ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+            pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
             sleep 10
             pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
             sleep 2
@@ -39,7 +39,7 @@ do
             if [ -z $BB ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
                 nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                 sleep 2
@@ -54,7 +54,7 @@ do
                     syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                 fi
             else
-                ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
                 echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator started as fullnode mode. \e[0m========="
                 sleep 2
@@ -87,7 +87,7 @@ do
             then
                 echo "$TIME [WARN] Unable to get network block height!!"
                 echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
-                ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
                 pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                 sleep 2
@@ -96,7 +96,7 @@ do
                 if [ -z $CC ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                    rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                     sleep 2
@@ -111,7 +111,7 @@ do
                         syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                     fi
                 else
-                    ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
                     echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator started as fullnode mode. \e[0m========="
                     sleep 2
@@ -217,7 +217,7 @@ do
                                 if [ -z $CC ]
                                 then
                                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                                    rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                                    rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                                     sleep 10
                                     nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                                     sleep 2
@@ -240,7 +240,7 @@ do
                                 if [ -z $CC ]
                                 then
                                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                                    rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                                    rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                                     sleep 10
                                     nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                                     sleep 2
