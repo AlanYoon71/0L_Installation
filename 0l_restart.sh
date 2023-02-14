@@ -60,13 +60,6 @@ do
             echo "$TIME [INFO] Block height : $syn1"
             if [ -z $syn11 ]
             then
-                echo "$TIME [WARN] Unable to get synced height!"
-                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                sleep 1
-                ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
-                sleep 10
-                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-                sleep 2
                 syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
             else
                 LAG=`expr $syn11 - $syn1`
@@ -120,13 +113,6 @@ do
                 echo "$TIME [INFO] Block height : $syn2"
                 if [ -z $syn22 ]
                 then
-                    echo "$TIME [WARN] Unable to get synced height!"
-                    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                    sleep 1
-                    ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
-                    sleep 10
-                    nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-                    sleep 2
                     syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
                 else
                     LAG=`expr $syn22 - $syn2`
@@ -170,7 +156,7 @@ do
                 then
                     echo "$TIME [WARN] Unable to get network block height!!"
                 else
-                    echo -e "$TIME [WARN] | | | | | | Block height stuck!! >> \e[1m\e[35m$syn2\e[0m | | | | | |"
+                    echo -e "$TIME [WARN] | | | Block height stuck!! >> \e[1m\e[35m$syn2\e[0m | | |"
                 fi
                 sleep 430
                 P=1
