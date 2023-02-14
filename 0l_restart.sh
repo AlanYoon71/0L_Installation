@@ -65,7 +65,7 @@ do
                 LAG=`expr $syn11 - $syn1`
                 if [ $LAG -gt -200 ]
                 then
-                    echo "$TIME [INFO] Synced height : $syn11, Lag : No lag. Fully synced."
+                    echo "$TIME [INFO] Synced height : $syn11, Fully synced."
                 else
                     echo "$TIME [INFO] Synced height : $syn11, Lag : $LAG"
                 fi
@@ -119,7 +119,7 @@ do
                     LAG=`expr $syn22 - $syn2`
                     if [ $LAG -gt -200 ]
                     then
-                        echo "$TIME [INFO] Synced height : $syn22, Lag : No lag. Fully synced."
+                        echo "$TIME [INFO] Synced height : $syn22, Fully synced."
                     else
                         echo "$TIME [INFO] Synced height : $syn22, Lag : $LAG"
                     fi
