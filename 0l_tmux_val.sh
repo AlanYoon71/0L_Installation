@@ -152,7 +152,7 @@ do
                                     tmux rename-window -t $session:$window 'validator'
                                     sleep 1
 
-                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf $HOME/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && cat $HOME/bin/keygen.txt && $HOME/bin/diem-node --config $HOME/.0L/fullnode.node.yaml >> ~/.0L/logs/node.log 2>&1' C-m
+                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf $HOME/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && cat $HOME/bin/keygen.txt && $HOME/bin/diem-node --config $HOME/.0L/fullnode.node.yaml >> ~/.0L/logs/validator.log 2>&1' C-m
                                     sleep 180
 
                                     cat $HOME/bin/keygen.txt &&
@@ -167,13 +167,13 @@ do
                                     tmux rename-window -t $session:$window 'validator_log'
                                     sleep 10
 
-                                    tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/node.log' C-m
+                                    tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/validator.log' C-m
 
                                     J=1
                                     K=10
                                     while [ $J -lt $K ]
                                     do                                    
-                                        if [ -s $HOME/.0L/logs/node.log ]
+                                        if [ -s $HOME/.0L/logs/validator.log ]
                                         then
                                             echo -e "Validator started! It is run as \e[1m\e[33m\"fullnode mode\" \e[0mnow."
                                             echo "You can restart node as \"validator\" mode after fully synced and onboarded by other an active validator."
