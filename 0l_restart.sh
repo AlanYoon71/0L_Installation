@@ -60,7 +60,12 @@ do
             if [ -z $syn11 ]
             then
                 echo "$TIME [WARN] Unable to get synced height!"
-                syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+                if [ -z syn22 ]
+                then
+                    ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    sleep 10
+                    syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+                fi
             else
                 LAG=`expr $syn11 - $syn1`
                 if [ $LAG -gt -200 ]
@@ -114,7 +119,12 @@ do
                 if [ -z $syn22 ]
                 then
                     echo "$TIME [WARN] Unable to get synced height!"
-                    syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+                    if [ -z syn11 ]
+                    then
+                        ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                        sleep 10
+                        syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+                    fi
                 else
                     LAG=`expr $syn22 - $syn2`
                     if [ $LAG -gt -200 ]
