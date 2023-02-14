@@ -253,7 +253,7 @@ do
                                         echo -e "$TIME [INFO] \e[1m\e[33mRestored DB from network and restarted as fullnode mode! \e[0m"
                                     fi
                                 else
-                                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator mode started. Fully synced! =========\e[0m"
+                                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator started. Fully synced! =========\e[0m"
                                 fi
                             fi
                             export NN=`pgrep tower`
