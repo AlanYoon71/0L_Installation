@@ -28,14 +28,14 @@ do
         if [ -z $syn1 ]
         then
             echo "$TIME [WARN] Unable to get network block height!!"
-            echo -e "$TIME [WARN] \e[1m\e[35m>>> Validator is already stopped status now!! <<<\e[0m"
+            echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
             pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
             sleep 2
             syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
             BB=`pgrep diem-node`
             if [ -z $BB ]
             then
-                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Trying to restore DB now. <<<\e[0m"
+                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
                 rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
                 nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
@@ -65,9 +65,9 @@ do
                 LAG=`expr $syn11 - $syn1`
                 if [ $LAG -gt -200 ]
                 then
-                    echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[32mNo lag. Fully synced.\e[0m"
+                    echo "$TIME [INFO] Synced height : $syn11, Lag : No lag. Fully synced."
                 else
-                    echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[35m$LAG\e[0m"
+                    echo "$TIME [INFO] Synced height : $syn11, Lag : $LAG"
                 fi
             fi
         fi
@@ -82,14 +82,14 @@ do
             if [ -z $syn2 ]
             then
                 echo "$TIME [WARN] Unable to get network block height!!"
-                echo -e "$TIME [WARN] \e[1m\e[35m>>> Validator is already stopped status now!! <<<\e[0m"
+                echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
                 pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                 sleep 2
                 syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                 CC=`pgrep diem-node`
                 if [ -z $CC ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Trying to restore DB now. <<<\e[0m"
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
                     rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
@@ -119,9 +119,9 @@ do
                     LAG=`expr $syn22 - $syn2`
                     if [ $LAG -gt -200 ]
                     then
-                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[32mNo lag. Fully synced.\e[0m"
+                        echo "$TIME [INFO] Synced height : $syn22, Lag : No lag. Fully synced."
                     else
-                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[35m$LAG\e[0m"
+                        echo "$TIME [INFO] Synced height : $syn22, Lag : $LAG"
                     fi
                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
                     if [ -z $syn11 ]
@@ -138,8 +138,8 @@ do
                             LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
                             SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
                             CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                            echo -e "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : \e[1m\e[32m$LTPS\e[0m[tx/s]"
-                            echo -e "$TIME [INFO] Catchup Time >> \e[1m\e[35m$CATCH\e[0m[Hr]"
+                            echo -e "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : $LTPS[tx/s]"
+                            echo "$TIME [INFO] Catchup Time >> $CATCH[Hr]"
                         fi
                     fi
                 fi
@@ -197,7 +197,7 @@ do
                             CC=`pgrep diem-node`
                             if [ -z $CC ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Critical! Trying to restore DB now. Trying to restore DB now.<<<\e[0m"
+                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
                                 rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                                 sleep 10
                                 nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
