@@ -6,7 +6,7 @@ echo ""
 echo "Created by  //-\ ][_ //-\ ][\[";
 echo ""
 echo "==============================";
-echo "                    2023-02-12"
+echo "                    2023-02-13"
 echo ""
 echo "This script was created only for installing \"0L network validator(fullnode)\"."
 echo ""
