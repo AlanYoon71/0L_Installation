@@ -14,10 +14,12 @@
        cd ~ && git clone https://github.com/shyoon71/0L_Installation.git && \cp -f 0L_Installation/* ./ && chmod +x *sh && bash ./0l_env_val.sh
        (Open terminal input upper one line command at root home directory, and check TMUX sessions in another terminal)
 
-    2) Restart script command (you can just download the restart script from here and run it by user "node". )
+    2) Restart script command (you can just download the restart script from here and run it by user "node")
 
        ~/0l_restart.sh >> $HOME/.0L/logs/restart.log 2>&1
        (Open terminal, change user to "node" and input upper command at home directory under TMUX session)
+
+       >> Dependencies : bc, daemontools (you can install these package by "apt install -y bc daemontools")
 
     3) Concept
 
