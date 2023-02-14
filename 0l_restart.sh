@@ -10,6 +10,7 @@ echo ""
 echo "This script was created only for restarting \"0L network validator\"."
 echo ""
 echo ""
+PATH=$PATH:/home/node/bin
 export TIME=`date +%Y-%m-%dT%I:%M:%S`
 echo "$TIME [INFO] Started."
 J=1
@@ -60,12 +61,13 @@ do
             if [ -z $syn11 ]
             then
                 echo "$TIME [WARN] Unable to get synced height!"
-                if [ -z syn22 ]
-                then
-                    ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
-                    sleep 10
-                    syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-                fi
+                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                sleep 1
+                ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                sleep 10
+                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                sleep 2
+                syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
             else
                 LAG=`expr $syn11 - $syn1`
                 if [ $LAG -gt -200 ]
@@ -119,12 +121,13 @@ do
                 if [ -z $syn22 ]
                 then
                     echo "$TIME [WARN] Unable to get synced height!"
-                    if [ -z syn11 ]
-                    then
-                        ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
-                        sleep 10
-                        syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-                    fi
+                    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                    sleep 1
+                    ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    sleep 10
+                    nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                    sleep 2
+                    syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
                 else
                     LAG=`expr $syn22 - $syn2`
                     if [ $LAG -gt -200 ]
