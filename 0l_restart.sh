@@ -30,7 +30,7 @@ do
         then
             echo "$TIME [WARN] Unable to get network block height!!"
             echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
-            pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+            pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
             sleep 2
             syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
             BB=`pgrep diem-node`
@@ -39,20 +39,20 @@ do
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
                 rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
-                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                 sleep 2
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 EE=`pgrep diem-node`
                 if [ -z $EE ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check validator manually. <<<\e[0m"
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check node status manually. <<<\e[0m"
                 else
-                    echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
+                    echo -e "$TIME [INFO] \e[1m\e[33mRestored DB from network and restarted as fullnode mode! \e[0m"
                     sleep 2
                     syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                 fi
             else
-                echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator started. \e[0m========="
+                echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator started as fullnode mode. \e[0m========="
                 sleep 2
                 syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
             fi
@@ -83,7 +83,7 @@ do
             then
                 echo "$TIME [WARN] Unable to get network block height!!"
                 echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
-                pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                 sleep 2
                 syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                 CC=`pgrep diem-node`
@@ -92,20 +92,20 @@ do
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
                     rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
-                    nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                    nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                     sleep 2
                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
                     KK=`pgrep diem-node`
                     if [ -z $KK ]
                     then
-                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check validator manually. <<<\e[0m"
+                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check node status manually. <<<\e[0m"
                     else
-                        echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
+                        echo -e "$TIME [INFO] \e[1m\e[33mRestored DB from network and restarted as fullnode mode! \e[0m"
                         sleep 2
                         syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                     fi
                 else
-                    echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator started. \e[0m========="
+                    echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator started as fullnode mode. \e[0m========="
                     sleep 2
                     syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                 fi
@@ -174,10 +174,10 @@ do
                         export D=`pgrep diem-node`
                         if [ -z $D ]
                         then
-                            echo "$TIME [INFO] Validator stopped for restarting."
+                            echo "$TIME [INFO] Preparing to restart validator or fullnode.."
                             P=15
                         else
-                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to stop diem-node... <<<\e[0m"
+                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to stop node... <<<\e[0m"
                             P=15
                         fi
                     fi
@@ -194,27 +194,59 @@ do
                         export LL=`pgrep diem-node`
                         if [ -z $LL ]
                         then
-                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                            nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-                            sleep 5
-                            CC=`pgrep diem-node`
-                            if [ -z $CC ]
+                            NHEIGHT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+                            LHEIGHT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+                            sleep 1
+                            if [ -z $NHEIGHT ] ; then NHEIGHT=0 ; fi
+                            if [ -z $LHEIGHT ] ; then LHEIGHT=0 ; fi
+                            MODE=`expr $NHEIGHT - $LHEIGHT`
+                            if [ $MODE -gt 1000 ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                                rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
-                                sleep 10
-                                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-                                sleep 2
                                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                                KK=`pgrep diem-node`
-                                if [ -z $KK ]
+                                nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
+                                sleep 5
+                                CC=`pgrep diem-node`
+                                if [ -z $CC ]
                                 then
-                                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check validator manually. <<<\e[0m"
+                                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
+                                    rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                                    sleep 10
+                                    nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
+                                    sleep 2
+                                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                    KK=`pgrep diem-node`
+                                    if [ -z $KK ]
+                                    then
+                                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check node status manually. <<<\e[0m"
+                                    else
+                                        echo -e "$TIME [INFO] \e[1m\e[33mRestored DB from network and restarted as fullnode mode! \e[0m"
+                                    fi
                                 else
-                                    echo -e "$TIME [INFO] \e[1m\e[32mRestored DB from network and restarted successfully! \e[0m"
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[33mFullnode mode started. \e[0m========="
                                 fi
                             else
-                                echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator started. \e[0m========="
+                                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                                sleep 5
+                                CC=`pgrep diem-node`
+                                if [ -z $CC ]
+                                then
+                                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
+                                    rm -rf ~/.0L/db && ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                                    sleep 10
+                                    nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
+                                    sleep 2
+                                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                    KK=`pgrep diem-node`
+                                    if [ -z $KK ]
+                                    then
+                                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tried but failed to restore DB and restart.. You need to check node status manually. <<<\e[0m"
+                                    else
+                                        echo -e "$TIME [INFO] \e[1m\e[33mRestored DB from network and restarted as fullnode mode! \e[0m"
+                                    fi
+                                else
+                                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator mode started. Fully synced! =========\e[0m"
+                                fi
                             fi
                             export NN=`pgrep tower`
                             if [ -z $NN ]
@@ -226,7 +258,7 @@ do
                                 export QQ=`pgrep tower`
                                 if [ -n $QQ ]
                                 then
-                                    echo -e "$TIME [INFO] ========= \e[1m\e[32m  Tower started.   \e[0m========="
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[33m  Tower started.   \e[0m========="
                                 fi
                             fi
                             R=15
