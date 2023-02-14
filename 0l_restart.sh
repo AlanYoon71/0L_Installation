@@ -172,6 +172,12 @@ do
                 while [ $P -lt $PP ]
                 do
                     sleep 5
+                    NHEIGHT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
+                    LHEIGHT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+                    sleep 1
+                    if [ -z $NHEIGHT ] ; then NHEIGHT=0 ; fi
+                    if [ -z $LHEIGHT ] ; then LHEIGHT=0 ; fi
+                    MODE=`expr $NHEIGHT - $LHEIGHT`
                     export MIN=`date "+%M"`
                     ACTION3=58
                     if [ $MIN == $ACTION3 ]
@@ -202,12 +208,6 @@ do
                         export LL=`pgrep diem-node`
                         if [ -z $LL ]
                         then
-                            NHEIGHT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-                            LHEIGHT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-                            sleep 1
-                            if [ -z $NHEIGHT ] ; then NHEIGHT=0 ; fi
-                            if [ -z $LHEIGHT ] ; then LHEIGHT=0 ; fi
-                            MODE=`expr $NHEIGHT - $LHEIGHT`
                             if [ $MODE -gt 1000 ]
                             then
                                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
