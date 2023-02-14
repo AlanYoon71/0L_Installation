@@ -30,6 +30,8 @@ do
         then
             echo "$TIME [WARN] Unable to get network block height!!"
             echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
+            ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+            sleep 10
             pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
             sleep 2
             syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
@@ -52,6 +54,8 @@ do
                     syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                 fi
             else
+                ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                sleep 10
                 echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator started as fullnode mode. \e[0m========="
                 sleep 2
                 syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
@@ -83,6 +87,8 @@ do
             then
                 echo "$TIME [WARN] Unable to get network block height!!"
                 echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
+                ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                sleep 10
                 pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                 sleep 2
                 syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
@@ -105,6 +111,8 @@ do
                         syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
                     fi
                 else
+                    ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    sleep 10
                     echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator started as fullnode mode. \e[0m========="
                     sleep 2
                     syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
@@ -174,7 +182,7 @@ do
                         export D=`pgrep diem-node`
                         if [ -z $D ]
                         then
-                            echo "$TIME [INFO] Preparing to restart validator or fullnode.."
+                            echo "$TIME [INFO] Preparing to restart node.."
                             P=15
                         else
                             echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to stop node... <<<\e[0m"
