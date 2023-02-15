@@ -361,43 +361,43 @@ do
                                             echo ""
                                             sleep 2
                                             
-                                            echo -e "\e[1m\e[32m9. Starting restart script.. \e[0m"
-                                            echo "===================="
-                                            echo ""
+                                            # echo -e "\e[1m\e[32m9. Starting restart script.. \e[0m"
+                                            # echo "===================="
+                                            # echo ""
 
-                                            session="restart"
-                                            tmux new-session -d -s $session
-                                            window=0
-                                            tmux rename-window -t $session:$window 'restart'
-                                            sleep 1
+                                            # session="restart"
+                                            # tmux new-session -d -s $session
+                                            # window=0
+                                            # tmux rename-window -t $session:$window 'restart'
+                                            # sleep 1
 
-                                            tmux send-keys -t $session:$window '$HOME/0l_restart.sh >> $HOME/.0L/logs/restart.log 2>&1' C-m
-                                            sleep 1
+                                            # tmux send-keys -t $session:$window '$HOME/0l_restart.sh >> $HOME/.0L/logs/restart.log 2>&1' C-m
+                                            # sleep 1
 
-                                            session="restart_log"
-                                            tmux new-session -d -s $session
-                                            window=0
-                                            tmux rename-window -t $session:$window 'restart_log'
-                                            sleep 1
+                                            # session="restart_log"
+                                            # tmux new-session -d -s $session
+                                            # window=0
+                                            # tmux rename-window -t $session:$window 'restart_log'
+                                            # sleep 1
 
-                                            tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/restart.log' C-m
+                                            # tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/restart.log' C-m
 
-                                            YY=1
-                                            ZZ=10
-                                            while [ $YY -lt $ZZ ]
-                                            do
-                                                sleep 5
-                                                if [ -f $HOME/.0L/logs/restart.log ]
-                                                then
-                                                    echo "Restart script started!"
-                                                    echo ""
-                                                    echo ""
-                                                    echo "If network block height increase stopped during 30minutes, your validator will be restarted at every hour on the hour until block height increases"
-                                                    echo ""
-                                                    echo ""
-                                                    YY=15
-                                                fi
-                                            done
+                                            # YY=1
+                                            # ZZ=10
+                                            # while [ $YY -lt $ZZ ]
+                                            # do
+                                            #     sleep 5
+                                            #     if [ -f $HOME/.0L/logs/restart.log ]
+                                            #     then
+                                            #         echo "Restart script started!"
+                                            #         echo ""
+                                            #         echo ""
+                                            #         echo "If network block height increase stopped during 30minutes, your validator will be restarted at every hour on the hour until block height increases"
+                                            #         echo ""
+                                            #         echo ""
+                                            #         YY=15
+                                            #     fi
+                                            # done
                                             
                                             tmux ls > $HOME/bin/tmux_status.txt &&
                                             sleep 2
