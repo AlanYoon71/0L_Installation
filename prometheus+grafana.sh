@@ -16,6 +16,7 @@ sudo apt-get install -y prometheus prometheus-node-exporter prometheus-pushgatew
 ps -ef | grep prometheus
 sleep 1
 #sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main" | grep "NO_PUBKEY" | cut -d ":" -f2
+sudo apt-get install software-properties-common
 curl -s https://packagecloud.io/install/repositories/grafana/stable/script.deb.sh | sudo bash
 sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
 curl https://packages.grafana.com/gpg.key | sudo apt-key add -
@@ -31,7 +32,8 @@ sudo tee -a /etc/prometheus/prometheus.yml > /dev/null <<EOF
 EOF
 sleep 0.5
 sudo systemctl reload prometheus.service
-
+echo ""
+echo ""
 echo "Done!!"
 
 
