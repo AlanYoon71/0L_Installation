@@ -182,17 +182,24 @@ do
                     ACTION3=58
                     if [ $MIN == $ACTION3 ]
                     then
-                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                        sleep 1
-                        export D=`pgrep diem-node`
-                        if [ -z $D ]
+                        if [ $MODE -gt 1000 ]
                         then
-                            echo "$TIME [INFO] Preparing to restart node.."
-                            P=15
-                        else
-                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to stop node... <<<\e[0m"
-                            P=15
+                            CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/fullnode.node.yaml" | awk '/bin/{print $2}'`
+                            if [ -z $CONVERT ]
+                            then
+                                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                                sleep 1
+                                export D=`pgrep diem-node`
+                                if [ -z $D ]
+                                then
+                                    echo "$TIME [INFO] Preparing to restart node.."
+                                    P=15
+                                else
+                                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to stop node... <<<\e[0m"
+                                    P=15
+                                fi
+                            fi
                         fi
                     fi
                 done
@@ -211,7 +218,7 @@ do
                             if [ $MODE -gt 1000 ]
                             then
                                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                                nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
+                                pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                                 sleep 5
                                 CC=`pgrep diem-node`
                                 if [ -z $CC ]
@@ -230,11 +237,11 @@ do
                                         echo -e "$TIME [INFO] \e[1m\e[33mRestored DB from network and restarted as fullnode mode! \e[0m"
                                     fi
                                 else
-                                    echo -e "$TIME [INFO] ========= \e[1m\e[33mFullnode mode started. \e[0m========="
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[33mFullnode mode running. \e[0m========="
                                 fi
                             else
                                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                                pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                                 sleep 5
                                 CC=`pgrep diem-node`
                                 if [ -z $CC ]
@@ -253,7 +260,7 @@ do
                                         echo -e "$TIME [INFO] \e[1m\e[33mRestored DB from network and restarted as fullnode mode! \e[0m"
                                     fi
                                 else
-                                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator started. Fully synced! =========\e[0m"
+                                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator running. Fully synced! =========\e[0m"
                                 fi
                             fi
                             export NN=`pgrep tower`
