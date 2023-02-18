@@ -63,7 +63,7 @@ do
                     if [ -z $syn1 ]
                     then
                         syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-                    fi                    
+                    fi
                 fi
             else
                 pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
