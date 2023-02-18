@@ -345,7 +345,7 @@ do
                 CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
                 if [ -z $CONVERT ]
                 then
-                    echo "$TIME [INFO] The network is alive. The current mode is fullnode."
+                    echo -e "$TIME [INFO] The network is alive. The current mode is \e[1m\e[33mfullnode\e[0m."
                     if [ $MODE -lt 1000 ]
                     then
                         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
