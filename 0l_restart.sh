@@ -366,7 +366,7 @@ do
                     else
                         echo "$TIME [INFO] Validator is not fully synced yet, so the mode will be changed to fullnode."
                         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                        sleep 1                            
+                        sleep 1
                         pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                         sleep 2
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
