@@ -42,7 +42,7 @@ do
             if [ -z $syn1 ]
             then
                 syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
-            fi            
+            fi
             BB=`pgrep diem-node`
             if [ -z $BB ]
             then
@@ -335,6 +335,14 @@ do
                     fi
                 done
             else
+                CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                if [ -z $CONVERT ]
+                then
+                    echo "The network is alive. Maintain the current fullnode mode."
+                else
+                    echo "$TIME [INFO] The network is alive. Maintain the current validator mode."
+                fi
                 sleep 430
             fi
         fi
