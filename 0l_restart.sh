@@ -340,9 +340,10 @@ do
                 if [ -z $CONVERT ]
                 then
                     echo "$TIME [INFO] The network is alive. Maintain the current fullnode mode."
-                    echo "$TIME [INFO] If you want, you can change the current fullnode mode to validator at any time manually."
+                    echo "$TIME [INFO] If you want, you can change current mode to validator at any time manually."
                 else
                     echo "$TIME [INFO] The network is alive. Maintain the current validator mode."
+                    echo "$TIME [INFO] If you want, you can change current mode to fullnode at any time manually."
                 fi
                 sleep 430
             fi
