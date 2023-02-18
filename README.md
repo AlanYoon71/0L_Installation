@@ -18,8 +18,7 @@
 
        ~/0l_restart.sh >> $HOME/.0L/logs/restart.log 2>&1
        (Open terminal, change user to "node" and input upper command at home directory under TMUX session)
-
-       >> Dependencies : bc, daemontools (you can install these package by "apt install -y bc daemontools")
+      >> Notice : If you are not validator in active validator pool, do not use this script.
 
     3) Concept
 
