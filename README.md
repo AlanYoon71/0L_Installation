@@ -5,7 +5,7 @@
   0. You should familiarize yourself with the 0L official guide documentation before using this script.
     
      This script is intended to provide convenience only for those who have used the official guide to install a node and understand the process.
-     Please read the official guide documentation first.
+     Please read the official guide documentation first. This script was created and checked on ubuntu 20.04 LTS only.
 
   1. Validator(fullnode) with tower
   
