@@ -218,7 +218,7 @@ do
                     ACTION3=58
                     if [ $MIN == $ACTION3 ]
                     then
-                        if [ $MODE -gt 1000 ]
+                        if [ $MODE -gt 500 ]
                         then
                             CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/fullnode.node.yaml" | awk '/bin/{print $2}'`
                             if [ -z $CONVERT ]
@@ -251,7 +251,7 @@ do
                         export LL=`pgrep diem-node`
                         if [ -z $LL ]
                         then
-                            if [ $MODE -gt 1000 ]
+                            if [ $MODE -gt 500 ]
                             then
                                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                                 pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
@@ -277,6 +277,22 @@ do
                                 fi
                             else
                                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+                                if [ -z $CONVERT ]
+                                then
+                                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                                    sleep 10
+                                    pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                                    sleep 2
+                                    export D=`pgrep diem-node`
+                                    if [ -z $D ]
+                                    then
+                                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to stop node... <<<\e[0m"
+                                    else
+                                        echo -e "$TIME [INFO] \e[1m\e[32m========= Validator running. Fully synced! =========\e[0m"
+                                    fi
+                                fi
                                 pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                                 sleep 5
                                 CC=`pgrep diem-node`
