@@ -276,7 +276,6 @@ do
                                     echo -e "$TIME [INFO] ========= \e[1m\e[33mFullnode mode running. \e[0m========="
                                 fi
                             else
-                                export TIME=`date +%Y-%m-%dT%I:%M:%S`
                                 CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
                                 if [ -z $CONVERT ]
                                 then
@@ -288,9 +287,11 @@ do
                                     export D=`pgrep diem-node`
                                     if [ -z $D ]
                                     then
+                                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
                                         echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to stop node... <<<\e[0m"
                                     else
-                                        echo -e "$TIME [INFO] \e[1m\e[32m========= Validator running. Fully synced! =========\e[0m"
+                                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                        echo -e "$TIME [INFO] \e[1m\e[32m========= Restarted as validator. Validator running now. =========\e[0m"
                                     fi
                                 fi
                                 pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
