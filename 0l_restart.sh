@@ -339,10 +339,10 @@ do
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 if [ -z $CONVERT ]
                 then
-                    echo "$TIME [INFO] The network is alive. Maintain the current fullnode mode."
+                    echo "$TIME [INFO] The network is alive. The current mode is fullnode."
                     echo "$TIME [INFO] If you want, you can change current mode to validator at any time manually."
                 else
-                    echo "$TIME [INFO] The network is alive. Maintain the current validator mode."
+                    echo -e "$TIME [INFO] The network is alive. The current mode is \e[1m\e[32mvalidator\e[0m."
                     echo "$TIME [INFO] If you want, you can change current mode to fullnode at any time manually."
                 fi
                 sleep 430
