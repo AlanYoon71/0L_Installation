@@ -335,15 +335,43 @@ do
                     fi
                 done
             else
-                CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+                NHEIGHT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
+                LHEIGHT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+                sleep 1
+                if [ -z $NHEIGHT ] ; then NHEIGHT=0 ; fi
+                if [ -z $LHEIGHT ] ; then LHEIGHT=0 ; fi
+                MODE=`expr $NHEIGHT - $LHEIGHT`
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
                 if [ -z $CONVERT ]
                 then
                     echo "$TIME [INFO] The network is alive. The current mode is fullnode."
-                    echo "$TIME [INFO] If you want, you can change mode at any time manually."
+                    if [ $MODE -lt 1000 ]
+                    then
+                        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                        sleep 1                            
+                        pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                        sleep 2
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                        echo -e "$TIME [INFO] \e[1m\e[32m========= Mode changed! Validator is running now! =========\e[0m"
+                    else
+                        echo "$TIME [INFO] Fullnode is not fully synced yet, so the mode will remain the same."
+                    fi
                 else
                     echo -e "$TIME [INFO] The network is alive. The current mode is \e[1m\e[32mvalidator\e[0m."
-                    echo "$TIME [INFO] If you want, you can change mode at any time manually."
+                    if [ $MODE -lt 1000 ]
+                    then
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                        echo -e "$TIME [INFO] \e[1m\e[32m========= Validator running. Fully synced! =========\e[0m"
+                    else
+                        echo "$TIME [INFO] Validator is not fully synced yet, so the mode will be changed to fullnode."
+                        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                        sleep 1                            
+                        pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
+                        sleep 2
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                        echo -e "$TIME [INFO] \e[1m\e[33m========= Mode changed! Fullnode is running now! =========\e[0m"
+                    fi
                 fi
                 sleep 430
             fi
