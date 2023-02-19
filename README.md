@@ -19,7 +19,7 @@
        ~/0l_restart.sh >> $HOME/.0L/logs/restart.log 2>&1
        (Open terminal, change user to "node" and input upper command at home directory under TMUX session)
       >> Notice
-       - If you are not validator in active validator pool, do not use this script.
+       - If you are not validator in the active validator set, do not use this script.
        - This script need package dependencies "bc" for calculating TPS, you can install with "apt install bc" by root user.
 
     3) Concept
