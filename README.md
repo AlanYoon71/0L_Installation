@@ -31,7 +31,8 @@
         4. Create log sessions for validator(fullnode), tower and restart script.
         5. Calculate TPS(sync transaction per second) between network and local after starting validator(fullnode),
            display remained catchup complete time(estimated).
-        6. Mnemonic and answers for question should be input by user twice manually to prove not malicious bot or script.
+        6. Check not only tower connection but also mining progress and shows the number of final proofs successfully submitted to the chain.
+        7. Mnemonic and answers for question should be input by user twice manually to prove not malicious bot or script.
     
       b. Restart script
         1. Check network block height by curl command(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"})
