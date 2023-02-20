@@ -353,6 +353,20 @@ do
                             fi
                             R=15
                             sleep 1080
+                        else
+                            export NN=`pgrep tower`
+                            if [ -z $NN ]
+                            then
+                                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                echo "$TIME [WARN] >>> Tower disconnected!! <<<"
+                                nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
+                                sleep 2
+                                export QQ=`pgrep tower`
+                                if [ -n $QQ ]
+                                then
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[32m  Tower started.   \e[0m========="
+                                fi
+                            fi                            
                         fi
                     fi
                 done
