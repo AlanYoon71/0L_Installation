@@ -192,6 +192,7 @@ do
                             if [ -z "$SEEK1" ]
                             then
                                 echo "$TIME [WARN] >>> It looks like tower hasn't submitted a proof to the chain yet! <<<"
+                                SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             else
                                 SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                                 if [ -z "$SEEK3" ] ; then SEEK3=0 ; fi
@@ -200,6 +201,7 @@ do
                                 then
                                     echo -e "$TIME [INFO] Tower is mining normally. \e[1m\e[32mProof # $SEEK2 \e[0m"
                                 fi
+                                SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
                         fi
                     fi
@@ -266,14 +268,6 @@ do
                     ACTION4=00
                     if [ $MIN == $ACTION4 ]
                     then
-                        SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
-                        if [ -z "$SEEK1" ]
-                        then
-                            SEEK3=0
-                        else
-                            SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
-                            if [ -z "$SEEK3" ]; then SEEK3=0 ; fi
-                        fi
                         export LL=`pgrep diem-node`
                         if [ -z $LL ]
                         then
