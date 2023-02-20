@@ -180,12 +180,12 @@ do
                             then
                                 echo "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : $LTPS[tx/s]"
                                 SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
-                                if [ -z $SEEK1 ]
+                                if [ -z "$SEEK1" ]
                                 then
-                                    echo -e "$TIME [WARN] \e[1m\e[35mIt looks like tower hasn't submitted a proof to the chain yet!\e[0m"
+                                    echo -e "$TIME [WARN] \e[1m\e[35mIt looks like tower hasn't submitted a proof to the chain yet! \e[0m"
                                 else
                                     SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
-                                    if [ -z $SEEK3 ] ; then SEEK3=0 ; fi
+                                    if [ -z "$SEEK3" ] ; then SEEK3=0 ; fi
                                     CHECKTOWER=`expr $SEEK3 - $SEEK2`
                                     if [ $CHECKTOWER -gt 0 ]
                                     then
@@ -266,12 +266,12 @@ do
                     if [ $MIN == $ACTION4 ]
                     then
                         SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
-                        if [ -z $SEEK1 ]
+                        if [ -z "$SEEK1" ]
                         then
                             SEEK3=0
                         else
                             SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
-                            if [ -z $SEEK3 ]; then SEEK3=0 ; fi
+                            if [ -z "$SEEK3" ]; then SEEK3=0 ; fi
                         fi
                         export LL=`pgrep diem-node`
                         if [ -z $LL ]
