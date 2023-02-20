@@ -182,7 +182,7 @@ do
 
                             else
                                 echo "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : $LTPS[tx/s]"
-                                if [ $LAG -lt 0 ]
+                                if [ $LAG -lt -200 ]
                                 then
                                     CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
                                     echo "$TIME [INFO] Catchup Time >> $CATCH[Hr]"
