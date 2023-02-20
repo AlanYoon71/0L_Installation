@@ -196,7 +196,7 @@ do
                             else
                                 SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                                 if [ -z "$SEEK3" ] ; then SEEK3=0 ; fi
-                                CHECKTOWER=`expr $SEEK3 - $SEEK2`
+                                CHECKTOWER=`expr $SEEK2 - $SEEK3`
                                 if [ $CHECKTOWER -gt 0 ]
                                 then
                                     echo -e "$TIME [INFO] Tower is mining normally. \e[1m\e[32mProof # $SEEK2 \e[0m"
