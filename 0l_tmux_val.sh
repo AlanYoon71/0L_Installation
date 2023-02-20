@@ -51,7 +51,7 @@ echo -e "Open a new terminal and change user to \"node\" [ \e[1m\e[32msudo su no
 copy and paste your mnemonic and answer questions for basic configuration."
 echo ""
 echo ""
-echo "And then just wait until your first mining is completed. This mining takes 20 $HOME 40min, up to server's CPU performance."
+echo "And then just wait until your first mining is completed. This mining takes 20 ~ 40min, up to server's CPU performance."
 echo ""
 
 A=1
