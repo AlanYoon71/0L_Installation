@@ -200,6 +200,8 @@ do
                                 if [ $CHECKTOWER -gt 0 ]
                                 then
                                     echo -e "$TIME [INFO] Tower is mining normally. \e[1m\e[32mProof # $SEEK2 \e[0m"
+                                else
+                                    echo "$TIME [WARN] >>> Tower mining has been unsuccessful for at least an hour. <<<"
                                 fi
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
