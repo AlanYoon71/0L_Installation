@@ -302,7 +302,7 @@ do
                                             tmux send-keys -t $session:$window 'cat $HOME/bin/keygen.txt' C-m
                                             sleep 1
 
-                                            tmux send-keys -t $session:$window '$HOME/bin/tower -o start >> $HOME/.0L/logs/tower.log 2>&1' C-m
+                                            tmux send-keys -t $session:$window 'export NODE_ENV=prod && $HOME/bin/tower -o start >> $HOME/.0L/logs/tower.log 2>&1' C-m
                                             sleep 5
 
                                             echo ""
