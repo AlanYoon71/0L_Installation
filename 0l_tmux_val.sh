@@ -156,7 +156,7 @@ do
                                     sleep 180
 
                                     cat $HOME/bin/keygen.txt &&
-                                    echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic"
+                                    echo -e "Open a new terminal and change user [ \e[1m\e[32msudo su node\e[0m ], attach TMUX session [ \e[1m\e[32mtmux attach -t $session\e[0m ], copy and paste your mnemonic."
                                     echo ""
                                     echo ""
                                     sleep 30
