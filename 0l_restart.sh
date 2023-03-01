@@ -366,7 +366,7 @@ do
                                 then
                                     echo -e "$TIME [INFO] ========= \e[1m\e[32m  Tower started.   \e[0m========="
                                 fi
-                            fi                            
+                            fi
                         fi
                     fi
                 done
