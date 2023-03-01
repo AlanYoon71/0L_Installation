@@ -33,7 +33,7 @@ do
         if [ -z $syn1 ]
         then
             echo "$TIME [WARN] Unable to get network block height!!"
-            echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
+            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Validator is already stopped status now!! <<<\e[0m"
             pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
             sleep 10
             pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
@@ -106,7 +106,7 @@ do
             if [ -z $syn2 ]
             then
                 echo "$TIME [WARN] Unable to get network block height!!"
-                echo "$TIME [WARN] >>> Validator is already stopped status now!! <<<"
+                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Validator is already stopped status now!! <<<\e[0m"
                 pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
                 pgrep diem-node > /dev/null || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
