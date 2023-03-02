@@ -199,7 +199,7 @@ do
                             SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
                             if [ -z "$SEEK1" ]
                             then
-                                echo -e "$TIME [WARN] \e[1m\e[35m>>> It looks like tower failed to submitted a last proof! <<<\e[0m"
+                                echo -e "$TIME [WARN] >>> It looks like tower failed to submitted a last proof! <<<"
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             else
                                 SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
