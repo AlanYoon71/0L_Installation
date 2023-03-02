@@ -303,7 +303,7 @@ do
                                         echo -e "$TIME [INFO] \e[1m\e[33mRestored DB from network and restarted as fullnode mode! \e[0m"
                                     fi
                                 else
-                                    echo -e "$TIME [INFO] ========= \e[1m\e[33mFullnode running. \e[0m========="
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[33mRestarted as fullnode mode. \e[0m========="
                                 fi
                             else
                                 CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
