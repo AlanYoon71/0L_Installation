@@ -248,7 +248,7 @@ do
                     ACTION3=58
                     if [ $MIN == $ACTION3 ]
                     then
-                        if [ $MODE -gt 500 ]
+                        if [ $MODE -lt 200 ]
                         then
                             CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/fullnode.node.yaml" | awk '/bin/{print $2}'`
                             if [ -z $CONVERT ]
@@ -281,7 +281,7 @@ do
                         export LL=`pgrep diem-node`
                         if [ -z $LL ]
                         then
-                            if [ $MODE -gt 500 ]
+                            if [ $MODE -lt 200 ]
                             then
                                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                                 pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
