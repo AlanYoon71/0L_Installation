@@ -226,7 +226,7 @@ do
                 then
                     echo "$TIME [WARN] Unable to get network block height!!"
                 else
-                    echo -e "$TIME [WARN] | | | Block height stuck!! >> \e[1m\e[35m$syn2\e[0m | | |"
+                    echo -e "$TIME [WARN] | | | \e[1m\e[35mNetwork block height stuck!! \e[0m>> $syn2 | | |"
                 fi
                 sleep 430
                 P=1
@@ -303,7 +303,7 @@ do
                                         echo -e "$TIME [INFO] \e[1m\e[33mRestored DB from network and restarted as fullnode mode! \e[0m"
                                     fi
                                 else
-                                    echo -e "$TIME [INFO] ========= \e[1m\e[33mFullnode mode running. \e[0m========="
+                                    echo -e "$TIME [INFO] ========= \e[1m\e[33mFullnode running. \e[0m========="
                                 fi
                             else
                                 CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
