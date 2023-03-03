@@ -171,13 +171,21 @@ do
         if [ -z $syn2 ] ; then syn2=0 ; fi
         if [ $syn1 -eq $syn2 ]
         then
-            PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-            sleep 10
-            export D=`pgrep diem-node`
-            if [ -z $D ]
+            CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+            if [ -z $CONVERT ]
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo "$TIME [INFO] Validator stopped for restarting!"
+                echo -e "$TIME [INFO] \e[1m\e[33m========= Fullnode running. =========\e[0m"
+            fi
+            else
+                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                sleep 10
+                export D=`pgrep diem-node`
+                if [ -z $D ]
+                then
+                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    echo "$TIME [INFO] Validator stopped for restarting!"
+                fi
             fi
         else
             if [ $LAG -gt -5000 ]
