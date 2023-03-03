@@ -283,7 +283,7 @@ do
         nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
         sleep 2
         export QQ=`pgrep tower`
-        if [ -n $QQ ]
+        if [ -n "$QQ" ]
         then
             echo -e "$TIME [INFO] ========= \e[1m\e[33m  Tower restarted.   \e[0m========="
         fi
