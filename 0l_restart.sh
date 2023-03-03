@@ -43,7 +43,7 @@ do
                     echo "$TIME [INFO] Restored DB from network and restarted!"
                 fi
             else
-                echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator restarted! \e[0m========="
+                echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted! =========\e[0m"
             fi
         else
             echo "$TIME [INFO] Block height : $syn1"
@@ -99,7 +99,7 @@ do
                     echo "$TIME [INFO] Restored DB from network and restarted!"
                 fi
             else
-                echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator restarted! \e[0m========="
+                echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted! =========\e[0m"
             fi
         else
             echo "$TIME [INFO] Block height : $syn2"
@@ -212,7 +212,7 @@ do
                         echo "$TIME [INFO] Restored DB from network and restarted!"
                     fi
                 else
-                    echo -e "$TIME [INFO] ========= \e[1m\e[32mValidator restarted! Fully synced!! \e[0m========="
+                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted! Fully synced!! =========\e[0m"
                 fi
             else
                 pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
