@@ -117,11 +117,11 @@ do
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 if [ -z $syn11 ]
                 then
-                    echo "$TIME [INFO] No comparison data for calculating TPS right now."
+                    echo "$TIME [INFO] No comparison data right now."
                 else
                     if [ -z $syn1 ]
                     then
-                        echo "$TIME [INFO] No comparison data for calculating TPS right now."
+                        echo "$TIME [INFO] No comparison data right now."
                     else
                         NDIFF=`expr $syn2 - $syn1`
                         LDIFF=`expr $syn22 - $syn11`
@@ -191,7 +191,7 @@ do
                     if [ -z $D ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        echo "$TIME [INFO] Validator stopped for converting mode! Catchup is almost completed."
+                        echo "$TIME [INFO] Fullnode stopped for converting mode! Catchup completed."
                     fi
                 fi
             fi
