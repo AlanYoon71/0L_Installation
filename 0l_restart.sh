@@ -256,7 +256,7 @@ do
     if [ -z $NN ]
     then
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-        echo -e "$TIME [ERROR] >>> \e[1m\e[35mTower disconnected!! <<<\e[0m"
+        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tower disconnected!! <<<\e[0m"
         nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
         sleep 2
         export QQ=`pgrep tower`
