@@ -191,7 +191,7 @@ do
                     if [ -z $D ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        echo "$TIME [INFO] Validator stopped for converting mode!"
+                        echo "$TIME [INFO] Validator stopped for converting mode! Catchup is almost completed."
                     fi
                 fi
             fi
