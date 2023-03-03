@@ -26,7 +26,7 @@ do
             pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
             sleep 1
             BB=`pgrep diem-node`
-            slepp 0.1
+            sleep 0.1
             if [ -z $BB ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
