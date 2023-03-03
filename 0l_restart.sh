@@ -179,6 +179,22 @@ do
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 echo "$TIME [INFO] Validator stopped for restarting!"
             fi
+        else
+            if [ $LAG -gt -5000 ]
+            then
+                CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+                if [ -z $CONVERT ]
+                then
+                    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                    sleep 10
+                    export D=`pgrep diem-node`
+                    if [ -z $D ]
+                    then
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                        echo "$TIME [INFO] Validator stopped for converting mode!"
+                    fi
+                fi
+            fi
         fi
         sleep 40
     fi
