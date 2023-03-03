@@ -269,7 +269,7 @@ do
                 echo -e "$TIME [INFO] \e[1m\e[32m=========  Validator running!  =========\e[0m"
             else
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo -e "$TIME [INFO] \e[1m\e[33m========= Validator running as fullnode mode now. =========\e[0m"
+                echo -e "$TIME [INFO] \e[1m\e[33m=========  Fullnode  running!  =========\e[0m"
             fi
         fi
         sleep 1160
