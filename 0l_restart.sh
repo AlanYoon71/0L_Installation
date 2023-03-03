@@ -176,7 +176,6 @@ do
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 echo -e "$TIME [INFO] \e[1m\e[33m========= Fullnode running. =========\e[0m"
-            fi
             else
                 PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 sleep 10
