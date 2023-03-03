@@ -276,7 +276,7 @@ do
     fi
     export NN=`pgrep tower`
     sleep 0.1
-    if [ -z $NN ]
+    if [ -z "$NN" ]
     then
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
         echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tower disconnected!! <<<\e[0m"
