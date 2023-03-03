@@ -189,6 +189,7 @@ do
         export LL=`pgrep diem-node`
         if [ -z $LL ]
         then
+            if [ -z $LAG ] ; then LAG=-10000 ; fi
             if [ $LAG -gt -5000 ]
             then
                 pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
