@@ -51,7 +51,7 @@ do
             then
                 export syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
             else
-                LAG=`expr $syn11 - $syn1`
+                export LAG=`expr $syn11 - $syn1`
                 if [ $LAG -gt -200 ]
                 then
                     echo "$TIME [INFO] Synced height : $syn11, Fully synced."
