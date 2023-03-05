@@ -102,7 +102,7 @@ do
                 echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted! =========\e[0m"
             fi
         else
-            echo "$TIME [INFO] Block height : $syn2"
+            echo "$TIME [INFO] Block height : $syn2, Network is alive."
             if [ -z $syn22 ]
             then
                 export syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
@@ -137,7 +137,12 @@ do
                             if [ $LAG -lt -200 ]
                             then
                                 CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                                echo -e "$TIME [INFO] Remained catchup time >> \e[1m\e[33m$CATCH\e[0m[Hr]"
+                                if [ "$CATCH" -lt 0 ]
+                                then
+                                    echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is slower than network. <<<\e[0m"
+                                else
+                                    echo -e "$TIME [INFO] Remained catchup time >> \e[1m\e[33m$CATCH\e[0m[Hr]"
+                                fi
                             fi
                         fi
                         SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
