@@ -141,7 +141,7 @@ do
                                 then
                                     echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is slower than network. <<<\e[0m"
                                 else
-                                    echo -e "$TIME [INFO] Remained catchup time >> \e[1m\e[33m$CATCH\e[0m[Hr]"
+                                    echo -e "$TIME [INFO] Remained catchup time >> \e[1m\e[31m$CATCH\e[0m[Hr]"
                                 fi
                             fi
                         fi
