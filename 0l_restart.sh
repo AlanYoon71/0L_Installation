@@ -56,7 +56,7 @@ do
                 then
                     echo "$TIME [INFO] Synced height : $syn11, Fully synced."
                 else
-                    echo "$TIME [INFO] Synced height : $syn11, Lag : $LAG"
+                    echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[31m$LAG\e[0m"
                 fi
             fi
         fi
@@ -112,7 +112,7 @@ do
                 then
                     echo "$TIME [INFO] Synced height : $syn22, Fully synced."
                 else
-                    echo "$TIME [INFO] Synced height : $syn22, Lag : $LAG"
+                    echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[31m$LAG\e[0m"
                 fi
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 if [ -z $syn11 ]
