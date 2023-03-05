@@ -102,7 +102,7 @@ do
                 echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted! =========\e[0m"
             fi
         else
-            echo "$TIME [INFO] Block height : $syn2, Network is alive."
+            echo "$TIME [INFO] Block height : $syn2"
             if [ -z $syn22 ]
             then
                 export syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
