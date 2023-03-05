@@ -2,7 +2,7 @@
 PATH=$PATH:/home/node/bin
 export TIME=`date +%Y-%m-%dT%I:%M:%S`
 echo ""
-echo "$TIME [INFO] Started."
+echo "$TIME [INFO] Script starts."
 J=1
 K=10
 while [ $J -lt $K ]
