@@ -265,7 +265,7 @@ do
                         echo "$TIME [INFO] Restored DB from network and restarted!"
                     fi
                 else
-                    echo -e "$TIME [INFO] ========= \e[1m\e[33mValidator restarted as fullnode mode. \e[0m========="
+                    echo -e "$TIME [INFO] \e[1m\e[33m========= Validator restarted as fullnode mode. =========\e[0m"
                 fi
             fi
         else
