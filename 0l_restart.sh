@@ -174,7 +174,8 @@ do
     then
         if [ -z $syn1 ] ; then syn1=0 ; fi
         if [ -z $syn2 ] ; then syn2=0 ; fi
-        if [ $syn1 -eq $syn2 ]
+        RR=`expr $syn2 - $syn1`
+        if [ "$RR" -lt 2 ]
         then
             CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
             if [ -z $CONVERT ]
