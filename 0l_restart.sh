@@ -182,6 +182,8 @@ do
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 echo -e "$TIME [INFO] \e[1m\e[33m========= Fullnode running. =========\e[0m"
             else
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                echo -e "$TIME [ERROR] \e[1m\e[35m|||||||| Block height stuck! ||||||||\e[0m"
                 PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 sleep 10
                 export D=`pgrep diem-node`
