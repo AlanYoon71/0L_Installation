@@ -195,7 +195,7 @@ do
                 fi
             fi
         else
-            if [ $LAG -gt -5000 ]
+            if [ "$LAG" -gt -5000 ]
             then
                 CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
                 if [ -z $CONVERT ]
