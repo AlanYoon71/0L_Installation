@@ -181,7 +181,14 @@ do
             if [ -z $CONVERT ]
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo -e "$TIME [INFO] \e[1m\e[33m========= Fullnode running. =========\e[0m"
+                ZZ=`pgrep diem-node`
+                sleep 0.1                
+                if [ -z "$ZZ" ]
+                then
+                    echo "$TIME [INFO] Validator stopped for restarting!"
+                else
+                    echo -e "$TIME [INFO] \e[1m\e[33m========= Fullnode running. =========\e[0m"
+                fi
             else
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 echo -e "$TIME [ERROR] \e[1m\e[35m|||||||| Block height stuck! ||||||||\e[0m"
