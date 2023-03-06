@@ -203,20 +203,23 @@ do
                 fi
             fi
         else
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            echo -e "$TIME [INFO] \e[1m\e[32mNetwork is alive! \e[0m"
-            if [ "$LAG" -gt -5000 ]
+            if [ "$syn1" -gt 0 ]
             then
-                CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
-                if [ -z "$CONVERT" ]
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                echo -e "$TIME [INFO] \e[1m\e[32mNetwork is alive! \e[0m"
+                if [ "$LAG" -gt -5000 ]
                 then
-                    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                    sleep 10
-                    export D=`pgrep diem-node`
-                    if [ -z "$D" ]
+                    CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+                    if [ -z "$CONVERT" ]
                     then
-                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        echo "$TIME [INFO] Fullnode stopped for converting mode! Catch up is almost done."
+                        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                        sleep 10
+                        export D=`pgrep diem-node`
+                        if [ -z "$D" ]
+                        then
+                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                            echo "$TIME [INFO] Fullnode stopped for converting mode!"
+                        fi
                     fi
                 fi
             fi
