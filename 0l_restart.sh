@@ -187,7 +187,7 @@ do
                 then
                     echo "$TIME [INFO] Validator stopped for restarting!"
                 else
-                    echo -e "$TIME [INFO] \e[1m\e[33m========= Fullnode running. =========\e[0m"
+                    echo -e "$TIME [INFO] ========= Fullnode running. ========="
                 fi
             else
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
@@ -281,7 +281,7 @@ do
             if [ -z $CONVERT ]
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo -e "$TIME [INFO] \e[1m\e[32m=========  Validator running!  =========\e[0m"
+                echo "$TIME [INFO] =========  Validator running!  ========="
             else
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 echo -e "$TIME [INFO] \e[1m\e[33m=========  Fullnode  running!  =========\e[0m"
