@@ -43,7 +43,7 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
                 fi
             else
-                echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted! =========\e[0m"
+                echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
             fi
         else
             echo "$TIME [INFO] Block  height : $syn1"
@@ -99,7 +99,7 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
                 fi
             else
-                echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted! =========\e[0m"
+                echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
             fi
         else
             echo "$TIME [INFO] Block  height : $syn2"
@@ -179,9 +179,9 @@ do
         if [ "$RR" -lt 2 ]
         then
             CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+            export TIME=`date +%Y-%m-%dT%I:%M:%S`
             if [ -z "$CONVERT" ]
             then
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 ZZ=`pgrep diem-node`
                 sleep 0.1
                 if [ -z "$ZZ" ]
@@ -191,7 +191,6 @@ do
                     echo "$TIME [INFO] =========  Fullnode is running continuously.   ========="
                 fi
             else
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 echo -e "$TIME [ERROR] \e[1m\e[35m|||||||| Network block height stuck! ||||||||\e[0m"
                 PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 sleep 10
@@ -239,9 +238,9 @@ do
                 pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
                 sleep 5
                 CC=`pgrep diem-node`
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 if [ -z "$CC" ]
                 then
-                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
                     rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
@@ -256,30 +255,56 @@ do
                         echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
                     fi
                 else
-                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! Fully synced!! =========\e[0m"
+                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
                 fi
             else
-                pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
-                sleep 5
-                CC=`pgrep diem-node`
-                if [ -z "$CC" ]
+                if [ "$syn1" -gt 0 ]
                 then
+                    pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
+                    sleep 5
+                    CC=`pgrep diem-node`
                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                    rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
-                    sleep 10
-                    nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
-                    sleep 2
-                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                    KK=`pgrep diem-node`
-                    if [ -z "$KK" ]
+                    if [ -z "$CC" ]
                     then
-                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
+                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
+                        rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                        sleep 10
+                        nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
+                        sleep 2
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                        KK=`pgrep diem-node`
+                        if [ -z "$KK" ]
+                        then
+                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
+                        else
+                            echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
+                        fi
                     else
-                        echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
+                        echo -e "$TIME [INFO] \e[1m\e[33m========= Validator restarted as fullnode mode. =========\e[0m"
                     fi
                 else
-                    echo -e "$TIME [INFO] \e[1m\e[33m========= Validator restarted as fullnode mode. =========\e[0m"
+                    pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                    sleep 5
+                    CC=`pgrep diem-node`
+                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    if [ -z "$CC" ]
+                    then
+                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
+                        rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                        sleep 10
+                        nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                        sleep 2
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                        KK=`pgrep diem-node`
+                        if [ -z "$KK" ]
+                        then
+                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
+                        else
+                            echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
+                        fi
+                    else
+                        echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
+                    fi
                 fi
             fi
         else
