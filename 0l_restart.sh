@@ -131,7 +131,6 @@ do
                         if [ $SPEED == 0 ]
                         then
                             echo "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : $LTPS[tx/s]"
-
                         else
                             echo "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : $LTPS[tx/s]"
                             if [ $LAG -lt -200 ]
@@ -182,7 +181,7 @@ do
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 ZZ=`pgrep diem-node`
-                sleep 0.1                
+                sleep 0.1
                 if [ -z "$ZZ" ]
                 then
                     echo "$TIME [INFO] Validator stopped for restarting!"
