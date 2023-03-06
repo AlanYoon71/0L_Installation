@@ -22,7 +22,7 @@ do
         sleep 0.1
         if [ -z "$syn1" ]
         then
-            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Validator already stopped!! <<<\e[0m"
+            echo "$TIME [WARN] >>> Validator already stopped!! <<<"
             pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
             sleep 1
             BB=`pgrep diem-node`
@@ -40,7 +40,7 @@ do
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
                 else
-                    echo "$TIME [INFO] Restored DB from network and restarted!"
+                    echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
                 fi
             else
                 echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted! =========\e[0m"
@@ -77,7 +77,7 @@ do
         sleep 0.1
         if [ -z "$syn2" ]
         then
-            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Validator already stopped!! <<<\e[0m"
+            echo "$TIME [WARN] >>> Validator already stopped!! <<<"
             pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
             sleep 1
             BB=`pgrep diem-node`
@@ -96,7 +96,7 @@ do
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
                 else
-                    echo "$TIME [INFO] Restored DB from network and restarted!"
+                    echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
                 fi
             else
                 echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted! =========\e[0m"
@@ -186,7 +186,7 @@ do
                 sleep 0.1
                 if [ -z "$ZZ" ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Validator already stopped!! <<<\e[0m"
+                    echo "$TIME [WARN] >>> Validator already stopped!! <<<"
                 else
                     echo "$TIME [INFO] =========  Fullnode is running continuously.   ========="
                 fi
@@ -250,7 +250,7 @@ do
                     then
                         echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
                     else
-                        echo "$TIME [INFO] Restored DB from network and restarted!"
+                        echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
                     fi
                 else
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! Fully synced!! =========\e[0m"
@@ -273,7 +273,7 @@ do
                     then
                         echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
                     else
-                        echo "$TIME [INFO] Restored DB from network and restarted!"
+                        echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
                     fi
                 else
                     echo -e "$TIME [INFO] \e[1m\e[33m========= Validator restarted as fullnode mode. =========\e[0m"
