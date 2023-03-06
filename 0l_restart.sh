@@ -204,7 +204,7 @@ do
             fi
         else
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            echo -e "$TIME [INFO] \e[1m\e[32m Network is alive! \e[0m"
+            echo -e "$TIME [INFO] \e[1m\e[32mNetwork is alive! \e[0m"
             if [ "$LAG" -gt -5000 ]
             then
                 CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
