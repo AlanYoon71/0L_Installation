@@ -54,9 +54,9 @@ do
                 export LAG=`expr $syn11 - $syn1`
                 if [ $LAG -gt -200 ]
                 then
-                    echo "$TIME [INFO] Synced height : $syn11, Fully synced."
+                    echo "$TIME [INFO] Synced height : $syn11 Fully synced."
                 else
-                    echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[31m$LAG\e[0m"
+                    echo -e "$TIME [INFO] Synced height : $syn11 Lag : \e[1m\e[31m$LAG\e[0m"
                 fi
             fi
         fi
@@ -110,9 +110,9 @@ do
                 export LAG=`expr $syn22 - $syn2`
                 if [ $LAG -gt -200 ]
                 then
-                    echo "$TIME [INFO] Synced height : $syn22, Fully synced."
+                    echo "$TIME [INFO] Synced height : $syn22 Fully synced."
                 else
-                    echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[31m$LAG\e[0m"
+                    echo -e "$TIME [INFO] Synced height : $syn22 Lag : \e[1m\e[31m$LAG\e[0m"
                 fi
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 if [ -z $syn11 ]
@@ -130,9 +130,11 @@ do
                         SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
                         if [ $SPEED == 0 ]
                         then
-                            echo "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : $LTPS[tx/s]"
+                            echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
+                            echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
                         else
-                            echo "$TIME [INFO] TPS >> Network : $NTPS[tx/s], Local : $LTPS[tx/s]"
+                            echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
+                            echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
                             if [ $LAG -lt -200 ]
                             then
                                 CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
@@ -140,7 +142,7 @@ do
                                 then
                                     echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is slower than network. <<<\e[0m"
                                 else
-                                    echo -e "$TIME [INFO] Remained catchup time >> \e[1m\e[31m$CATCH\e[0m[Hr]"
+                                    echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
                                 fi
                             fi
                         fi
@@ -184,13 +186,13 @@ do
                 sleep 0.1
                 if [ -z "$ZZ" ]
                 then
-                    echo "$TIME [INFO] Validator stopped for restarting!"
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Validator already stopped!! <<<\e[0m"
                 else
-                    echo -e "$TIME [INFO] ========= Fullnode running. ========="
+                    echo "$TIME [INFO] =========  Fullnode is running continuously.   ========="
                 fi
             else
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo -e "$TIME [ERROR] \e[1m\e[35m|||||||| Block height stuck! ||||||||\e[0m"
+                echo -e "$TIME [ERROR] \e[1m\e[35m|||||||| Network block height stuck! ||||||||\e[0m"
                 PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 sleep 10
                 export D=`pgrep diem-node`
@@ -201,6 +203,8 @@ do
                 fi
             fi
         else
+            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            echo -e "$TIME [INFO] \e[1m\e[32m Network is alive! \e[0m"
             if [ "$LAG" -gt -5000 ]
             then
                 CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
@@ -212,7 +216,7 @@ do
                     if [ -z $D ]
                     then
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        echo "$TIME [INFO] Fullnode stopped for converting mode! Catchup completed."
+                        echo "$TIME [INFO] Fullnode stopped for converting mode! Catch up is almost done."
                     fi
                 fi
             fi
@@ -280,10 +284,10 @@ do
             if [ -z $CONVERT ]
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo "$TIME [INFO] =========  Validator running!  ========="
+                echo "$TIME [INFO] =========  Validator is running continuously!  ========="
             else
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo -e "$TIME [INFO] \e[1m\e[33m=========  Fullnode  running!  =========\e[0m"
+                echo "$TIME [INFO] =========  Fullnode is running continuously.   ========="
             fi
         fi
         sleep 1160
