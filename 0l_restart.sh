@@ -188,7 +188,7 @@ do
                 then
                     echo "$TIME [WARN] >>> Validator already stopped!! <<<"
                 else
-                    echo "$TIME [INFO] =========  Fullnode is running.  ========="
+                    echo "$TIME [INFO] ========= Fullnode is running.  ========="
                 fi
             else
                 echo -e "$TIME [ERROR] \e[1m\e[35m|||||||| Network block height stuck! ||||||||\e[0m"
@@ -312,10 +312,10 @@ do
             if [ -z "$CONVERT" ]
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo "$TIME [INFO] ========= Validator is running.  ========="
+                echo "$TIME [INFO] ========= Validator is running. ========="
             else
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo "$TIME [INFO] =========  Fullnode is running.  ========="
+                echo "$TIME [INFO] ========= Fullnode is running.  ========="
             fi
         fi
         sleep 1160
