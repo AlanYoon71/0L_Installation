@@ -258,7 +258,7 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
                 fi
             else
-                if [ "$syn1" -gt 0 ]
+                if [ "$syn11" -gt 0 ]
                 then
                     pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                     sleep 5
