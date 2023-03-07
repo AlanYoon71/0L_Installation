@@ -132,6 +132,7 @@ do
                         then
                             echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
+                            if [ "$NTPS" -eq 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31m>>> Network stopped!! <<<\e[0m" ; fi
                         else
                             echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
@@ -149,7 +150,7 @@ do
                         SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
                         if [ -z "$SEEK1" ]
                         then
-                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tower failed to submit a last proof! <<<\e[0m"
+                            echo -e "$TIME [ERROR] \e[1m\e[31m>>> Tower failed to submit a last proof! <<<\e[0m"
                             SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                         else
                             SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
