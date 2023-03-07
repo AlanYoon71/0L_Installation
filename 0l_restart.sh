@@ -192,7 +192,7 @@ do
                     echo "$TIME [INFO] ========= Fullnode is running.  ========="
                 fi
             else
-                echo -e "$TIME [ERROR] \e[1m\e[35m|||||||| Network block height stuck! ||||||||\e[0m"
+                echo -e "$TIME [ERROR] \e[1m\e[35m|||||| Network block height stuck! ||||||\e[0m"
                 PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 sleep 10
                 export D=`pgrep diem-node`
