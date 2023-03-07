@@ -132,7 +132,7 @@ do
                         then
                             echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
-                            if [ "$NTPS" -eq 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31m>>> Network stopped!! <<<\e[0m" ; fi
+                            if [ `echo "$NTPS" | bc` -eq 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31m>>> Network stopped!! <<<\e[0m" ; fi
                         else
                             echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
