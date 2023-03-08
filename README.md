@@ -27,21 +27,21 @@
       a. Install script
         1. Faithfully followed official installation documentation.
         2. Validator and fullnode all can be installed and run by selecting onboard method.
-        3. Create TMUX background sessions for installation and run all processes for running tower in TMUX sessions.
-        4. Create log sessions for validator(fullnode), tower and restart script.
-        5. Calculate TPS(sync transaction per second) between network and local after starting validator(fullnode),
+        3. Creates TMUX background sessions for installation and run all processes for running tower in TMUX sessions.
+        4. Creates log sessions for validator(fullnode), tower and restart script.
+        5. Calculates TPS(sync transaction per second) between network and local after starting validator(fullnode),
            display remained catchup complete time(estimated).
-        6. Check not only tower connection but also mining progress and shows the number of final proofs successfully submitted to the chain.
+        6. Checks not only tower connection but also mining progress and shows the number of final proofs successfully submitted to the chain.
         7. Mnemonic and answers for question should be input by user twice manually to prove not malicious bot or script.
     
       b. Restart script
-        1. Check network block height by curl command(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"})
+        1. Checks network block height by curl command(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"})
            at 20 and 50 minutes on the hour, restart validator and tower at every hour on the hour if block height not increases.
-        2. Restart command in restart script as below.
+        2. Restarts command in restart script as below.
           - Validator: ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1
           - Tower: ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1
         3. If validator was already stopped before running the restart script, this script will automatically restart it.
         4. Script can wipe local DB, restore it from network and restart validator if fails to restart due to a DB crash or other reasons.
            (Killing a running process can sometimes cause DB crash, so if the validator can't be restarted, restore operation is inevitable)
         5. If DB is restored once, script start to monitor synced height so that you can check catchup status and remained catchup time(estimated).
-        6. It monitors TPS between network and local and automatically restarts validator if local speed drops significantly to prevent syncing stop.
+        6. Monitors TPS between network and local and automatically restarts validator if local speed drops significantly to prevent syncing stop.
