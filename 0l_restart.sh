@@ -139,7 +139,7 @@ do
                             if [ "$LAG" -lt -200 ]
                             then
                                 CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                                if [ "$CATCH" -lt 0 ]
+                                if [ "$CATCH" < 0 ]
                                 then
                                     echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is slower than network. <<<\e[0m"
                                 else
@@ -259,7 +259,7 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
                 fi
             else
-                if [ "$syn11" -gt 0 ]
+                if [ "$syn11" > 0 ]
                 then
                     pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                     sleep 5
