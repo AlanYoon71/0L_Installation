@@ -123,15 +123,14 @@ do
                     then
                         echo "$TIME [INFO] No comparison data right now."
                     else
-                        NDIFF=`expr $syn2 - $syn1`
-                        LDIFF=`expr $syn22 - $syn11`
+                        export NDIFF=`expr $syn2 - $syn1`
+                        export LDIFF=`expr $syn22 - $syn11`
                         export NTPS=$(echo "scale=2; $NDIFF / 1800" | bc)
                         sleep 0.1
                         export LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
                         sleep 0.1
-                        export TPSDIFF=$(echo "scale=2; $LTPS - $NTPS / 1800" | bc)
-                        sleep 0.1
                         export SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
                         if [ "$SPEED" == 0 ]
                         then
                             echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
@@ -140,17 +139,18 @@ do
                         else
                             echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
-                            AAA=$(echo "scale=2; -1" | bc)
-                            if [ "$TPSDIFF" -lt "$AAA" ]
+                            if [ "$LDIFF" -lt 500 ]
                             then
                                 echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
                                 echo -e "$TIME [WARN] \e[1m\e[31m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
                             else
-                                BBB=$(echo "scale=2; 0" | bc)
-                                if [ "$TPSDIFF" -ge "$BBB" ]
+                                if [ "$LDIFF" -gt "$NDIFF" ]
                                 then
-                                    export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                                    echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
+                                    if [ "$LAG" -lt -500 ]
+                                    then
+                                        export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
+                                        echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
+                                    fi
                                 fi
                             fi
                         fi
@@ -181,8 +181,7 @@ do
     ACTION3=59
     if [ $MIN == $ACTION3 ]
     then
-        CCC=$(echo "scale=2; -1" | bc)
-        if [ "$TPSDIFF" -lt "$CCC" ]
+        if [ "$LDIFF" -lt 500 ]
         then
             PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
             sleep 10
@@ -284,7 +283,7 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
                 fi
             else
-                if [ "$syn11" > 0 ]
+                if [ "$syn11" -gt 0 ]
                 then
                     pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1 > /dev/null &
                     sleep 5
