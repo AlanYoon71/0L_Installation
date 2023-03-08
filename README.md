@@ -44,3 +44,4 @@
         4. Script can wipe local DB, restore it from network and restart validator if fails to restart due to a DB crash or other reasons.
            (Killing a running process can sometimes cause DB crash, so if the validator can't be restarted, restore operation is inevitable)
         5. If DB is restored once, script start to monitor synced height so that you can check catchup status and remained catchup time(estimated).
+        6. It monitors TPS between network and local and automatically restarts validator if local speed drops significantly to prevent syncing stop.
