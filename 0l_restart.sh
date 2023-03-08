@@ -125,9 +125,13 @@ do
                     else
                         NDIFF=`expr $syn2 - $syn1`
                         LDIFF=`expr $syn22 - $syn11`
-                        NTPS=$(echo "scale=2; $NDIFF / 1800" | bc)
-                        LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
-                        SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
+                        export NTPS=$(echo "scale=2; $NDIFF / 1800" | bc)
+                        sleep 0.1
+                        export LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
+                        sleep 0.1
+                        export TPSDIFF=$(echo "scale=2; $LTPS - $NTPS / 1800" | bc)
+                        sleep 0.1
+                        export SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
                         if [ "$SPEED" == 0 ]
                         then
                             echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
@@ -136,14 +140,14 @@ do
                         else
                             echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
-                            if [ "$LAG" -lt -200 ]
+                            if [ "$TPSDIFF" -lt -1 ]
                             then
-                                CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                                sleep 0.1
-                                if [ "$CATCH" < 0 ]
+                                echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
+                                echo -e "$TIME [WARN] \e[1m\e[31m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
+                            else
+                                if [ "$TPSDIFF" -ge 0 ]
                                 then
-                                    echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is slower than network. <<<\e[0m"
-                                else
+                                    export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
                                     echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
                                 fi
                             fi
@@ -175,56 +179,68 @@ do
     ACTION3=59
     if [ $MIN == $ACTION3 ]
     then
-        if [ -z "$syn1" ] ; then syn1=0 ; fi
-        if [ -z "$syn2" ] ; then syn2=0 ; fi
-        RR=`expr $syn2 - $syn1`
-        if [ "$RR" -lt 2 ]
+        if [ "$TPSDIFF" -lt -1 ]
         then
-            CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            if [ -z "$CONVERT" ]
-            then
-                ZZ=`pgrep diem-node`
-                sleep 0.1
-                if [ -z "$ZZ" ]
-                then
-                    echo "$TIME [WARN] >>> Validator already stopped!! <<<"
-                else
-                    echo "$TIME [INFO] ========= Fullnode is running.  ========="
-                fi
-            else
-                if [ "$syn1" -gt 0 ]
-                then
-                    echo -e "$TIME [ERROR] \e[1m\e[35m|||||| Network block height stuck! ||||||\e[0m"
-                    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                    sleep 10
-                    export D=`pgrep diem-node`
-                    if [ -z "$D" ]
-                    then
-                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        echo "$TIME [INFO] Validator stopped for restarting!"
-                    fi
-                else
-                    echo "$TIME [INFO] No comparison data right now."
-                fi
-            fi
-        else
-            if [ "$syn1" -gt 0 ]
+            PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+            sleep 10
+            export D=`pgrep diem-node`
+            if [ -z "$D" ]
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo -e "$TIME [INFO] \e[1m\e[32mNetwork is alive! \e[0m"
-                if [ "$LAG" -gt -5000 ]
+                echo "$TIME [INFO] Validator stopped for restarting!"
+            fi
+        else
+            if [ -z "$syn1" ] ; then syn1=0 ; fi
+            if [ -z "$syn2" ] ; then syn2=0 ; fi
+            RR=`expr $syn2 - $syn1`
+            if [ "$RR" -lt 2 ]
+            then
+                CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                if [ -z "$CONVERT" ]
                 then
-                    CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
-                    if [ -z "$CONVERT" ]
+                    ZZ=`pgrep diem-node`
+                    sleep 0.1
+                    if [ -z "$ZZ" ]
                     then
+                        echo "$TIME [WARN] >>> Validator already stopped!! <<<"
+                    else
+                        echo "$TIME [INFO] ========= Fullnode is running.  ========="
+                    fi
+                else
+                    if [ "$syn1" -gt 0 ]
+                    then
+                        echo -e "$TIME [ERROR] \e[1m\e[35m|||||| Network block height stuck! ||||||\e[0m"
                         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                         sleep 10
                         export D=`pgrep diem-node`
                         if [ -z "$D" ]
                         then
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                            echo "$TIME [INFO] Fullnode stopped for converting mode!"
+                            echo "$TIME [INFO] Validator stopped for restarting!"
+                        fi
+                    else
+                        echo "$TIME [INFO] No comparison data right now."
+                    fi
+                fi
+            else
+                if [ "$syn1" -gt 0 ]
+                then
+                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    echo -e "$TIME [INFO] \e[1m\e[32mNetwork is alive! \e[0m"
+                    if [ "$LAG" -gt -5000 ]
+                    then
+                        CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+                        if [ -z "$CONVERT" ]
+                        then
+                            PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                            sleep 10
+                            export D=`pgrep diem-node`
+                            if [ -z "$D" ]
+                            then
+                                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                echo "$TIME [INFO] Fullnode stopped for converting mode!"
+                            fi
                         fi
                     fi
                 fi
