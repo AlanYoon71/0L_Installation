@@ -139,6 +139,7 @@ do
                             if [ "$LAG" -lt -200 ]
                             then
                                 CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
+                                sleep 0.1
                                 if [ "$CATCH" < 0 ]
                                 then
                                     echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is slower than network. <<<\e[0m"
