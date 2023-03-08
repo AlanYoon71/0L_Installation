@@ -140,12 +140,14 @@ do
                         else
                             echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
-                            if [ "$TPSDIFF" -lt -1 ]
+                            AAA=$(echo "scale=2; -1" | bc)
+                            if [ "$TPSDIFF" -lt "$AAA" ]
                             then
                                 echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
                                 echo -e "$TIME [WARN] \e[1m\e[31m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
                             else
-                                if [ "$TPSDIFF" -ge 0 ]
+                                BBB=$(echo "scale=2; 0" | bc)
+                                if [ "$TPSDIFF" -ge "$BBB" ]
                                 then
                                     export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
                                     echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
@@ -179,7 +181,8 @@ do
     ACTION3=59
     if [ $MIN == $ACTION3 ]
     then
-        if [ "$TPSDIFF" -lt -1 ]
+        CCC=$(echo "scale=2; -1" | bc)
+        if [ "$TPSDIFF" -lt "$CCC" ]
         then
             PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
             sleep 10
