@@ -139,7 +139,7 @@ do
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
                             if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31m>>> Network stopped!! <<<\e[0m" ; fi
                         else
-                            if [ `echo $NTPS > 10000 | bc` -eq 1 ]
+                            if [ -z "$syn1" ]
                             then
                                 echo "$TIME [INFO] No comparison data right now."
                             else
