@@ -139,21 +139,26 @@ do
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
                             if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31m>>> Network stopped!! <<<\e[0m" ; fi
                         else
-                            echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
-                            echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
-                            if [ "$LDIFF" -lt 500 ]
+                            if [ `echo $NTPS < 10000 | bc` -eq 1 ]
                             then
-                                echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
-                                echo -e "$TIME [WARN] \e[1m\e[31m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
-                            else
-                                if [ "$LDIFF" -gt "$NDIFF" ]
+                                echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
+                                echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
+                                if [ "$LDIFF" -lt 500 ]
                                 then
-                                    if [ "$LAG" -lt -500 ]
+                                    echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
+                                    echo -e "$TIME [WARN] \e[1m\e[31m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
+                                else
+                                    if [ "$LDIFF" -gt "$NDIFF" ]
                                     then
-                                        export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                                        echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
+                                        if [ "$LAG" -lt -500 ]
+                                        then
+                                            export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
+                                            echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
+                                        fi
                                     fi
                                 fi
+                            else
+                                echo "$TIME [INFO] No comparison data right now."
                             fi
                         fi
                         SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
