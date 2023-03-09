@@ -366,8 +366,6 @@ do
         then
             echo -e "$TIME [INFO] ========= \e[1m\e[33m  Tower restarted.   \e[0m========="
         fi
-    else
-        echo "$TIME [INFO] =========   Tower is running.   ========="
     fi
     sleep 5
 done
