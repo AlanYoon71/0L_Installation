@@ -163,6 +163,7 @@ do
                             SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                         else
                             SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
+                            if [ -z "$SEEK2" ] ; then SEEK2=0 ; fi
                             if [ -z "$SEEK3" ] ; then SEEK3=0 ; fi
                             CHECKTOWER=`expr $SEEK2 - $SEEK3`
                             if [ "$CHECKTOWER" -gt 0 ]
