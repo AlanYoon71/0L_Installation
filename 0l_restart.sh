@@ -139,8 +139,10 @@ do
                             echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
                             if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31m>>> Network stopped!! <<<\e[0m" ; fi
                         else
-                            if [ `echo $NTPS < 10000 | bc` -eq 1 ]
+                            if [ `echo $NTPS > 10000 | bc` -eq 1 ]
                             then
+                                echo "$TIME [INFO] No comparison data right now."
+                            else
                                 echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
                                 echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
                                 if [ "$LDIFF" -lt 500 ]
@@ -157,8 +159,6 @@ do
                                         fi
                                     fi
                                 fi
-                            else
-                                echo "$TIME [INFO] No comparison data right now."
                             fi
                         fi
                         SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
