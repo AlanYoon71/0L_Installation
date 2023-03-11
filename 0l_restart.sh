@@ -135,16 +135,16 @@ do
                         export TIME=`date +%Y-%m-%dT%I:%M:%S`
                         if [ "$SPEED" == 0 ]
                         then
-                            echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
-                            echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
+                            echo "$TIME [INFO] Network TPS  : $NTPS[tx/s]"
+                            echo "$TIME [INFO] Local   TPS  : $LTPS[tx/s]"
                             if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31m>>> Network stopped!! <<<\e[0m" ; fi
                         else
                             if [ -z "$syn1" ]
                             then
                                 echo "$TIME [INFO] No comparison data right now."
                             else
-                                echo "$TIME [INFO] Network TPS : $NTPS[tx/s]"
-                                echo "$TIME [INFO] Local   TPS : $LTPS[tx/s]"
+                                echo "$TIME [INFO] Network TPS  : $NTPS[tx/s]"
+                                echo "$TIME [INFO] Local   TPS  : $LTPS[tx/s]"
                                 if [ "$LDIFF" -lt 500 ]
                                 then
                                     echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
