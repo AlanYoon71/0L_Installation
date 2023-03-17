@@ -34,9 +34,9 @@
         6. Checks not only tower connection but also mining progress and shows the number of final proofs successfully submitted to the chain.
         7. Mnemonic and answers for question should be input by user twice manually to prove not malicious bot or script.
     
-      b. Restart script
-        1. Checks consensus current round and network block height by curl command at 20 and 50 minutes on the hour, 
-           restart validator and tower at every hour on the hour if block height not increases.
+      b. Restart script (23.03.18 updated)
+        1. Checks consensus current round, local and network block height by curl command at 20 and 50 minutes on the hour, 
+           restart validator and tower at every hour on the hour if round and local block height not increases at the same time.
         2. Restarts command in restart script as below.
           - Validator: ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1
           - Tower: ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1
