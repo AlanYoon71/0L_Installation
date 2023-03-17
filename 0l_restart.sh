@@ -13,6 +13,7 @@ do
     then
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
+        export round1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 0.1
         if [ -z "$syn1" ]
         then
@@ -20,45 +21,50 @@ do
         fi
         export syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
         sleep 0.1
-        if [ -z "$syn1" ]
+        if [ "$round1" -gt 0 ]
         then
-            echo "$TIME [WARN] >>> Validator already stopped!! <<<"
-            pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-            sleep 1
-            BB=`pgrep diem-node`
-            sleep 0.1
-            if [ -z "$BB" ]
+            if [ -z "$syn1" ]
             then
-                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
-                sleep 10
-                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-                sleep 2
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                EE=`pgrep diem-node`
-                if [ -z "$EE" ]
+                echo "$TIME [WARN] >>> Validator already stopped!! <<<"
+                pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                sleep 1
+                BB=`pgrep diem-node`
+                sleep 0.1
+                if [ -z "$BB" ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
+                    rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    sleep 10
+                    nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                    sleep 2
+                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    EE=`pgrep diem-node`
+                    if [ -z "$EE" ]
+                    then
+                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
+                    else
+                        echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
+                    fi
                 else
-                    echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
+                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
                 fi
             else
-                echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
+                echo "$TIME [INFO] Block  height : $syn1"
+                if [ -z "$syn11" ]
+                then
+                    export syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+                else
+                    export LAG=`expr $syn11 - $syn1`
+                    if [ "$LAG" -gt -200 ]
+                    then
+                        echo "$TIME [INFO] Synced height : $syn11 Fully synced."
+                    else
+                        echo -e "$TIME [INFO] Synced height : $syn11 Lag : \e[1m\e[31m$LAG\e[0m"
+                    fi
+                fi
             fi
         else
-            echo "$TIME [INFO] Block  height : $syn1"
-            if [ -z "$syn11" ]
-            then
-                export syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-            else
-                export LAG=`expr $syn11 - $syn1`
-                if [ "$LAG" -gt -200 ]
-                then
-                    echo "$TIME [INFO] Synced height : $syn11 Fully synced."
-                else
-                    echo -e "$TIME [INFO] Synced height : $syn11 Lag : \e[1m\e[31m$LAG\e[0m"
-                fi
-            fi
+            export round1=0
         fi
         sleep 1760
     fi
@@ -70,6 +76,7 @@ do
         if [ -z "$syn11" ] ; then syn11=0 ; fi
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
         export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
+        export round2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 0.1
         if [ -z "$syn2" ]
         then
@@ -77,111 +84,116 @@ do
         fi
         export syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
         sleep 0.1
-        if [ -z "$syn2" ]
+        if [ "$round2" -gt 0 ]
         then
-            echo "$TIME [WARN] >>> Validator already stopped!! <<<"
-            pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-            sleep 1
-            BB=`pgrep diem-node`
-            sleep 0.1
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            if [ -z "$BB" ]
+            if [ -z "$syn2" ]
             then
-                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
-                sleep 10
-                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
-                sleep 2
+                echo "$TIME [WARN] >>> Validator already stopped!! <<<"
+                pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                sleep 1
+                BB=`pgrep diem-node`
+                sleep 0.1
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                EE=`pgrep diem-node`
-                if [ -z "$EE" ]
+                if [ -z "$BB" ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
+                    rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    sleep 10
+                    nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1 > /dev/null &
+                    sleep 2
+                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    EE=`pgrep diem-node`
+                    if [ -z "$EE" ]
+                    then
+                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
+                    else
+                        echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
+                    fi
                 else
-                    echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
+                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
                 fi
             else
-                echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
-            fi
-        else
-            echo "$TIME [INFO] Block  height : $syn2"
-            if [ -z "$syn22" ]
-            then
-                export syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-            else
-                export LAG=`expr $syn22 - $syn2`
-                if [ "$LAG" -gt -200 ]
+                echo "$TIME [INFO] Block  height : $syn2"
+                if [ -z "$syn22" ]
                 then
-                    echo "$TIME [INFO] Synced height : $syn22 Fully synced."
+                    export syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
                 else
-                    echo -e "$TIME [INFO] Synced height : $syn22 Lag : \e[1m\e[31m$LAG\e[0m"
-                fi
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                if [ -z "$syn11" ]
-                then
-                    echo "$TIME [INFO] No comparison data right now."
-                else
-                    if [ -z "$syn1" ]
+                    export LAG=`expr $syn22 - $syn2`
+                    if [ "$LAG" -gt -200 ]
+                    then
+                        echo "$TIME [INFO] Synced height : $syn22 Fully synced."
+                    else
+                        echo -e "$TIME [INFO] Synced height : $syn22 Lag : \e[1m\e[31m$LAG\e[0m"
+                    fi
+                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    if [ -z "$syn11" ]
                     then
                         echo "$TIME [INFO] No comparison data right now."
                     else
-                        export NDIFF=`expr $syn2 - $syn1`
-                        export LDIFF=`expr $syn22 - $syn11`
-                        export NTPS=$(echo "scale=2; $NDIFF / 1800" | bc)
-                        sleep 0.1
-                        export LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
-                        sleep 0.1
-                        export SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
-                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                        if [ "$SPEED" == 0 ]
+                        if [ -z "$syn1" ]
                         then
-                            echo "$TIME [INFO] Network TPS  : $NTPS[tx/s]"
-                            echo "$TIME [INFO] Local   TPS  : $LTPS[tx/s]"
-                            if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31m>>> Network stopped!! <<<\e[0m" ; fi
+                            echo "$TIME [INFO] No comparison data right now."
                         else
-                            if [ -z "$syn1" ]
+                            export NDIFF=`expr $syn2 - $syn1`
+                            export LDIFF=`expr $syn22 - $syn11`
+                            export NTPS=$(echo "scale=2; $NDIFF / 1800" | bc)
+                            sleep 0.1
+                            export LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
+                            sleep 0.1
+                            export SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
+                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                            if [ "$SPEED" == 0 ]
                             then
-                                echo "$TIME [INFO] No comparison data right now."
-                            else
                                 echo "$TIME [INFO] Network TPS  : $NTPS[tx/s]"
                                 echo "$TIME [INFO] Local   TPS  : $LTPS[tx/s]"
-                                if [ "$LDIFF" -lt 500 ]
+                                if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31m>>> Network stopped!! <<<\e[0m" ; fi
+                            else
+                                if [ -z "$syn1" ]
                                 then
-                                    echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
-                                    echo -e "$TIME [WARN] \e[1m\e[31m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
+                                    echo "$TIME [INFO] No comparison data right now."
                                 else
-                                    if [ "$LDIFF" -gt "$NDIFF" ]
+                                    echo "$TIME [INFO] Network TPS  : $NTPS[tx/s]"
+                                    echo "$TIME [INFO] Local   TPS  : $LTPS[tx/s]"
+                                    if [ "$LDIFF" -lt 500 ]
                                     then
-                                        if [ "$LAG" -lt -500 ]
+                                        echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
+                                        echo -e "$TIME [WARN] \e[1m\e[31m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
+                                    else
+                                        if [ "$LDIFF" -gt "$NDIFF" ]
                                         then
-                                            export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                                            echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
+                                            if [ "$LAG" -lt -500 ]
+                                            then
+                                                export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
+                                                echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
+                                            fi
                                         fi
                                     fi
                                 fi
                             fi
-                        fi
-                        SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
-                        if [ -z "$SEEK1" ]
-                        then
-                            echo -e "$TIME [ERROR] \e[1m\e[31m>>> Tower failed to submit a last proof! <<<\e[0m"
-                            SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
-                        else
-                            SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
-                            if [ -z "$SEEK2" ] ; then SEEK2=0 ; fi
-                            if [ -z "$SEEK3" ] ; then SEEK3=0 ; fi
-                            CHECKTOWER=`expr $SEEK2 - $SEEK3`
-                            if [ "$CHECKTOWER" -gt 0 ]
+                            SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
+                            if [ -z "$SEEK1" ]
                             then
-                                echo -e "$TIME [INFO] Tower is mining normally. \e[1m\e[32mProof # $SEEK2 \e[0m"
+                                echo -e "$TIME [ERROR] \e[1m\e[31m>>> Tower failed to submit a last proof! <<<\e[0m"
+                                SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             else
-                                echo -e "$TIME [ERROR] \e[1m\e[31m>>> Tower mining has been unsuccessful for at least an hour. <<<\e[0m"
+                                SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
+                                if [ -z "$SEEK2" ] ; then SEEK2=0 ; fi
+                                if [ -z "$SEEK3" ] ; then SEEK3=0 ; fi
+                                CHECKTOWER=`expr $SEEK2 - $SEEK3`
+                                if [ "$CHECKTOWER" -gt 0 ]
+                                then
+                                    echo -e "$TIME [INFO] Tower is mining normally. \e[1m\e[32mProof # $SEEK2 \e[0m"
+                                else
+                                    echo -e "$TIME [ERROR] \e[1m\e[31m>>> Tower mining has been unsuccessful for at least an hour. <<<\e[0m"
+                                fi
+                                SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
-                            SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                         fi
                     fi
                 fi
             fi
+        else
+            export round2=0
         fi
         sleep 560
     fi
@@ -189,72 +201,79 @@ do
     ACTION3=59
     if [ $MIN == $ACTION3 ]
     then
-        if [ "$LDIFF" -lt 500 ]
+        RD=`expr $round2 - $round1`
+        if [ "$RD" -lt 2 ]
         then
-            PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-            sleep 10
-            export D=`pgrep diem-node`
-            if [ -z "$D" ]
+            if [ "$LDIFF" -lt 500 ]
             then
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                echo "$TIME [INFO] Validator stopped for restarting!"
-            fi
-        else
-            if [ -z "$syn1" ] ; then syn1=0 ; fi
-            if [ -z "$syn2" ] ; then syn2=0 ; fi
-            RR=`expr $syn2 - $syn1`
-            if [ "$RR" -lt 2 ]
-            then
-                CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                if [ -z "$CONVERT" ]
-                then
-                    ZZ=`pgrep diem-node`
-                    sleep 0.1
-                    if [ -z "$ZZ" ]
-                    then
-                        echo "$TIME [WARN] >>> Validator already stopped!! <<<"
-                    else
-                        echo "$TIME [INFO] ========= Fullnode is running.  ========="
-                    fi
-                else
-                    if [ "$syn1" -gt 0 ]
-                    then
-                        echo -e "$TIME [ERROR] \e[1m\e[35m|||||| Network block height stuck! ||||||\e[0m"
-                        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                        sleep 10
-                        export D=`pgrep diem-node`
-                        if [ -z "$D" ]
-                        then
-                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                            echo "$TIME [INFO] Validator stopped for restarting!"
-                        fi
-                    else
-                        echo "$TIME [INFO] No comparison data right now."
-                    fi
-                fi
-            else
-                if [ "$syn1" -gt 0 ]
+                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                sleep 10
+                export D=`pgrep diem-node`
+                if [ -z "$D" ]
                 then
                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                    echo -e "$TIME [INFO] \e[1m\e[32mNetwork is alive! \e[0m"
-                    if [ "$LAG" -gt -5000 ]
+                    echo "$TIME [INFO] Validator stopped for restarting!"
+                fi
+            else
+                if [ -z "$syn1" ] ; then syn1=0 ; fi
+                if [ -z "$syn2" ] ; then syn2=0 ; fi
+                RR=`expr $syn2 - $syn1`
+                if [ "$RR" -lt 2 ]
+                then
+                    CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    if [ -z "$CONVERT" ]
                     then
-                        CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
-                        if [ -z "$CONVERT" ]
+                        ZZ=`pgrep diem-node`
+                        sleep 0.1
+                        if [ -z "$ZZ" ]
                         then
+                            echo "$TIME [WARN] >>> Validator already stopped!! <<<"
+                        else
+                            echo "$TIME [INFO] ========= Fullnode is running.  ========="
+                        fi
+                    else
+                        if [ "$syn1" -gt 0 ]
+                        then
+                            echo -e "$TIME [ERROR] \e[1m\e[35m|||||| Network block height stuck! ||||||\e[0m"
                             PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                             sleep 10
                             export D=`pgrep diem-node`
                             if [ -z "$D" ]
                             then
                                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
-                                echo "$TIME [INFO] Fullnode stopped for converting mode!"
+                                echo "$TIME [INFO] Validator stopped for restarting!"
+                            fi
+                        else
+                            echo "$TIME [INFO] No comparison data right now."
+                        fi
+                    fi
+                else
+                    if [ "$syn1" -gt 0 ]
+                    then
+                        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                        echo -e "$TIME [INFO] \e[1m\e[32mNetwork is alive! \e[0m"
+                        if [ "$LAG" -gt -5000 ]
+                        then
+                            CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/validator.node.yaml" | awk '/bin/{print $2}'`
+                            if [ -z "$CONVERT" ]
+                            then
+                                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                                sleep 10
+                                export D=`pgrep diem-node`
+                                if [ -z "$D" ]
+                                then
+                                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                                    echo "$TIME [INFO] Fullnode stopped for converting mode!"
+                                fi
                             fi
                         fi
                     fi
                 fi
             fi
+        else
+            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            echo -e "$TIME [INFO] The consensus round is increasing normally. You are at \e[1m\e[32m$round2 \e[0mround."
         fi
         sleep 40
     fi
