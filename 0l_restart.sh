@@ -204,6 +204,8 @@ do
         RD=`expr $round2 - $round1`
         if [ "$RD" -lt 2 ]
         then
+            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            echo -e "$TIME [ERROR] \e[1m\e[35m|||||| Consensus round stuck! You are at $round2 round. ||||||\e[0m"
             if [ "$LDIFF" -lt 500 ]
             then
                 PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
@@ -273,7 +275,7 @@ do
             fi
         else
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            echo -e "$TIME [INFO] The consensus round is increasing normally. You are at \e[1m\e[32m$round2 \e[0mround."
+            echo -e "$TIME [INFO] Consensus round is increasing normally. You are at \e[1m\e[32m$round2 \e[0mround."
         fi
         sleep 40
     fi
