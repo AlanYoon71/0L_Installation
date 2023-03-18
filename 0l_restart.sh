@@ -60,9 +60,9 @@ do
                     export LAG=`expr $syn11 - $syn1`
                     if [ "$LAG" -gt -200 ]
                     then
-                        echo "$TIME [INFO] Synced height : $syn11 Fully synced."
+                        echo "$TIME [INFO] Synced height : $syn11, Fully synced."
                     else
-                        echo -e "$TIME [INFO] Synced height : $syn11 Lag : \e[1m\e[31m$LAG\e[0m"
+                        echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[31m$LAG\e[0m"
                     fi
                 fi
             fi
@@ -124,9 +124,9 @@ do
                     export LAG=`expr $syn22 - $syn2`
                     if [ "$LAG" -gt -200 ]
                     then
-                        echo "$TIME [INFO] Synced height : $syn22 Fully synced."
+                        echo "$TIME [INFO] Synced height : $syn22, Fully synced."
                     else
-                        echo -e "$TIME [INFO] Synced height : $syn22 Lag : \e[1m\e[31m$LAG\e[0m"
+                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[31m$LAG\e[0m"
                     fi
                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
                     if [ -z "$syn11" ]
