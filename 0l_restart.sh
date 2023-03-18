@@ -174,6 +174,7 @@ do
                                 fi
                             fi
                             SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
+                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             if [ -z "$SEEK1" ]
                             then
                                 echo -e "$TIME [ERROR] \e[1m\e[31m>>> Tower failed to submit a last proof! <<<\e[0m"
@@ -219,7 +220,8 @@ do
             fi
         else
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
-            echo -e "$TIME [INFO] Consensus is in progress. \e[1m\e[32mCurrent round : $round2 \e[0m"
+            export round3=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
+            echo -e "$TIME [INFO] Consensus is in progress. \e[1m\e[32mCurrent round : $round3 \e[0m"
         fi
         sleep 40
     fi
