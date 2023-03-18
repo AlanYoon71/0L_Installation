@@ -5,7 +5,7 @@ echo ""
 echo "This script fetches data from network and compares the difference between the two numbers."
 echo "The checkpoint times are [**:20] and [**:50], so run this script before [**:20]."
 echo ""
-echo "$TIME [INFO] [Restart script] started."
+echo "$TIME [INFO] [Restart Script] started."
 J=1
 K=10
 while [ $J -lt $K ]
