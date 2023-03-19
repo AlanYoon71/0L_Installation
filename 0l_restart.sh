@@ -18,6 +18,43 @@ do
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 0.1
+        if [ -z "$round2" ] ; then round2=0 ; fi
+        RD=`expr $round1 - $round2`
+        if [ "$RD" -lt 1 ]
+        then
+            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round1 round!\e[0m"
+            PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+            sleep 10
+            export D=`pgrep diem-node`
+            if [ -z "$D" ]
+            then
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                echo "$TIME [INFO] Validator stopped for restarting!"
+                pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                sleep 5
+                CC=`pgrep diem-node`
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                if [ -z "$CC" ]
+                then
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
+                    rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    sleep 10
+                    nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                    sleep 2
+                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    KK=`pgrep diem-node`
+                    if [ -z "$KK" ]
+                    then
+                        echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. You need to check node status manually.\e[0m"
+                    else
+                        echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted successfully! =========\e[0m"
+                    fi
+                else
+                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted successfully!! =========\e[0m"
+                fi
+            fi
+        fi
         if [ -z "$syn1" ]
         then
             export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
