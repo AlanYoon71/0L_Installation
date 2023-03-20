@@ -17,9 +17,10 @@ do
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
-        sleep 0.1
+        sleep 1
         if [ -z "$round1" ] ; then round1=1000000000
         if [ -z "$round2" ] ; then round2=0 ; fi
+        sleep 0.1
         RD=`expr $round1 - $round2`
         if [ "$RD" -lt 1 ]
         then
@@ -61,7 +62,7 @@ do
             export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
         fi
         export syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-        sleep 0.1
+        sleep 1
         if [ "$round1" -gt 0 ]
         then
             if [ -z "$syn1" ]
@@ -118,13 +119,13 @@ do
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
         export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
-        sleep 0.1
+        sleep 1
         if [ -z "$syn2" ]
         then
             export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
         fi
         export syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-        sleep 0.1
+        sleep 1
         if [ "$round2" -gt 0 ]
         then
             if [ -z "$syn2" ]
@@ -178,9 +179,9 @@ do
                             export NDIFF=`expr $syn2 - $syn1`
                             export LDIFF=`expr $syn22 - $syn11`
                             export NTPS=$(echo "scale=2; $NDIFF / 1800" | bc)
-                            sleep 0.1
+                            sleep 0.2
                             export LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
-                            sleep 0.1
+                            sleep 0.2
                             export SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             if [ "$SPEED" == 0 ]
@@ -303,7 +304,7 @@ do
         sleep 1160
     fi
     export NN=`pgrep tower`
-    sleep 0.1
+    sleep 0.2
     if [ -z "$NN" ]
     then
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
