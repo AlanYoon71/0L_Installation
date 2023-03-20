@@ -18,6 +18,7 @@ do
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 0.1
+        if [ -z "$round1" ] ; then round1=1000000000
         if [ -z "$round2" ] ; then round2=0 ; fi
         RD=`expr $round1 - $round2`
         if [ "$RD" -lt 1 ]
