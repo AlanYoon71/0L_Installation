@@ -18,7 +18,7 @@ do
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 1
-        if [ -z "$round1" ] ; then round1=1000000000 ; fi
+        if [ -z "$round1" ] ; then round1=10000000000 ; fi
         if [ -z "$round2" ] ; then round2=0 ; fi
         sleep 0.1
         RD=`expr $round1 - $round2`
@@ -118,6 +118,9 @@ do
         export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 1
+        if [ -z "$round1" ] ; then round1=0 ; fi
+        if [ -z "$round2" ] ; then round2=10000000000 ; fi
+        sleep 0.1
         if [ -z "$syn2" ]
         then
             export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
@@ -240,6 +243,9 @@ do
     ACTION3=59
     if [ $MIN == $ACTION3 ]
     then
+        if [ -z "$round1" ] ; then round1=0 ; fi
+        if [ -z "$round2" ] ; then round2=10000000000 ; fi
+        sleep 0.1
         RD=`expr $round2 - $round1`
         sleep 0.2
         if [ "$RD" -lt 1 ]
