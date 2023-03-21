@@ -105,8 +105,6 @@ do
                     fi
                 fi
             fi
-        else
-            export round1=0
         fi
         sleep 1760
     fi
@@ -235,8 +233,6 @@ do
                     fi
                 fi
             fi
-        else
-            export round2=0
         fi
         sleep 560
     fi
@@ -245,6 +241,7 @@ do
     if [ $MIN == $ACTION3 ]
     then
         RD=`expr $round2 - $round1`
+        sleep 0.2
         if [ "$RD" -lt 1 ]
         then
             export TIME=`date +%Y-%m-%dT%I:%M:%S`
