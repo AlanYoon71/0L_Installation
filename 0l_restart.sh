@@ -14,10 +14,24 @@ do
     ACTION1=20
     if [ $MIN == $ACTION1 ]
     then
+        export EPOCH1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 1
+        export EPOCH1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
+        sleep 0.2
+        if [ -z "$EPOCH1" ] ; then EPOCH1=0 ; fi
+        if [ -z "$EPOCH3" ] ; then EPOCH3=0 ; fi
+        if [ "$EPOCH3" -gt 1 ]
+        then
+            if [ "$EPOCH1" -gt "$EPOCH3" ]
+            then
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH1 \e[0m========="
+            fi
+        fi
+        sleep 0.2
         if [ -z "$round1" ] ; then round1=10000000000 ; fi
         if [ -z "$round2" ] ; then round2=0 ; fi
         sleep 0.1
@@ -118,6 +132,19 @@ do
         export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 1
+        export EPOCH2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
+        sleep 0.2
+        if [ -z "$EPOCH1" ] ; then EPOCH1=0 ; fi
+        if [ -z "$EPOCH2" ] ; then EPOCH2=0 ; fi
+        if [ "$EPOCH1" -gt 1 ]
+        then
+            if [ "$EPOCH2" -gt "$EPOCH1" ]
+            then
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH2 \e[0m========="
+            fi
+        fi
+        sleep 0.2
         if [ -z "$round1" ] ; then round1=0 ; fi
         if [ -z "$round2" ] ; then round2=10000000000 ; fi
         sleep 0.1
@@ -184,19 +211,22 @@ do
                             export LTPS=$(echo "scale=2; $LDIFF / 1800" | bc)
                             sleep 0.2
                             export SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
+                            export EPOCH=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             if [ "$SPEED" == 0 ]
                             then
-                                echo "$TIME [INFO] Network TPS  : $NTPS[tx/s]"
-                                echo "$TIME [INFO] Local   TPS  : $LTPS[tx/s]"
+                                echo "$TIME [INFO] Sync    epoch : $EPOCH"
+                                echo "$TIME [INFO] Network   TPS : $NTPS[tx/s]"
+                                echo "$TIME [INFO] Local     TPS : $LTPS[tx/s]"
                                 if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31mNetwork stopped!! \e[0m" ; fi
                             else
                                 if [ -z "$syn1" ]
                                 then
                                     echo "$TIME [INFO] No comparison data right now."
                                 else
-                                    echo "$TIME [INFO] Network TPS  : $NTPS[tx/s]"
-                                    echo "$TIME [INFO] Local   TPS  : $LTPS[tx/s]"
+                                    echo "$TIME [INFO] Sync    epoch : $EPOCH"
+                                    echo "$TIME [INFO] Network   TPS : $NTPS[tx/s]"
+                                    echo "$TIME [INFO] Local     TPS : $LTPS[tx/s]"
                                     if [ "$LDIFF" -lt 500 ]
                                     then
                                         echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
@@ -271,6 +301,19 @@ do
     ACTION4=00
     if [ $MIN == $ACTION4 ]
     then
+        export EPOCH3=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
+        sleep 0.2
+        if [ -z "$EPOCH2" ] ; then EPOCH2=0 ; fi
+        if [ -z "$EPOCH3" ] ; then EPOCH3=0 ; fi
+        if [ "$EPOCH2" -gt 1 ]
+        then
+            if [ "$EPOCH3" -gt "$EPOCH2" ]
+            then
+                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH3 \e[0m========="
+            fi
+        fi
+        sleep 0.2
         export LL=`pgrep diem-node`
         if [ -z "$LL" ]
         then
