@@ -29,6 +29,7 @@ do
             then
                 export TIME=`date +%Y-%m-%dT%I:%M:%S`
                 echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH1 \e[0m========="
+                round2=0
             fi
         fi
         sleep 0.2
@@ -115,7 +116,7 @@ do
                     then
                         echo "$TIME [INFO] Synced height : $syn11, Fully synced."
                     else
-                        echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[31m$LAG\e[0m"
+                        echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[35m$LAG\e[0m"
                     fi
                 fi
             fi
@@ -193,7 +194,7 @@ do
                     then
                         echo "$TIME [INFO] Synced height : $syn22, Fully synced."
                     else
-                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[31m$LAG\e[0m"
+                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[35m$LAG\e[0m"
                     fi
                     export TIME=`date +%Y-%m-%dT%I:%M:%S`
                     if [ -z "$syn11" ]
@@ -218,7 +219,7 @@ do
                                 echo "$TIME [INFO] Sync    epoch : $EPOCH"
                                 echo "$TIME [INFO] Network   TPS : $NTPS[tx/s]"
                                 echo "$TIME [INFO] Local     TPS : $LTPS[tx/s]"
-                                if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[31mNetwork stopped!! \e[0m" ; fi
+                                if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[35mNetwork stopped!! \e[0m" ; fi
                             else
                                 if [ -z "$syn1" ]
                                 then
@@ -229,15 +230,15 @@ do
                                     echo "$TIME [INFO] Local     TPS : $LTPS[tx/s]"
                                     if [ "$LDIFF" -lt 500 ]
                                     then
-                                        echo -e "$TIME [WARN] \e[1m\e[31m>>> Local speed is too slow to sync!! <<<\e[0m"
-                                        echo -e "$TIME [WARN] \e[1m\e[31m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
+                                        echo -e "$TIME [WARN] \e[1m\e[35m>>> Local speed is too slow to sync!! <<<\e[0m"
+                                        echo -e "$TIME [WARN] \e[1m\e[35m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
                                     else
                                         if [ "$LDIFF" -gt "$NDIFF" ]
                                         then
                                             if [ "$LAG" -lt -500 ]
                                             then
                                                 export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
-                                                echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[31m$CATCH\e[0m[Hr]"
+                                                echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[35m$CATCH\e[0m[Hr]"
                                             fi
                                         fi
                                     fi
@@ -247,7 +248,7 @@ do
                             export TIME=`date +%Y-%m-%dT%I:%M:%S`
                             if [ -z "$SEEK1" ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[31mTower failed to submit a last proof! \e[0m"
+                                echo -e "$TIME [ERROR] \e[1m\e[35mTower failed to submit a last proof! \e[0m"
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             else
                                 SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
@@ -258,7 +259,7 @@ do
                                 then
                                     echo -e "$TIME [INFO] Tower is mining normally. \e[1m\e[32mProof # $SEEK2 \e[0m"
                                 else
-                                    echo -e "$TIME [ERROR] \e[1m\e[31m>>> Tower mining has been unsuccessful for at least an hour. <<<\e[0m"
+                                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tower mining has been unsuccessful for at least an hour. <<<\e[0m"
                                 fi
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
