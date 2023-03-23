@@ -36,6 +36,7 @@ do
         if [ -z "$round1" ] ; then round1=10000000000 ; fi
         if [ -z "$round2" ] ; then round2=0 ; fi
         sleep 0.1
+        if [ "$round1" -lt "$round2" ] ; then round2=0 ; fi
         RD=`expr $round1 - $round2`
         if [ "$RD" -lt 1 ]
         then
@@ -277,6 +278,7 @@ do
         if [ -z "$round1" ] ; then round1=0 ; fi
         if [ -z "$round2" ] ; then round2=10000000000 ; fi
         sleep 0.1
+        if [ "$round2" -lt "$round1" ] ; then round1=0 ; fi
         RD=`expr $round2 - $round1`
         sleep 0.2
         if [ "$RD" -lt 1 ]
