@@ -10,16 +10,16 @@ J=1
 K=10
 while [ $J -lt $K ]
 do
-    s1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
+    export s1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
     if [ -z "$s1" ]
     then
         export s1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
     fi
-    c1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"committed\"} | grep -o '[0-9]*'`
+    export c1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"committed\"} | grep -o '[0-9]*'`
     sleep 0.1
     if [ -z "$s1" ] ; then s1=0 ; fi
     if [ -z "$c1" ] ; then c1=0 ; fi
-    EMERG=`expr $s1 - $c1`
+    export EMERG=`expr $s1 - $c1`
     sleep 0.1
     t1=0
     if [ "$EMERG" -gt 500 ]
@@ -34,6 +34,9 @@ do
     then
         export TIME=`date +%Y-%m-%dT%I:%M:%S`
         echo -e "$TIME [ERROR] \e[1m\e[31mEMERGENCY! Sync operation suddenly stopped!! \e[0m"
+        echo "$TIME [INFO] Block  height : $s1"
+        echo -e "$TIME [INFO] Synced height : $c1, Lag : \e[1m\e[31m$EMERG\e[0m"
+        sleep 0.1
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 10
         export D=`pgrep diem-node`
@@ -177,7 +180,7 @@ do
                 fi
             fi
         fi
-        sleep 1760
+        #sleep 1760
     fi
     export MIN=`date "+%M"`
     ACTION2=50
@@ -324,7 +327,7 @@ do
                 fi
             fi
         fi
-        sleep 560
+        #sleep 560
     fi
     export MIN=`date "+%M"`
     ACTION3=59
@@ -405,7 +408,7 @@ do
                 echo "$TIME [INFO] ========= Validator is running well now. ========="
             fi
         fi
-        sleep 1160
+        #sleep 1160
     fi
     export NN=`pgrep tower`
     sleep 0.2
@@ -421,5 +424,5 @@ do
             echo -e "$TIME [INFO] \e[1m\e[33m=========   Tower restarted successfully!!   =========\e[0m"
         fi
     fi
-    sleep 5
+    sleep 10
 done
