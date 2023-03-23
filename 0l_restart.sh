@@ -69,7 +69,7 @@ do
                         echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted successfully! =========\e[0m"
                     fi
                 else
-                    echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted successfully!! =========\e[0m"
+                    echo -e "$TIME [INFO] \e[1m\e[32m======= Validator restarted successfully!! =======\e[0m"
                 fi
             fi
         fi
@@ -340,7 +340,7 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted successfully! =========\e[0m"
                 fi
             else
-                echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted successfully!! =========\e[0m"
+                echo -e "$TIME [INFO] \e[1m\e[32m======= Validator restarted successfully!! =======\e[0m"
             fi
         else
             CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/fullnode.node.yaml" | awk '/bin/{print $2}'`
