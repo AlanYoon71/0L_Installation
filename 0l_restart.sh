@@ -180,7 +180,7 @@ do
                 fi
             fi
         fi
-        #sleep 1760
+        sleep 60
     fi
     export MIN=`date "+%M"`
     ACTION2=50
@@ -318,7 +318,7 @@ do
                                 then
                                     echo -e "$TIME [INFO] Tower is mining normally. \e[1m\e[32mProof # $SEEK2 \e[0m"
                                 else
-                                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tower mining has been unsuccessful for at least an hour. <<<\e[0m"
+                                    echo -e "$TIME [ERROR] \e[1m\e[35mTower mining has been unsuccessful for at least an hour.\e[0m"
                                 fi
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
@@ -327,7 +327,7 @@ do
                 fi
             fi
         fi
-        #sleep 560
+        sleep 60
     fi
     export MIN=`date "+%M"`
     ACTION3=59
@@ -408,7 +408,7 @@ do
                 echo "$TIME [INFO] ========= Validator is running well now. ========="
             fi
         fi
-        #sleep 1160
+        sleep 60
     fi
     export NN=`pgrep tower`
     sleep 0.2
