@@ -37,11 +37,12 @@
       b. Restart script (23.03.18 updated)
         1. Checks consensus current round, local and network block height by curl command at **:20 and **:50 minutes, 
            restart validator and tower at every hour on the hour if round and local block height not increases at the same time.
+        2. If block height increases and the local height or round does not increase, restart immediately at sync lag 1000.(scan interval : 10s)
         2. Restarts command in restart script as below.
           - Validator: ~/bin/diem-node --config ~/.0L/validator.node.yaml >> ~/.0L/logs/validator.log 2>&1
           - Tower: ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1
         3. If validator was already stopped before running the restart script, this script will automatically restart it.
-        4. Script can wipe local DB, restore it from network and restart validator if fails to restart due to a DB crash or other reasons.
+        4. Script can wipe local DB, restore it from 0l network repo and restart validator if fails to restart due to a DB crash or other reasons.
            (Killing a running process can sometimes cause DB crash, so if the validator can't be restarted, restore operation is inevitable)
         5. If DB is restored once, script start to monitor synced height so that you can check catchup status and remained catchup time(estimated).
         6. Monitors TPS between network and local and automatically restarts validator if local speed drops significantly to prevent syncing stop.
