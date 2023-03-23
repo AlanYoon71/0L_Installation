@@ -220,7 +220,7 @@ do
                                 echo "$TIME [INFO] Sync    epoch : $EPOCH"
                                 echo "$TIME [INFO] Network   TPS : $NTPS[tx/s]"
                                 echo "$TIME [INFO] Local     TPS : $LTPS[tx/s]"
-                                if [ "$NDIFF" == 0 ] ; then echo -e "$TIME [ERROR] \e[1m\e[35mNetwork stopped!! \e[0m" ; fi
+                                if [ "$NDIFF" == 0 ] ; then echo "$TIME [WARN] Network transaction is very slow now." ; fi
                             else
                                 if [ -z "$syn1" ]
                                 then
