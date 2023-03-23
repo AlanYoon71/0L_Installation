@@ -424,5 +424,5 @@ do
             echo -e "$TIME [INFO] \e[1m\e[33m=========   Tower restarted successfully!!   =========\e[0m"
         fi
     fi
-    sleep 10
+    sleep 20
 done
