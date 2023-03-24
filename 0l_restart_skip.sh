@@ -4,7 +4,7 @@ echo ""
 echo "This script fetches data from network and compares the difference between the two numbers."
 echo "The checkpoint times are [**:20] and [**:50], so run this script before [**:20]."
 echo ""
-echo "If you want to skip monitoring a specific time, enter the exact time.(e.g. 09, 14 etc) Enter if you don't want to skip."
+echo "If you want to skip monitoring a specific time, enter the exact UTC time.(e.g. 09, 14 etc) Enter if you don't want to skip."
 read skip1
 if [ -z "$skip1" ] ; then skip1=0 ; fi
 export skip=`echo $skip1`
