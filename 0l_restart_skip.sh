@@ -4,13 +4,18 @@ echo ""
 echo "This script fetches data from network and compares the difference between the two numbers."
 echo "The checkpoint times are [**:20] and [**:50], so run this script before [**:20]."
 echo ""
-echo "If you want to skip monitoring a specific time, enter the exact UTC time.(e.g. 09, 14 etc) Enter if you don't want to skip."
+echo "If you want to skip monitoring a specific time(only 1 Hr possible), enter the exact UTC time.(e.g. 09, 14 etc) Enter if you don't want to skip."
 read skip1
-if [ -z "$skip1" ] ; then skip1=0 ; fi
-export skip=`echo $skip1`
-echo ""
-echo "< Notice > $skip:00 ~ $skip:59 Script will be slept."
-echo ""
+if [ -z "$skip1" ]
+then
+    export skip=100
+    echo ""
+else
+    export skip=`echo $skip1`
+    echo ""
+    echo "< Notice > $skip:00 ~ $skip:59 Script will be slept."
+    echo ""
+fi
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
 echo "$TIME [INFO] [Restart Script] started."
 J=1
