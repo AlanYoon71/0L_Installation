@@ -1,6 +1,6 @@
 #!/bin/bash
 PATH=$PATH:/home/node/bin
-export TIME=`date +%Y-%m-%dT%I:%M:%S`
+export TIME=`date +%Y-%m-%dT%H:%M:%S`
 echo ""
 echo "This script fetches data from network and compares the difference between the two numbers."
 echo "The checkpoint times are [**:20] and [**:50], so run this script before [**:20]."
@@ -32,7 +32,7 @@ do
     fi
     if [ $t1 -gt 1 ]
     then
-        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+        export TIME=`date +%Y-%m-%dT%H:%M:%S`
         echo -e "$TIME [ERROR] \e[1m\e[31mEMERGENCY! Sync operation suddenly stopped!! \e[0m"
         echo "$TIME [INFO] Block  height : $s1"
         echo -e "$TIME [INFO] Synced height : $c1, Lag : \e[1m\e[31m$EMERG\e[0m"
@@ -42,12 +42,12 @@ do
         export D=`pgrep diem-node`
         if [ -z "$D" ]
         then
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
             echo "$TIME [INFO] Validator stopped for restarting!"
             pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
             sleep 5
             CC=`pgrep diem-node`
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$CC" ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
@@ -55,7 +55,7 @@ do
                 sleep 10
                 nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                 sleep 2
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 KK=`pgrep diem-node`
                 if [ -z "$KK" ]
                 then
@@ -73,7 +73,7 @@ do
     if [ $MIN == $ACTION1 ]
     then
         export EPOCH1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
-        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+        export TIME=`date +%Y-%m-%dT%H:%M:%S`
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 1
@@ -85,7 +85,7 @@ do
         then
             if [ "$EPOCH1" -gt "$EPOCH3" ]
             then
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH1 \e[0m========="
                 round2=0
             fi
@@ -98,19 +98,19 @@ do
         RD=`expr $round1 - $round2`
         if [ "$RD" -lt 1 ]
         then
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
             echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round1 round!\e[0m"
             PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
             sleep 10
             export D=`pgrep diem-node`
             if [ -z "$D" ]
             then
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo "$TIME [INFO] Validator stopped for restarting!"
                 pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                 sleep 5
                 CC=`pgrep diem-node`
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 if [ -z "$CC" ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
@@ -118,7 +118,7 @@ do
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                     sleep 2
-                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
                     KK=`pgrep diem-node`
                     if [ -z "$KK" ]
                     then
@@ -153,7 +153,7 @@ do
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                     sleep 2
-                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
                     EE=`pgrep diem-node`
                     if [ -z "$EE" ]
                     then
@@ -188,7 +188,7 @@ do
     then
         if [ -z "$syn1" ] ; then syn1=0 ; fi
         if [ -z "$syn11" ] ; then syn11=0 ; fi
-        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+        export TIME=`date +%Y-%m-%dT%H:%M:%S`
         export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
         sleep 1
@@ -200,7 +200,7 @@ do
         then
             if [ "$EPOCH2" -gt "$EPOCH1" ]
             then
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH2 \e[0m========="
             fi
         fi
@@ -223,7 +223,7 @@ do
                 sleep 1
                 BB=`pgrep diem-node`
                 sleep 0.1
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 if [ -z "$BB" ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
@@ -231,7 +231,7 @@ do
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                     sleep 2
-                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
                     EE=`pgrep diem-node`
                     if [ -z "$EE" ]
                     then
@@ -255,7 +255,7 @@ do
                     else
                         echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[35m$LAG\e[0m"
                     fi
-                    export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
                     if [ -z "$syn11" ]
                     then
                         echo "$TIME [INFO] No comparison data right now."
@@ -272,7 +272,7 @@ do
                             sleep 0.2
                             export SPEED=$(echo "scale=2; $NTPS - $LTPS" | bc)
                             export EPOCH=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
-                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                            export TIME=`date +%Y-%m-%dT%H:%M:%S`
                             if [ "$SPEED" == 0 ]
                             then
                                 echo "$TIME [INFO] Sync    epoch : $EPOCH"
@@ -304,7 +304,7 @@ do
                                 fi
                             fi
                             SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
-                            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                            export TIME=`date +%Y-%m-%dT%H:%M:%S`
                             if [ -z "$SEEK1" ]
                             then
                                 echo -e "$TIME [ERROR] \e[1m\e[35mTower failed to submit a last proof! \e[0m"
@@ -341,18 +341,18 @@ do
         sleep 0.2
         if [ "$RD" -lt 1 ]
         then
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
             echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round2 round!\e[0m"
             PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
             sleep 10
             export D=`pgrep diem-node`
             if [ -z "$D" ]
             then
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo "$TIME [INFO] Validator stopped for restarting!"
             fi
         else
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
             export round3=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
             echo -e "$TIME [INFO] Consensus is in progress. \e[1m\e[32mCurrent round : $round3 \e[0m"
         fi
@@ -370,7 +370,7 @@ do
         then
             if [ "$EPOCH3" -gt "$EPOCH2" ]
             then
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH3 \e[0m========="
             fi
         fi
@@ -381,7 +381,7 @@ do
             pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
             sleep 5
             CC=`pgrep diem-node`
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$CC" ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
@@ -389,7 +389,7 @@ do
                 sleep 10
                 nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                 sleep 2
-                export TIME=`date +%Y-%m-%dT%I:%M:%S`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 KK=`pgrep diem-node`
                 if [ -z "$KK" ]
                 then
@@ -402,7 +402,7 @@ do
             fi
         else
             CONVERT=`ps -ef|grep "diem-node --config /home/node/.0L/fullnode.node.yaml" | awk '/bin/{print $2}'`
-            export TIME=`date +%Y-%m-%dT%I:%M:%S`
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$CONVERT" ]
             then
                 echo "$TIME [INFO] ========= Validator is running well now. ========="
@@ -414,7 +414,7 @@ do
     sleep 0.2
     if [ -z "$NN" ]
     then
-        export TIME=`date +%Y-%m-%dT%I:%M:%S`
+        export TIME=`date +%Y-%m-%dT%H:%M:%S`
         echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tower disconnected!! <<<\e[0m"
         nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
         sleep 2
