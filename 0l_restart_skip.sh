@@ -125,9 +125,9 @@ do
                 timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected" > ConsensusDirectSend_NG.txt
                 sleep 0.1
                 echo -e "Current ConsensusDirectSend_Message \e[1m\e[31mUnresponsive \e[0mAddresses"
-                echo "========"
+                echo -e "\e[1m\e[31m========\e[0m"
                 cat ConsensusDirectSend_NG.txt | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
-                echo "========"
+                echo -e "\e[1m\e[31m========\e[0m"
                 # PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 # sleep 10
                 # export D=`pgrep diem-node`
@@ -374,9 +374,9 @@ do
                 timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected" > ConsensusDirectSend_NG.txt
                 sleep 0.1
                 echo -e "Current ConsensusDirectSend_Message \e[1m\e[31mUnresponsive \e[0mAddresses"
-                echo "========"
+                echo -e "\e[1m\e[31m========\e[0m"
                 cat ConsensusDirectSend_NG.txt | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
-                echo "========"
+                echo -e "\e[1m\e[31m========\e[0m"
                 PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 sleep 10
                 export D=`pgrep diem-node`
