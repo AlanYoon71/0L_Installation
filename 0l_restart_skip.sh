@@ -40,7 +40,7 @@ do
         export c1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"committed\"} | grep -o '[0-9]*'`
         sleep 0.1
         if [ -z "$s1" ] ; then s1=0 ; fi
-        if [ -z "$c1" ] ; then c1=0 ; fi
+        if [ -z "$c1" ] ; then c1=1000000000000000 ; fi
         export EMERG=`expr $s1 - $c1`
         sleep 0.1
         t1=0
