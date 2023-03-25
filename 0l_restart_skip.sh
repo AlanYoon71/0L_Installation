@@ -28,6 +28,7 @@ do
         export TIME=`date +%Y-%m-%dT%H:%M:%S`
         echo "$TIME [INFO] $skip:00 ~ $skip:59 Script goes to sleep."
         sleep 3600
+        export TIME=`date +%Y-%m-%dT%H:%M:%S`
         echo "$TIME [INFO] Script woke up and restarted."
     else
         export s1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
