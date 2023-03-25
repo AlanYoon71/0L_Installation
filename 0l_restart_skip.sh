@@ -124,15 +124,16 @@ do
                 echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round1 round!\e[0m"
                 timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected" > ConsensusDirectSend_NG.txt
                 sleep 0.1
-                if [ -s $ConsensusDirectSend_NG.txt ]
+                check=`cat ConsensusDirectSend_NG.txt`
+                if [ -z "$check" ]
                 then
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                    echo -e "$TIME [INFO] All addresses in active set are voting now. Great!"
+                else
                     echo -e "Current ConsensusDirectSend_Message \e[1m\e[31mUnresponsive \e[0mAddresses"
                     echo -e "\e[1m\e[31m========\e[0m"
                     cat ConsensusDirectSend_NG.txt | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
                     echo -e "\e[1m\e[31m========\e[0m"
-                else
-                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                    echo -e "$TIME [INFO] All addresses in active set are voting now. Great!"
                 fi
                 # PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 # sleep 10
@@ -379,15 +380,16 @@ do
                 echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round2 round!\e[0m"
                 timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected" > ConsensusDirectSend_NG.txt
                 sleep 0.1
-                if [ -s $ConsensusDirectSend_NG.txt ]
+                check=`cat ConsensusDirectSend_NG.txt`
+                if [ -z "$check" ]
                 then
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                    echo -e "$TIME [INFO] All addresses in active set are voting now. Great!"
+                else
                     echo -e "Current ConsensusDirectSend_Message \e[1m\e[31mUnresponsive \e[0mAddresses"
                     echo -e "\e[1m\e[31m========\e[0m"
                     cat ConsensusDirectSend_NG.txt | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
                     echo -e "\e[1m\e[31m========\e[0m"
-                else
-                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                    echo -e "$TIME [INFO] All addresses in active set are voting now. Great!"
                 fi
                 PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 sleep 10
