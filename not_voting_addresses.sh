@@ -1,6 +1,6 @@
 #!/bin/bash
 echo ""
-voting=`timeout 2s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
+voting=`timeout 3s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
 sleep 0.1
 echo -e "\e[1m\e[32m============= Broadcasting log =============\e[0m"
 echo "$voting"
