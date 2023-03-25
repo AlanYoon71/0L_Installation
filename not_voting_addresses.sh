@@ -1,6 +1,6 @@
 #!/bin/bash
 echo ""
-voting=`timeout 1s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
+voting=`timeout 2s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
 sleep 0.1
 echo -e "\e[1m\e[32m============= Broadcasting log =============\e[0m"
 echo "$voting"
@@ -19,6 +19,6 @@ then
 else
     echo -e "Current ConsensusDirectSend_Message \e[1m\e[31mUnresponsive \e[0mAddresses"
     echo -e "\e[1m\e[31m========\e[0m"
-    cat "$notvoting" | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
+    echo "$notvoting" | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
     echo -e "\e[1m\e[31m========\e[0m"
 fi
