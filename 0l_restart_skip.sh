@@ -112,7 +112,18 @@ do
                     round2=0
                 fi
             fi
-            sleep 0.2
+            notvoting=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
+            sleep 0.1
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
+            if [ -z "$notvoting" ]
+            then
+                echo -e "$TIME [INFO] \e[1m\e[32mAll addresses in active set are voting now. Great!\e[0m"
+            else
+                echo -e "$TIME [WARN] Current ConsensusDirectSend_Message \e[1m\e[31mUnresponsive(Not voting) \e[0mAddresses"
+                echo -e "\e[1m\e[31m========\e[0m"
+                echo "$notvoting" | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
+                echo -e "\e[1m\e[31m========\e[0m"
+            fi
             if [ -z "$round1" ] ; then round1=10000000000 ; fi
             if [ -z "$round2" ] ; then round2=0 ; fi
             sleep 0.1
@@ -122,19 +133,6 @@ do
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round1 round!\e[0m"
-                timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected" > ConsensusDirectSend_NG.txt
-                sleep 0.1
-                check=`cat ConsensusDirectSend_NG.txt`
-                if [ -z "$check" ]
-                then
-                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                    echo -e "$TIME [INFO] All addresses in active set are voting now. Great!"
-                else
-                    echo -e "Current ConsensusDirectSend_Message \e[1m\e[31mUnresponsive \e[0mAddresses"
-                    echo -e "\e[1m\e[31m========\e[0m"
-                    cat ConsensusDirectSend_NG.txt | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
-                    echo -e "\e[1m\e[31m========\e[0m"
-                fi
                 # PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 # sleep 10
                 # export D=`pgrep diem-node`
