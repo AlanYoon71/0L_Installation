@@ -34,7 +34,7 @@
         6. Checks not only tower connection but also mining progress and shows the number of final proofs successfully submitted to the chain.
         7. Mnemonic and answers for question should be input by user twice manually to prove not malicious bot or script.
     
-      b. Restart script (23.03.18 updated)
+      b. Restart script (23.03.26 updated)
         1. Checks consensus current round, local and network block height by curl command at **:20 and **:50 minutes, 
            restart validator and tower at every hour on the hour if round and local block height not increases at the same time.
         2. If block height increases and the local height or round does not increase, restart immediately at sync lag 1000.(scan interval : 20s)
@@ -46,3 +46,4 @@
            (Killing a running process can sometimes cause DB crash, so if the validator can't be restarted, restore operation is inevitable)
         6. If DB is restored once, script start to monitor synced height so that you can check catchup status and remained catchup time(estimated).
         7. Monitors TPS between network and local and automatically restarts validator if local speed drops significantly to prevent syncing stop.
+        8. Every hour at **:20, script checks the voting status of active validators and print out addresses that are not voting.
