@@ -46,4 +46,6 @@
            (Killing a running process can sometimes cause DB crash, so if the validator can't be restarted, restore operation is inevitable)
         6. If DB is restored once, script start to monitor synced height so that you can check catchup status and remained catchup time(estimated).
         7. Monitors TPS between network and local and automatically restarts validator if local speed drops significantly to prevent syncing stop.
-        8. Every hour at **:20, script checks the voting status of active validators and print out addresses that are not voting.
+        8. 0l_restart_skip.sh only
+           - If you don't want to restart for a specific hour(only one hour), you can use this script.
+           - Every hour at **:20, script checks the voting status of active validators and print out addresses that are not voting.
