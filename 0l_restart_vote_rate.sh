@@ -121,7 +121,7 @@ do
             then
                 echo "$TIME [INFO] No broadcasting now."
             else
-                echo -e "$TIME [INFO] Voting addresses of nodes are broadcasted"
+                echo -e "$TIME [INFO] Voting addresses of nodes are broadcasted."
                 echo -e "\e[1m\e[32m========\e[0m"
                 echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                 echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
@@ -133,7 +133,7 @@ do
                 echo -e "Vote    Rate : $rate%, \e[1m\e[31m$votediff \e[0mnodes are not voting now."
                 grep -oE '[[:xdigit:]]{32}' page_active_validator_set.txt | cut -d ' ' -f1 | sort | uniq > active_validator_set.txt
                 sleep 0.1
-                nonvoting=$(grep -vf voting*.txt active_validator_set.txt)
+                nonvoting=$(grep -vf voting_address.txt active_validator_set.txt)
                 sleep 0.1
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 if [ -z "$nonvoting" ]
@@ -154,7 +154,7 @@ do
             then
                 echo "$TIME [INFO] All addresses in active set are connected. Good!"
             else
-                echo "$TIME [WARN] Addresses of nodes that not connected ConsensusDirectSend protocol"
+                echo "$TIME [WARN] Addresses of nodes that not connected."
                 echo -e "\e[1m\e[31m========\e[0m"
                 echo "$notconnected" | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
                 echo -e "\e[1m\e[31m========\e[0m"
