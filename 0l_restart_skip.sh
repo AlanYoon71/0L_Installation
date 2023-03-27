@@ -121,7 +121,7 @@ do
             then
                 echo "$TIME [INFO] No broadcasting now."
             else
-                echo -e "$TIME [INFO] Broadcasted addresses of nodes currently voting"
+                echo -e "$TIME [INFO] Voting addresses of nodes are broadcasted"
                 echo -e "\e[1m\e[32m========\e[0m"
                 echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                 echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
@@ -140,7 +140,7 @@ do
                 then
                     echo "$TIME [INFO] All validators in the set are voting now. Great!"
                 else
-                    echo -e "$TIME [INFO] Non-voting addresses of nodes in the active validator set."
+                    echo -e "$TIME [INFO] Non-voting addresses of nodes in the active validator set"
                     echo -e "\e[1m\e[31m========\e[0m"
                     echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                     echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
