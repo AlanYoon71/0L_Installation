@@ -1,8 +1,8 @@
 #!/bin/bash
 PATH=$PATH:/home/node/bin
 echo ""
-echo "This script fetches data from network and compares the difference between the two numbers."
-echo "The checkpoint times are [**:20] and [**:50], so run this script before [**:20]."
+echo "Insert the total numbers of validators in the current epoch active validator set."
+read set1
 echo ""
 echo "If you want to skip monitoring a specific time(only 1 Hr possible), enter the exact UTC time.(e.g. 09, 14 etc) Enter if you don't want to skip."
 read skip1
@@ -112,16 +112,51 @@ do
                     round2=0
                 fi
             fi
-            notvoting=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
+            timeout 3s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers" > broadcast_log.txt
+            sleep 0.1
+            voting=$(cat broadcast_log.txt)
             sleep 0.1
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            if [ -z "$notvoting" ]
+            if [ -z "$voting" ]
             then
-                echo -e "$TIME [INFO] \e[1m\e[32mAll addresses in active set are voting now. Great!\e[0m"
+                echo "$TIME [INFO] No broadcasting now."
             else
-                echo -e "$TIME [WARN] Current ConsensusDirectSend_Message \e[1m\e[31mUnresponsive(Not voting) \e[0mAddresses"
+                echo -e "$TIME [INFO] Broadcasted addresses of nodes currently voting"
+                echo -e "\e[1m\e[32m========\e[0m"
+                echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
+                echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
+                echo -e "\e[1m\e[32m========\e[0m"
+                total=`echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq | wc l`
+                votediff=`expr $set1 - $total`
+                export rate=$(echo "scale=2; $total / $set1 * 100" | bc)
+                echo "Total voting : $total nodes, Total in set : $set1 nodes"
+                echo -e "Vote    Rate : $rate%, \e[1m\e[31m$votediff \e[0mnodes are not voting now."
+                grep -oE '[[:xdigit:]]{32}' page_active_validator_set.txt | cut -d ' ' -f1 | sort | uniq > active_validator_set.txt
+                sleep 0.1
+                nonvoting=$(grep -vf voting*.txt active_validator_set.txt)
+                sleep 0.1
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                if [ -z "$nonvoting" ]
+                then
+                    echo "$TIME [INFO] All validators in the set are voting now. Great!"
+                else
+                    echo -e "$TIME [INFO] Non-voting addresses of nodes in the active validator set."
+                    echo -e "\e[1m\e[31m========\e[0m"
+                    echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
+                    echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
+                    echo -e "\e[1m\e[31m========\e[0m"
+                fi
+            fi            
+            notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
+            sleep 0.1
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
+            if [ -z "$notconnected" ]
+            then
+                echo "$TIME [INFO] All addresses in active set are connected. Good!"
+            else
+                echo "$TIME [WARN] Addresses of nodes that not connected ConsensusDirectSend protocol"
                 echo -e "\e[1m\e[31m========\e[0m"
-                echo "$notvoting" | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
+                echo "$notconnected" | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
                 echo -e "\e[1m\e[31m========\e[0m"
             fi
             if [ -z "$round1" ] ; then round1=10000000000 ; fi
