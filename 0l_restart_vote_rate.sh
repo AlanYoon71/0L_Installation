@@ -4,8 +4,11 @@ echo ""
 echo "Insert the total numbers of validators in the current epoch active validator set."
 read set1
 echo ""
-echo "If you want to skip monitoring a specific time(only 1 Hr possible), enter the exact UTC time.(e.g. 09, 14 etc) Enter if you don't want to skip."
+echo "If you want to skip monitoring a specific time(only 1 Hr), enter the exact UTC time.(e.g. 09, 14 etc) Just enter if you don't want to skip."
 read skip1
+echo ""
+echo "Right now, you should save the active validator set info with a name as page_active_validator_set.txt."
+echo "You can get this info at https://0lexplorer.io/validators. Copy the entire top table."
 if [ -z "$skip1" ]
 then
     export skip=100
@@ -146,6 +149,7 @@ do
                     echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
                     echo -e "\e[1m\e[31m========\e[0m"
                 fi
+                cat /dev/null > broadcast_log.txt && cat /dev/null > page_active_validator_set.txt
             fi            
             notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
             sleep 0.1
