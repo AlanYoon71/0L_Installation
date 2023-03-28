@@ -115,10 +115,8 @@ do
                     round2=0
                 fi
             fi
-            timeout 3s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers" > broadcast_log.txt
-            sleep 0.1
-            voting=$(cat broadcast_log.txt)
-            sleep 0.1
+            voting=`timeout 3s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
+            sleep 3.5
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$voting" ]
             then
@@ -130,6 +128,7 @@ do
                 echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
                 echo -e "\e[1m\e[32m========\e[0m"
                 total=`echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq | wc l`
+                if [ -z "$total" ] ; then total=$set1 ; fi 
                 votediff=`expr $set1 - $total`
                 export rate=$(echo "scale=2; $total / $set1 * 100" | bc)
                 echo "Total voting : $total nodes, Total in set : $set1 nodes"
