@@ -63,6 +63,6 @@ then
 else
     echo "$TIME [WARN] Addresses of nodes that not connected."
     echo -e "\e[5;31m========\e[0m"
-    echo "$notconnected" | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
+    echo "$notconnected" | grep -oP 'remote_peer.*\K[0-9A-F]{32}'
     echo -e "\e[5;31m========\e[0m"
 fi
