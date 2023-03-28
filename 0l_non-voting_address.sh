@@ -37,7 +37,16 @@ else
         echo -e "\e[1m\e[31m================================\e[0m"
         total2=`cat non-voting_address.txt | wc -l`
         echo -e "Total non-voting : \e[1m\e[31m$total2 \e[0mnodes, Total in set : $set1 nodes"
-        if [ "$votediff" -eq "$total2" ] ; then echo "Non-voting addresses was double checked. Result is ok." ; fi
+        if [ "$votediff" -eq "$total2" ]
+        then
+            voting2=$(grep -f non-voting_address.txt voting_address.txt)
+            if [ -z "$voting2" ]
+            then
+                echo "Extracted non-voting addresses are checked. Correct!"
+            else
+                echo -e "Extracted non-voting addresses are checked. \e[1m\e[31mNot correct! \e[0mYou need to check it manually. "
+            fi
+        fi
     fi
 fi
 notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
