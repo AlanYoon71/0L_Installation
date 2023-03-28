@@ -5,7 +5,9 @@ echo "If you want to skip monitoring a specific time(only 1 Hr), enter the exact
 read skip1
 echo ""
 echo "Right now, you should save the active validator set info into current directory with a name as "page_active_validator_set.txt"."
-echo "You can get this info at https://0lexplorer.io/validators. Copy and save the entire top table."
+echo "You can get this info at https://0lexplorer.io/validators, just copy and save the entire top table. Are you ready? (y/n)"
+read answer
+if [ "$answer" -eq "n" ] ; then exit() ; fi
 if [ -z "$skip1" ]
 then
     export skip=100
