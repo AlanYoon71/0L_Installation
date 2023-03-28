@@ -62,7 +62,7 @@ then
     echo "$TIME [INFO] All addresses in active set are connected."
 else
     echo "$TIME [WARN] Addresses of nodes that not connected."
-    echo -e "\e[5;31m========\e[0m"
+    echo -e "\e[5;31m================================\e[0m"
     echo "$notconnected" | grep -oP 'remote_peer.*\K[0-9A-F]{32}'
-    echo -e "\e[5;31m========\e[0m"
+    echo -e "\e[5;31m================================\e[0m"
 fi
