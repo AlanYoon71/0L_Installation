@@ -1,14 +1,11 @@
 #!/bin/bash
 PATH=$PATH:/home/node/bin
 echo ""
-echo "Insert the total numbers of validators in the current epoch active validator set."
-read set1
-echo ""
 echo "If you want to skip monitoring a specific time(only 1 Hr), enter the exact UTC time.(e.g. 09, 14 etc) Just enter if you don't want to skip."
 read skip1
 echo ""
-echo "Right now, you should save the active validator set info into current directory with a name as page_active_validator_set.txt."
-echo "You can get this info at https://0lexplorer.io/validators. Copy the entire top table."
+echo "Right now, you should save the active validator set info into current directory with a name as "page_active_validator_set.txt"."
+echo "You can get this info at https://0lexplorer.io/validators. Copy and save the entire top table."
 if [ -z "$skip1" ]
 then
     export skip=100
@@ -123,6 +120,9 @@ do
             then
                 echo "$TIME [INFO] No broadcasting now."
             else
+                grep -oE '[[:xdigit:]]{32}' page_active_validator_set.txt | cut -d ' ' -f1 | sort | uniq > active_validator_set.txt
+                sleep 0.1
+                export set1=`cat active_validator_set.txt | wc -l`
                 echo -e "$TIME [INFO] Voting addresses of nodes are broadcasted."
                 echo -e "\e[1m\e[32m================================\e[0m"
                 echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
@@ -135,8 +135,6 @@ do
                 export rate=$(echo "scale=2; $total / $set1 * 100" | bc)
                 echo "Total voting : $total nodes, Total in set : $set1 nodes"
                 echo -e "Vote    Rate : $rate%, \e[1m\e[31m$votediff \e[0mnodes are not voting now."
-                grep -oE '[[:xdigit:]]{32}' page_active_validator_set.txt | cut -d ' ' -f1 | sort | uniq > active_validator_set.txt
-                sleep 0.1
                 nonvoting=$(grep -vf voting_address.txt active_validator_set.txt)
                 sleep 0.1
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
@@ -149,6 +147,9 @@ do
                     echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                     echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
                     echo -e "\e[1m\e[31m================================\e[0m"
+                    total2=`cat non-voting_address.txt | wc -l`
+                    echo -e "Total non-voting : \e[1m\e[31m$total2 \e[0mnodes, Total in set : $set1 nodes"
+                    if [ "$votediff" -eq "$total2" ] ; then echo "Non-voting addresses was double checked. Result is ok."
                 fi
             fi            
             notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
