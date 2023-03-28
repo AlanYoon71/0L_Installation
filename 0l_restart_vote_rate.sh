@@ -149,7 +149,7 @@ do
                     echo -e "\e[1m\e[31m================================\e[0m"
                     total2=`cat non-voting_address.txt | wc -l`
                     echo -e "Total non-voting : \e[1m\e[31m$total2 \e[0mnodes, Total in set : $set1 nodes"
-                    if [ "$votediff" -eq "$total2" ] ; then echo "Non-voting addresses was double checked. Result is ok."
+                    if [ "$votediff" -eq "$total2" ] ; then echo "Non-voting addresses was double checked. Result is ok." ; fi
                 fi
             fi            
             notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
