@@ -115,7 +115,7 @@ do
                     round2=0
                 fi
             fi
-            voting=`timeout 3s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
+            voting=`timeout 5s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
             sleep 3.5
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$voting" ]
