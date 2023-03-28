@@ -7,7 +7,7 @@ echo ""
 echo "If you want to skip monitoring a specific time(only 1 Hr), enter the exact UTC time.(e.g. 09, 14 etc) Just enter if you don't want to skip."
 read skip1
 echo ""
-echo "Right now, you should save the active validator set info with a name as page_active_validator_set.txt."
+echo "Right now, you should save the active validator set info into current directory with a name as page_active_validator_set.txt."
 echo "You can get this info at https://0lexplorer.io/validators. Copy the entire top table."
 if [ -z "$skip1" ]
 then
