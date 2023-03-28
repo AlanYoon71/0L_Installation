@@ -45,7 +45,7 @@ sleep 0.1
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
 if [ -z "$notconnected" ]
 then
-    echo "$TIME [INFO] All addresses in active set are connected. Good!"
+    echo "$TIME [INFO] All addresses in active set are connected."
 else
     echo "$TIME [WARN] Addresses of nodes that not connected."
     echo -e "\e[1m\e[31m========\e[0m"
