@@ -1,5 +1,9 @@
 #!/bin/bash
-
+echo "Right now, you should save the active validator set info into current directory with a name as "page_active_validator_set.txt"."
+echo "You can get this info at https://0lexplorer.io/validators, just copy and save the entire top table. Are you ready? (y/n)"
+read answer
+if [ "$answer" == "n" ];then exit;fi
+echo ""
 voting=`timeout 5s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
 sleep 0.1
 echo "$voting" > broadcast_log.txt
