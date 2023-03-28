@@ -151,7 +151,7 @@ do
                     echo -e "Total non-voting : \e[1m\e[31m$total2 \e[0mnodes, Total in set : $set1 nodes"
                     if [ "$votediff" -eq "$total2" ] ; then echo "Non-voting addresses was double checked. Result is ok." ; fi
                 fi
-            fi            
+            fi
             notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
             sleep 0.1
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
