@@ -44,7 +44,7 @@ else
             then
                 echo "Extracted non-voting addresses are checked. Correct!"
             else
-                echo -e "Extracted non-voting addresses are checked. \e[1m\e[31mNot correct! \e[0mYou need to check it manually. "
+                echo -e "Check result is \e[1m\e[31mnot correct! \e[0mYou need to check it manually."
             fi
         fi
     fi
