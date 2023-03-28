@@ -12,10 +12,10 @@ else
     sleep 0.1
     export set1=`cat active_validator_set.txt | wc -l`
     echo -e "$TIME [INFO] Voting addresses of nodes are broadcasted."
-    echo -e "\e[1m\e[32m================================\e[0m"
+    echo -e "\e[5;32m================================\e[0m"
     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
-    echo -e "\e[1m\e[32m================================\e[0m"
+    echo -e "\e[5;32m================================\e[0m"
     total=`cat voting_address.txt | wc -l`
     sleep 0.1
     if [ -z "$total" ] ; then total=$set1 ; fi 
@@ -31,10 +31,10 @@ else
         echo "$TIME [INFO] All validators in the set are voting now. Great!"
     else
         echo -e "$TIME [INFO] Non-voting addresses of nodes in the active validator set"
-        echo -e "\e[1m\e[31m================================\e[0m"
+        echo -e "\e[5;31m================================\e[0m"
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
-        echo -e "\e[1m\e[31m================================\e[0m"
+        echo -e "\e[5;31m================================\e[0m"
         total2=`cat non-voting_address.txt | wc -l`
         echo -e "Total non-voting : \e[1m\e[31m$total2 \e[0mnodes, Total in set : $set1 nodes"
         if [ "$votediff" -eq "$total2" ]
@@ -57,7 +57,7 @@ then
     echo "$TIME [INFO] All addresses in active set are connected."
 else
     echo "$TIME [WARN] Addresses of nodes that not connected."
-    echo -e "\e[1m\e[31m========\e[0m"
+    echo -e "\e[5;31m========\e[0m"
     echo "$notconnected" | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
-    echo -e "\e[1m\e[31m========\e[0m"
+    echo -e "\e[5;31m========\e[0m"
 fi
