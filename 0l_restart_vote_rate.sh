@@ -113,7 +113,7 @@ do
                 fi
             fi
             voting=`timeout 5s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
-            sleep 3.5
+            sleep 0.1
             echo "$voting" > broadcast_log.txt
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$voting" ]
