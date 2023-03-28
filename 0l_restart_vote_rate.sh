@@ -117,17 +117,19 @@ do
             fi
             voting=`timeout 5s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
             sleep 3.5
+            echo "$voting" > broadcast_log.txt
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$voting" ]
             then
                 echo "$TIME [INFO] No broadcasting now."
             else
                 echo -e "$TIME [INFO] Voting addresses of nodes are broadcasted."
-                echo -e "\e[1m\e[32m========\e[0m"
+                echo -e "\e[1m\e[32m================================\e[0m"
                 echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                 echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
-                echo -e "\e[1m\e[32m========\e[0m"
-                total=`echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq | wc l`
+                echo -e "\e[1m\e[32m================================\e[0m"
+                total=`cat voting_address.txt | wc -l`
+                sleep 0.1
                 if [ -z "$total" ] ; then total=$set1 ; fi 
                 votediff=`expr $set1 - $total`
                 export rate=$(echo "scale=2; $total / $set1 * 100" | bc)
@@ -143,12 +145,11 @@ do
                     echo "$TIME [INFO] All validators in the set are voting now. Great!"
                 else
                     echo -e "$TIME [INFO] Non-voting addresses of nodes in the active validator set"
-                    echo -e "\e[1m\e[31m========\e[0m"
+                    echo -e "\e[1m\e[31m================================\e[0m"
                     echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                     echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
-                    echo -e "\e[1m\e[31m========\e[0m"
+                    echo -e "\e[1m\e[31m================================\e[0m"
                 fi
-                cat /dev/null > broadcast_log.txt && cat /dev/null > page_active_validator_set.txt
             fi            
             notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
             sleep 0.1
