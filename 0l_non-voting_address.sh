@@ -13,12 +13,13 @@ echo "$voting" > broadcast_log.txt
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
 if [ -z "$voting" ]
 then
-    echo "$TIME [INFO] No broadcasting now."
+    echo "$TIME [INFO] No broadcasting now. No pending votes or timeout. Great!"
 else
     grep -oE '[[:xdigit:]]{32}' page_active_validator_set.txt | cut -d ' ' -f1 | sort | uniq > active_validator_set.txt
     sleep 0.1
     export set1=`cat active_validator_set.txt | wc -l`
-    echo -e "$TIME [INFO] Voting addresses of nodes are broadcasted."
+    echo "$TIME [INFO] These addresses have pending vote and timeout status."
+    echo "$TIME [INFO] If the consensus has already stopped, these addresses can be considered still \e[1m\e[32mactive\e[0m."
     echo -e "\e[5;32m================================\e[0m"
     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
@@ -35,9 +36,10 @@ else
     export TIME=`date +%Y-%m-%dT%H:%M:%S`
     if [ -z "$nonvoting" ]
     then
-        echo "$TIME [INFO] All validators in the set are voting now. Great!"
+        echo "$TIME [INFO] All validators in the set are active and voting now. Great!"
     else
-        echo -e "$TIME [INFO] Non-voting addresses of nodes in the active validator set"
+        echo -e "$TIME [INFO] These addresses are not in a pending vote and timeout state. It's normal while consensus is in progress."
+        echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered \e[1m\e[32minactive\e[0m."
         echo -e "\e[5;31m================================\e[0m"
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
