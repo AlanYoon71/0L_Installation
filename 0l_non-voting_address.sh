@@ -5,6 +5,8 @@ echo "You can get this info at https://0lexplorer.io/validators, just copy and s
 read answer
 if [ "$answer" == "y" ] ; then : ; else exit ; fi
 echo ""
+echo "Script is going to search the log for \"broadcast to all peers\" for 30 seconds."
+echo ""
 voting=`timeout 30s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
 sleep 0.1
 echo "$voting" > broadcast_log.txt
@@ -54,15 +56,15 @@ else
         fi
     fi
 fi
-notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
-sleep 0.1
-export TIME=`date +%Y-%m-%dT%H:%M:%S`
-if [ -z "$notconnected" ]
-then
-    echo "$TIME [INFO] All addresses in active set are connected."
-else
-    echo "$TIME [WARN] Addresses of nodes that not connected."
-    echo -e "\e[5;31m================================\e[0m"
-    echo "$notconnected" | grep -oP 'remote_peer.*\K[0-9A-F]{32}'
-    echo -e "\e[5;31m================================\e[0m"
-fi
+# notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
+# sleep 0.1
+# export TIME=`date +%Y-%m-%dT%H:%M:%S`
+# if [ -z "$notconnected" ]
+# then
+#     echo "$TIME [INFO] All addresses in active set are connected."
+# else
+#     echo "$TIME [WARN] Addresses of nodes that not connected."
+#     echo -e "\e[5;31m================================\e[0m"
+#     echo "$notconnected" | grep -oP 'remote_peer.*\K[0-9A-F]{32}'
+#     echo -e "\e[5;31m================================\e[0m"
+# fi
