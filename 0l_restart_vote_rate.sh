@@ -6,7 +6,7 @@ read skip1
 echo ""
 echo -e "Right now, you should save the active validator set info into current directory with a name as \e[1m\e[33mpage_active_validator_set.txt\e[0m."
 echo "You can get this info at https://0lexplorer.io/validators, just copy and save the entire top table. Are you ready? (y/n)"
-read answer
+read -n 1 answer
 if [ "$answer" == "y" ] ; then : ; else exit ; fi
 if [ -z "$skip1" ]
 then
@@ -123,18 +123,19 @@ do
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round1 round!\e[0m"
-                voting=`timeout 5s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
+                voting=`timeout 30s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
                 sleep 0.1
                 echo "$voting" > broadcast_log.txt
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 if [ -z "$voting" ]
                 then
-                    echo "$TIME [INFO] No broadcasting now."
+                    echo "$TIME [INFO] No broadcasting now. No pending votes or timeout. Great!"
                 else
                     grep -oE '[[:xdigit:]]{32}' page_active_validator_set.txt | cut -d ' ' -f1 | sort | uniq > active_validator_set.txt
                     sleep 0.1
                     export set1=`cat active_validator_set.txt | wc -l`
-                    echo -e "$TIME [INFO] Voting addresses of nodes are broadcasted."
+                    echo "$TIME [INFO] These addresses have pending vote and timeout status."
+                    echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered still \e[1m\e[32mactive\e[0m."
                     echo -e "\e[5;32m================================\e[0m"
                     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
@@ -151,9 +152,10 @@ do
                     export TIME=`date +%Y-%m-%dT%H:%M:%S`
                     if [ -z "$nonvoting" ]
                     then
-                        echo "$TIME [INFO] All validators in the set are voting now. Great!"
+                        echo "$TIME [INFO] All validators in the set are active and voting now. Great!"
                     else
-                        echo -e "$TIME [INFO] Non-voting addresses of nodes in the active validator set"
+                        echo "$TIME [INFO] These addresses are not in a pending vote and timeout state. It's normal while consensus is in progress."
+                        echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered \e[1m\e[31minactive\e[0m."
                         echo -e "\e[5;31m================================\e[0m"
                         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
@@ -172,18 +174,7 @@ do
                         fi
                     fi
                 fi
-                notconnected=`timeout 8s tail -f ~/.0L/logs/node/current | grep "currently not connected"`
-                sleep 0.1
-                export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                if [ -z "$notconnected" ]
-                then
-                    echo "$TIME [INFO] All addresses in active set are connected."
-                else
-                    echo "$TIME [WARN] Addresses of nodes that not connected."
-                    echo -e "\e[5;31m========\e[0m"
-                    echo "$notconnected" | grep -Po 'Peer [^,]+' | cut -d' ' -f2 | sort -u
-                    echo -e "\e[5;31m========\e[0m"
-                fi
+            fi
                 # PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                 # sleep 10
                 # export D=`pgrep diem-node`
