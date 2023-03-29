@@ -2,7 +2,7 @@
 echo ""
 echo -e "Right now, you should save the active validator set info into current directory with a name as \e[1m\e[33mpage_active_validator_set.txt\e[0m."
 echo "You can get this info at https://0lexplorer.io/validators, just copy and save the entire top table. Are you ready? (y/n)"
-read answer
+read -n 1 answer
 if [ "$answer" == "y" ] ; then : ; else exit ; fi
 echo ""
 echo "Script is going to search the log for \"broadcast to all peers\" for 30 seconds."
@@ -19,7 +19,7 @@ else
     sleep 0.1
     export set1=`cat active_validator_set.txt | wc -l`
     echo "$TIME [INFO] These addresses have pending vote and timeout status."
-    echo "$TIME [INFO] If the consensus has already stopped, these addresses can be considered still \e[1m\e[32mactive\e[0m."
+    echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered still \e[1m\e[32mactive\e[0m."
     echo -e "\e[5;32m================================\e[0m"
     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
@@ -38,8 +38,8 @@ else
     then
         echo "$TIME [INFO] All validators in the set are active and voting now. Great!"
     else
-        echo -e "$TIME [INFO] These addresses are not in a pending vote and timeout state. It's normal while consensus is in progress."
-        echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered \e[1m\e[32minactive\e[0m."
+        echo "$TIME [INFO] These addresses are not in a pending vote and timeout state. It's normal while consensus is in progress."
+        echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered \e[1m\e[31minactive\e[0m."
         echo -e "\e[5;31m================================\e[0m"
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
