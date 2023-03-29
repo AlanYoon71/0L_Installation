@@ -5,7 +5,7 @@ echo "You can get this info at https://0lexplorer.io/validators, just copy and s
 read answer
 if [ "$answer" == "y" ] ; then : ; else exit ; fi
 echo ""
-voting=`timeout 5s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
+voting=`timeout 30s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
 sleep 0.1
 echo "$voting" > broadcast_log.txt
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
