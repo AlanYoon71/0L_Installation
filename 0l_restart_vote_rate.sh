@@ -123,6 +123,21 @@ do
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round1 round!\e[0m"
+                curl -i https://0lexplorer.io/validators > webpage_extract.txt
+                sleep 0.1
+                echo ""
+                grep -oE 'account_address":"([[:xdigit:]]{32})"' webpage_extract.txt | cut -d':' -f2 | tr -d '\"' > active_validator_set.txt
+                sleep 0.1
+                echo -e "Active validator addresses extracted from https://0lexplorer.io/validators and saved into \e[1m\e[33mactive_validator_set.txt\e[0m."
+                echo -e "\e[1m\e[33m================================\e[0m"
+                cat active_validator_set.txt
+                echo -e "\e[1m\e[33m================================\e[0m"
+                set1=`cat active_validator_set.txt | wc -l`
+                sleep 0.1
+                echo "Active validators total : $set1 nodes"
+                echo ""
+                echo "Script is searching the log for \"broadcast to all peers\" for 30 seconds."
+                echo ""
                 voting=`timeout 30s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
                 sleep 0.1
                 echo "$voting" > broadcast_log.txt
@@ -131,15 +146,12 @@ do
                 then
                     echo "$TIME [INFO] No broadcasting now. No pending votes or timeout. Great!"
                 else
-                    grep -oE '[[:xdigit:]]{32}' page_active_validator_set.txt | cut -d ' ' -f1 | sort | uniq > active_validator_set.txt
-                    sleep 0.1
-                    export set1=`cat active_validator_set.txt | wc -l`
                     echo "$TIME [INFO] These addresses have pending vote and timeout status right now. If it doesn't last, no problem."
                     echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered still \e[1m\e[32mactive\e[0m."
-                    echo -e "\e[5;32m================================\e[0m"
+                    echo -e "\e[1m\e[32m================================\e[0m"
                     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                     echo "$voting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > voting_address.txt
-                    echo -e "\e[5;32m================================\e[0m"
+                    echo -e "\e[1m\e[32m================================\e[0m"
                     total=`cat voting_address.txt | wc -l`
                     sleep 0.1
                     if [ -z "$total" ] ; then total=$set1 ; fi 
@@ -156,10 +168,10 @@ do
                     else
                         echo "$TIME [INFO] These addresses are not in a pending vote and timeout state. It's normal while consensus is in progress."
                         echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered \e[1m\e[31minactive\e[0m."
-                        echo -e "\e[5;31m================================\e[0m"
+                        echo -e "\e[1m\e[31m================================\e[0m"
                         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
                         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
-                        echo -e "\e[5;31m================================\e[0m"
+                        echo -e "\e[1m\e[31m================================\e[0m"
                         total2=`cat non-voting_address.txt | wc -l`
                         echo -e "Total non-voting : \e[1m\e[31m$total2 \e[0mnodes, Total in set : $set1 nodes"
                         if [ "$votediff" -eq "$total2" ]
@@ -168,8 +180,10 @@ do
                             if [ -z "$voting2" ]
                             then
                                 echo "Extracted non-voting addresses are checked. Correct!"
+                                echo ""
                             else
                                 echo -e "Check result is \e[1m\e[31mnot correct! \e[0mYou need to check it manually."
+                                echo ""
                             fi
                         fi
                     fi
