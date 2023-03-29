@@ -4,10 +4,6 @@ echo ""
 echo "If you want to skip monitoring a specific time(only 1 Hr), enter the exact UTC time.(e.g. 09, 14 etc) Just enter if you don't want to skip."
 read skip1
 echo ""
-echo -e "Right now, you should save the active validator set info into current directory with a name as \e[1m\e[33mpage_active_validator_set.txt\e[0m."
-echo "You can get this info at https://0lexplorer.io/validators, just copy and save the entire top table. Are you ready? (y/n)"
-read -n 1 answer
-if [ "$answer" == "y" ] ; then : ; else exit ; fi
 if [ -z "$skip1" ]
 then
     export skip=100
@@ -219,7 +215,6 @@ do
                 #         echo -e "$TIME [INFO] \e[1m\e[32m======= Validator restarted successfully!! =======\e[0m"
                 #     fi
                 # fi
-            fi
             if [ -z "$syn1" ]
             then
                 export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
