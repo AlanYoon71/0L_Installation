@@ -8,6 +8,7 @@ echo ""
 if [ -z "$skip1" ]
 then
     export skip=100
+    echo "No skip mode"
     echo ""
 else
     export skip=`echo $skip1`
