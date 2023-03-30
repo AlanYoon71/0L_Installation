@@ -1,7 +1,8 @@
 #!/bin/bash
 PATH=$PATH:/home/node/bin
 echo ""
-echo "If you want to skip monitoring a specific time(only 1 Hr), enter the exact UTC time.(e.g. 09, 14 etc) Just enter if you don't want to skip."
+echo -e "If you want to skip monitoring and hold script during a specific time(only 1 Hr), enter the exact UTC time.(e.g. \e[1m\e[32m09\e[0m or \e[1m\e[32m14\e[0m)"
+echo "Or just enter if you don't want to skip. This function useful sometimes if you feel that it's too early to restart."
 read skip1
 echo ""
 if [ -z "$skip1" ]
