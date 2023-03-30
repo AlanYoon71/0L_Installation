@@ -6,7 +6,7 @@ sleep 0.1
 echo ""
 grep -oE 'account_address":"([[:xdigit:]]{32})"' webpage_extract.txt | cut -d':' -f2 | tr -d '\"' > active_validator_set.txt
 sleep 0.1
-echo -e "Active validator addresses extracted from https://0lexplorer.io/validators and saved into \e[1m\e[33mactive_validator_set.txt\e[0m."
+echo -e "Active validator addresses were extracted from https://0lexplorer.io/validators and saved as \e[1m\e[33mactive_validator_set.txt\e[0m."
 echo -e "\e[1m\e[33m================================\e[0m"
 cat active_validator_set.txt
 echo -e "\e[1m\e[33m================================\e[0m"
