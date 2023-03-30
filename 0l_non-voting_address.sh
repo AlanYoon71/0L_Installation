@@ -23,6 +23,7 @@ export TIME=`date +%Y-%m-%dT%H:%M:%S`
 if [ -z "$voting" ]
 then
     echo "$TIME [INFO] No broadcasting now. No pending votes or timeout. Great!"
+    echo ""
 else
     echo "$TIME [INFO] These addresses have pending vote and timeout status right now. If it doesn't last, no problem."
     echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered still \e[1m\e[32mactive\e[0m."
