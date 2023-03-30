@@ -505,7 +505,7 @@ do
                     echo "$TIME [INFO] ========= Validator is running well now. ========="
                 fi
             fi
-            sleep 1181
+            sleep 1179
         fi
         export NN=`pgrep tower`
         sleep 0.2
