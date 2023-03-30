@@ -38,6 +38,7 @@ else
     export rate=$(echo "scale=2; $total / $set1 * 100" | bc)
     echo "Total voting : $total nodes, Total in set : $set1 nodes"
     echo -e "Vote    Rate : $rate%, \e[1m\e[31m$votediff \e[0mnodes are not voting now."
+    echo ""
     nonvoting=$(grep -vf voting_address.txt active_validator_set.txt)
     sleep 0.1
     export TIME=`date +%Y-%m-%dT%H:%M:%S`
