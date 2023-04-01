@@ -1,13 +1,11 @@
 #!/bin/bash
 PATH=$PATH:/home/node/bin
+echo ""
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
-echo ""
-echo "This script fetches data from network and compares the difference between the two numbers."
-echo "The checkpoint times are [**:20] and [**:50], so run this script before [**:20]."
-echo ""
 echo "$TIME [INFO] [Restart Script] started."
 J=1
 K=10
+export R=0
 while [ $J -lt $K ]
 do
     export s1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
@@ -90,7 +88,6 @@ do
                 round2=0
             fi
         fi
-        sleep 0.2
         if [ -z "$round1" ] ; then round1=10000000000 ; fi
         if [ -z "$round2" ] ; then round2=0 ; fi
         sleep 0.1
@@ -313,13 +310,27 @@ do
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round2 round!\e[0m"
-            PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-            sleep 10
-            export D=`pgrep diem-node`
-            if [ -z "$D" ]
+            if [ "$R" -lt 2 ]
             then
-                export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                echo "$TIME [INFO] Validator stopped for restarting!"
+                if [ "$R" -eq 1 ]
+                then
+                    echo -e "$TIME [ERROR] \e[1m\e[31mScript will wait an hour from now\e[0m and if the consensus still doesn't go ahead, validator will be restarted."
+                    R=$R+1
+                else
+                    echo -e "$TIME [ERROR] \e[1m\e[31mCScript will wait two hours from now\e[0m and if the consensus still doesn't go ahead, validator will be restarted."
+                    R=$R+1
+                fi
+            else
+                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                sleep 10
+                export D=`pgrep diem-node`
+                if [ -z "$D" ]
+                then
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                    echo "$TIME [INFO] More than two hours have already passed since the consensus had stopped."
+                    echo "$TIME [INFO] Validator stopped for restarting!"
+                    R=0
+                fi
             fi
         else
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
@@ -378,7 +389,7 @@ do
                 echo "$TIME [INFO] ========= Validator is running well now. ========="
             fi
         fi
-        sleep 60
+        sleep 1179
     fi
     export NN=`pgrep tower`
     sleep 0.2
@@ -386,7 +397,8 @@ do
     then
         export TIME=`date +%Y-%m-%dT%H:%M:%S`
         echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tower disconnected!! <<<\e[0m"
-        nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
+        #nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
+        nohup nice -n -15 ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
         sleep 2
         export QQ=`pgrep tower`
         if [ -n "$QQ" ]
