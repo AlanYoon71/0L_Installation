@@ -336,6 +336,7 @@ do
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             export round3=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
             echo -e "$TIME [INFO] Consensus is in progress. \e[1m\e[32mCurrent round : $round3 \e[0m"
+            R=0
         fi
         sleep 40
     fi
