@@ -66,8 +66,3 @@
            you can check catchup status and remained catchup time(estimated).
         7. Monitors TPS between network and local and automatically restarts validator
            if local speed drops significantly to prevent syncing stop.
-        8. 0l_restart_vote_rate.sh only
-           - If you don't want to restart during a specific hour(only one hour),
-             for example if you want to delay restart when epoch jump you can use this script.
-           - Every hour at **:20, if consensus roundingand network all stops, script will check
-             the voting status of active validators and print out non-voting addresses.
