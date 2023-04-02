@@ -32,8 +32,8 @@ do
     then
         export TIME=`date +%Y-%m-%dT%H:%M:%S`
         echo -e "$TIME [ERROR] \e[1m\e[31mEMERGENCY! Sync operation suddenly stopped!! \e[0m"
-        echo "$TIME [INFO] Block  height : $s1"
-        echo -e "$TIME [INFO] Synced height : $c1, Lag : \e[1m\e[31m$EMERG\e[0m"
+        echo "$TIME [INFO] Block   height : $s1"
+        echo -e "$TIME [INFO] Synced  height : $c1, Lag : \e[1m\e[31m$EMERG\e[0m"
         sleep 0.1
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 10
@@ -96,7 +96,7 @@ do
         if [ "$RD" -lt 1 ]
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            echo -e "$TIME [ERROR] Current round : \e[1m\e[31m$round1 Stuck!\e[0m"
+            echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round1 Stuck!\e[0m"
         fi
         if [ -z "$syn1" ]
         then
@@ -132,7 +132,8 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
                 fi
             else
-                echo "$TIME [INFO] Block  height : $syn1, Consensus round : $round1"
+                echo "$TIME [INFO] Block   height : $syn1"
+                echo -e "$TIME [INFO] Current  round : \e[1m\e[32m$round1\e[0m"
                 if [ -z "$syn11" ]
                 then
                     export syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
@@ -140,9 +141,9 @@ do
                     export LAG=`expr $syn11 - $syn1`
                     if [ "$LAG" -gt -200 ]
                     then
-                        echo "$TIME [INFO] Synced height : $syn11, Fully synced."
+                        echo -e "$TIME [INFO] Synced  height : $syn11 \e[1m\e[32mFully synced\e[0m"
                     else
-                        echo -e "$TIME [INFO] Synced height : $syn11, Lag : \e[1m\e[35m$LAG\e[0m"
+                        echo -e "$TIME [INFO] Synced  height : $syn11 Lag : \e[1m\e[35m$LAG\e[0m"
                     fi
                 fi
             fi
@@ -210,7 +211,8 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
                 fi
             else
-                echo "$TIME [INFO] Block  height : $syn2, Consensus round : $round2"
+                echo "$TIME [INFO] Block   height : $syn2"
+                echo -e "$TIME [INFO] Current  round : \e[1m\e[32m$round2\e[0m"
                 if [ -z "$syn22" ]
                 then
                     export syn22=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
@@ -218,9 +220,9 @@ do
                     export LAG=`expr $syn22 - $syn2`
                     if [ "$LAG" -gt -200 ]
                     then
-                        echo "$TIME [INFO] Synced height : $syn22, Fully synced."
+                        echo -e "$TIME [INFO] Synced  height : $syn22 \e[1m\e[32mFully synced\e[0m"
                     else
-                        echo -e "$TIME [INFO] Synced height : $syn22, Lag : \e[1m\e[35m$LAG\e[0m"
+                        echo -e "$TIME [INFO] Synced  height : $syn22 Lag : \e[1m\e[35m$LAG\e[0m"
                     fi
                     export TIME=`date +%Y-%m-%dT%H:%M:%S`
                     if [ -z "$syn11" ]
@@ -242,18 +244,18 @@ do
                             export TIME=`date +%Y-%m-%dT%H:%M:%S`
                             if [ "$SPEED" == 0 ]
                             then
-                                echo "$TIME [INFO] Sync    epoch : $EPOCH"
-                                echo "$TIME [INFO] Network   TPS : $NTPS[tx/s]"
-                                echo "$TIME [INFO] Local     TPS : $LTPS[tx/s]"
+                                echo "$TIME [INFO] Sync     epoch : $EPOCH"
+                                echo "$TIME [INFO] Network    TPS : $NTPS[tx/s]"
+                                echo "$TIME [INFO] Local      TPS : $LTPS[tx/s]"
                                 if [ "$NDIFF" == 0 ] ; then echo "$TIME [WARN] Network transaction is very slow now." ; fi
                             else
                                 if [ -z "$syn1" ]
                                 then
                                     echo "$TIME [INFO] No comparison data right now."
                                 else
-                                    echo "$TIME [INFO] Sync    epoch : $EPOCH"
-                                    echo "$TIME [INFO] Network   TPS : $NTPS[tx/s]"
-                                    echo "$TIME [INFO] Local     TPS : $LTPS[tx/s]"
+                                    echo "$TIME [INFO] Sync     epoch : $EPOCH"
+                                    echo "$TIME [INFO] Network    TPS : $NTPS[tx/s]"
+                                    echo "$TIME [INFO] Local      TPS : $LTPS[tx/s]"
                                     if [ "$LDIFF" -lt 500 ]
                                     then
                                         echo -e "$TIME [WARN] \e[1m\e[35mLocal speed is too slow to sync!!\e[0m"
@@ -308,7 +310,7 @@ do
                             export TIME=`date +%Y-%m-%dT%H:%M:%S`
                             if [ -z "$SEEK1" ]
                             then
-                                echo -e "$TIME [ERROR] Proof on chain: \e[1m\e[31mFailed\e[0m"
+                                echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mFailed\e[0m"
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             else
                                 SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
@@ -317,9 +319,9 @@ do
                                 CHECKTOWER=`expr $SEEK2 - $SEEK3`
                                 if [ "$CHECKTOWER" -gt 0 ]
                                 then
-                                    echo -e "$TIME [INFO] Proof on chain: \e[1m\e[32m$SEEK2\e[0m"
+                                    echo -e "$TIME [INFO] Proof on chain : \e[1m\e[32m$SEEK2\e[0m"
                                 else
-                                    echo -e "$TIME [ERROR] Proof on chain: \e[1m\e[31mFailed\e[0m"
+                                    echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mFailed\e[0m"
                                 fi
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
@@ -343,7 +345,7 @@ do
         if [ "$RD" -lt 1 ]
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            echo -e "$TIME [ERROR] Current round : \e[1m\e[31m$round2 Stuck!\e[0m"
+            echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round2 Stuck!\e[0m"
             if [ "$R" -lt 2 ]
             then
                 if [ "$R" -eq 1 ]
@@ -369,7 +371,7 @@ do
         else
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             export round3=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
-            echo -e "$TIME [INFO] Current round : \e[1m\e[32m$round3\e[0m"
+            echo -e "$TIME [INFO] Current  round : \e[1m\e[32m$round3\e[0m"
             R=0
         fi
         sleep 40
