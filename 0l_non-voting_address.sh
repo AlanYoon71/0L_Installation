@@ -22,7 +22,7 @@ echo "$voting" > broadcast_log.txt
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
 if [ -z "$voting" ]
 then
-    echo "$TIME [INFO] No broadcasting now. No pending votes or timeout. Great!"
+    echo "$TIME [INFO] No broadcasting now."
     echo ""
 else
     echo "$TIME [INFO] These addresses have pending vote and timeout status right now. If it doesn't last, no problem."
