@@ -244,10 +244,15 @@ do
                             export TIME=`date +%Y-%m-%dT%H:%M:%S`
                             if [ "$SPEED" == 0 ]
                             then
-                                echo "$TIME [INFO] Sync     epoch : $EPOCH"
-                                echo "$TIME [INFO] Network    TPS : $NTPS[tx/s]"
-                                echo "$TIME [INFO] Local      TPS : $LTPS[tx/s]"
-                                if [ "$NDIFF" == 0 ] ; then echo "$TIME [WARN] Network transaction is very slow now." ; fi
+                                if [ -z "$syn1" ]
+                                then
+                                    echo "$TIME [INFO] No comparison data right now."
+                                else
+                                    echo "$TIME [INFO] Sync     epoch : $EPOCH"
+                                    echo "$TIME [INFO] Network    TPS : $NTPS[tx/s]"
+                                    echo "$TIME [INFO] Local      TPS : $LTPS[tx/s]"
+                                    if [ "$NDIFF" == 0 ] ; then echo "$TIME [WARN] Network transaction is very slow now." ; fi
+                                fi
                             else
                                 if [ -z "$syn1" ]
                                 then
