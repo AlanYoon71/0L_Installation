@@ -49,7 +49,7 @@ do
             if [ -z "$CC" ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                mv ~/.0L/db ~/.0L/db_backup ; -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
                 nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                 sleep 2
@@ -57,7 +57,7 @@ do
                 KK=`pgrep diem-node`
                 if [ -z "$KK" ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. You need to check node status manually.\e[0m"
+                    echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. Your original db directory already renamed as \"db_backup\".\e[0m"
                 else
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted successfully! =========\e[0m"
                 fi
@@ -84,7 +84,7 @@ do
             if [ "$EPOCH1" -gt "$EPOCH3" ]
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH1 \e[0m========="
+                echo -e "$TIME [INFO] \e[1m\e[32m========= State sync epoch jumped to $EPOCH1 =========\e[0m"
                 round2=0
             fi
         fi
@@ -96,7 +96,7 @@ do
         if [ "$RD" -lt 1 ]
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round1 round!\e[0m"
+            echo -e "$TIME [ERROR] Current round : \e[1m\e[31m$round1 Stuck!\e[0m"
         fi
         if [ -z "$syn1" ]
         then
@@ -116,7 +116,7 @@ do
                 if [ -z "$BB" ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                    rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    mv ~/.0L/db ~/.0L/db_backup ; rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                     sleep 2
@@ -124,7 +124,7 @@ do
                     EE=`pgrep diem-node`
                     if [ -z "$EE" ]
                     then
-                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
+                        echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. Your original db directory already renamed as \"db_backup\".\e[0m"
                     else
                         echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
                     fi
@@ -168,7 +168,7 @@ do
             if [ "$EPOCH2" -gt "$EPOCH1" ]
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH2 \e[0m========="
+                echo -e "$TIME [INFO] \e[1m\e[32m========= State sync epoch jumped to $EPOCH2 =========\e[0m"
             fi
         fi
         sleep 0.2
@@ -194,7 +194,7 @@ do
                 if [ -z "$BB" ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                    rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    mv ~/.0L/db ~/.0L/db_backup ; rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
                     nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                     sleep 2
@@ -202,7 +202,7 @@ do
                     EE=`pgrep diem-node`
                     if [ -z "$EE" ]
                     then
-                        echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restore DB. You need to check node status manually. <<<\e[0m"
+                        echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. Your original db directory already renamed as \"db_backup\".\e[0m"
                     else
                         echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted! =========\e[0m"
                     fi
@@ -264,6 +264,41 @@ do
                                             then
                                                 export CATCH=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
                                                 echo -e "$TIME [INFO] Remained catchup time : \e[1m\e[35m$CATCH\e[0m[Hr]"
+                                                if [ "$LAG" -lt -2000 ] && [ "$LDIFF" -lt 1 ]
+                                                then
+                                                    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                                                    sleep 10
+                                                    export D=`pgrep diem-node`
+                                                    if [ -z "$D" ]
+                                                    then
+                                                        export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                                                        echo -e "$TIME [WARN] \e[1m\e[31mThe lagging level is serious.\e[0m"
+                                                        echo "$TIME [INFO] Validator stopped for restarting!"
+                                                        R=0
+                                                        pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                                                        sleep 5
+                                                        CC=`pgrep diem-node`
+                                                        export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                                                        if [ -z "$CC" ]
+                                                        then
+                                                            echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
+                                                            mv ~/.0L/db ~/.0L/db_backup ; rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                                                            sleep 10
+                                                            nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                                                            sleep 2
+                                                            export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                                                            KK=`pgrep diem-node`
+                                                            if [ -z "$KK" ]
+                                                            then
+                                                                echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. Your original db directory already renamed as \"db_backup\".\e[0m"
+                                                            else
+                                                                echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted successfully! =========\e[0m"
+                                                            fi
+                                                        else
+                                                            echo -e "$TIME [INFO] \e[1m\e[32m======= Validator restarted successfully!! =======\e[0m"
+                                                        fi
+                                                    fi
+                                                fi
                                             fi
                                         fi
                                     fi
@@ -273,7 +308,7 @@ do
                             export TIME=`date +%Y-%m-%dT%H:%M:%S`
                             if [ -z "$SEEK1" ]
                             then
-                                echo -e "$TIME [ERROR] \e[1m\e[35mTower failed to submit a last proof! \e[0m"
+                                echo -e "$TIME [ERROR] Proof on chain: \e[1m\e[31mFailed\e[0m"
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             else
                                 SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
@@ -282,9 +317,9 @@ do
                                 CHECKTOWER=`expr $SEEK2 - $SEEK3`
                                 if [ "$CHECKTOWER" -gt 0 ]
                                 then
-                                    echo -e "$TIME [INFO] Tower is mining normally. \e[1m\e[32mProof # $SEEK2 \e[0m"
+                                    echo -e "$TIME [INFO] Proof on chain: \e[1m\e[32m$SEEK2\e[0m"
                                 else
-                                    echo -e "$TIME [ERROR] \e[1m\e[35mTower mining has been unsuccessful for at least an hour.\e[0m"
+                                    echo -e "$TIME [ERROR] Proof on chain: \e[1m\e[31mFailed\e[0m"
                                 fi
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
@@ -308,7 +343,7 @@ do
         if [ "$RD" -lt 1 ]
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            echo -e "$TIME [ERROR] \e[1m\e[35mConsensus stopped at $round2 round!\e[0m"
+            echo -e "$TIME [ERROR] Current round : \e[1m\e[31m$round2 Stuck!\e[0m"
             if [ "$R" -lt 2 ]
             then
                 if [ "$R" -eq 1 ]
@@ -334,7 +369,7 @@ do
         else
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             export round3=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
-            echo -e "$TIME [INFO] Consensus is in progress. \e[1m\e[32mCurrent round : $round3 \e[0m"
+            echo -e "$TIME [INFO] Current round : \e[1m\e[32m$round3\e[0m"
             R=0
         fi
         sleep 40
@@ -352,7 +387,7 @@ do
             if [ "$EPOCH3" -gt "$EPOCH2" ]
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                echo -e "$TIME [INFO] ========= State sync epoch jumped to \e[1m\e[32m$EPOCH3 \e[0m========="
+                echo -e "$TIME [INFO] \e[1m\e[32m========= State sync epoch jumped to $EPOCH3 =========\e[0m"
             fi
         fi
         sleep 0.2
@@ -366,7 +401,7 @@ do
             if [ -z "$CC" ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                mv ~/.0L/db ~/.0L/db_backup ; rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
                 nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
                 sleep 2
@@ -374,7 +409,7 @@ do
                 KK=`pgrep diem-node`
                 if [ -z "$KK" ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. You need to check node status manually.\e[0m"
+                    echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. Your original db directory already renamed as \"db_backup\".\e[0m"
                 else
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted successfully! =========\e[0m"
                 fi
