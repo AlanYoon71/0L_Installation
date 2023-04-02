@@ -256,8 +256,7 @@ do
                                     echo "$TIME [INFO] Local     TPS : $LTPS[tx/s]"
                                     if [ "$LDIFF" -lt 500 ]
                                     then
-                                        echo -e "$TIME [WARN] \e[1m\e[35m>>> Local speed is too slow to sync!! <<<\e[0m"
-                                        echo -e "$TIME [WARN] \e[1m\e[35m>>> Validator needs to be restarted to recover syncing speed. <<<\e[0m"
+                                        echo -e "$TIME [WARN] \e[1m\e[35mLocal speed is too slow to sync!!\e[0m"
                                     else
                                         if [ "$LDIFF" -gt "$NDIFF" ]
                                         then
