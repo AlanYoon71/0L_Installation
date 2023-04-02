@@ -317,7 +317,7 @@ do
                     echo -e "$TIME [ERROR] \e[1m\e[31mScript will wait an hour from now\e[0m and if the consensus still doesn't go ahead, validator will be restarted."
                     R=`expr $R + 1`
                 else
-                    echo -e "$TIME [ERROR] \e[1m\e[31mCScript will wait two hours from now\e[0m and if the consensus still doesn't go ahead, validator will be restarted."
+                    echo -e "$TIME [ERROR] \e[1m\e[31mScript will wait two hours from now\e[0m and if the consensus still doesn't go ahead, validator will be restarted."
                     R=`expr $R + 1`
                 fi
             else
