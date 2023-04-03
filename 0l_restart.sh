@@ -353,24 +353,27 @@ do
             echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round2 Stuck!\e[0m"
             if [ "$R" -lt 2 ]
             then
-                if [ "$R" -eq 1 ]
+                if [ "$NDIFF" -lt 300 ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[31mScript will wait an hour from now\e[0m and if the consensus still doesn't go ahead, validator will be restarted."
-                    R=`expr $R + 1`
+                    if [ "$R" -eq 1 ]
+                    then
+                        echo -e "$TIME [ERROR] \e[1m\e[31mScript will wait an hour from now\e[0m and if the consensus still doesn't go ahead, validator will be restarted."
+                        R=`expr $R + 1`
+                    else
+                        echo -e "$TIME [ERROR] \e[1m\e[31mScript will wait two hours from now\e[0m and if the consensus still doesn't go ahead, validator will be restarted."
+                        R=`expr $R + 1`
+                    fi
                 else
-                    echo -e "$TIME [ERROR] \e[1m\e[31mScript will wait two hours from now\e[0m and if the consensus still doesn't go ahead, validator will be restarted."
-                    R=`expr $R + 1`
-                fi
-            else
-                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                sleep 10
-                export D=`pgrep diem-node`
-                if [ -z "$D" ]
-                then
-                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                    echo "$TIME [INFO] More than two hours have already passed since the consensus had stopped."
-                    echo "$TIME [INFO] Validator stopped for restarting!"
-                    R=0
+                    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                    sleep 10
+                    export D=`pgrep diem-node`
+                    if [ -z "$D" ]
+                    then
+                        export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                        echo -e "$TIME [ERROR] The network is fine, but \e[1m\e[31mlocal syncing and rounding have stopped.\e[0m"
+                        echo "$TIME [INFO] Validator stopped for restarting!"
+                        R=0
+                    fi
                 fi
             fi
         else
