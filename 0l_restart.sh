@@ -375,6 +375,16 @@ do
                         R=0
                     fi
                 fi
+            else
+                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+                sleep 10
+                export D=`pgrep diem-node`
+                if [ -z "$D" ]
+                then
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                    echo "$TIME [INFO] Validator stopped for restarting!"
+                    R=0
+                fi
             fi
         else
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
