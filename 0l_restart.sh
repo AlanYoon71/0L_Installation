@@ -326,7 +326,16 @@ do
                                 then
                                     echo -e "$TIME [INFO] Proof on chain : \e[1m\e[32m$SEEK2\e[0m"
                                 else
-                                    echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mFailed\e[0m"
+                                    sleep 60
+                                    SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
+                                    CHECKTOWER=`expr $SEEK2 - $SEEK3`
+                                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                                    if [ "$CHECKTOWER" -gt 0 ]
+                                    then
+                                        echo -e "$TIME [INFO] Proof on chain : \e[1m\e[32m$SEEK2\e[0m"
+                                    else
+                                        echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mFailed\e[0m"
+                                    fi
                                 fi
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
