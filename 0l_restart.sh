@@ -154,8 +154,8 @@ do
     ACTION2=50
     if [ $MIN == $ACTION2 ]
     then
-        if [ -z "$syn1" ] ; then syn1=0 ; fi
-        if [ -z "$syn11" ] ; then syn11=0 ; fi
+        #if [ -z "$syn1" ] ; then syn1=0 ; fi
+        #if [ -z "$syn11" ] ; then syn11=0 ; fi
         export TIME=`date +%Y-%m-%dT%H:%M:%S`
         export syn2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
         export round2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_consensus_current_round" | grep -o '[0-9]*'`
