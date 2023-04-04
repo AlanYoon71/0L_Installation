@@ -450,7 +450,7 @@ do
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$CONVERT" ]
             then
-                echo "$TIME [INFO] ========= Validator is running well now. ========="
+                echo "$TIME [INFO] Validator itself continues to operate without problems."
             fi
         fi
         sleep 1179
