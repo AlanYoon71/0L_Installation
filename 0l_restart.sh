@@ -322,20 +322,26 @@ do
                                 if [ -z "$SEEK2" ] ; then SEEK2=0 ; fi
                                 if [ -z "$SEEK3" ] ; then SEEK3=0 ; fi
                                 CHECKTOWER=`expr $SEEK2 - $SEEK3`
-                                if [ "$CHECKTOWER" -gt 0 ]
+                                if [ "$CHECKTOWER" -eq "$CHECKTOWER" 2>/dev/null ]
                                 then
-                                    echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32mSubmitted successfully\e[0m"
-                                else
-                                    sleep 60
-                                    SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
-                                    CHECKTOWER=`expr $SEEK2 - $SEEK3`
-                                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
                                     if [ "$CHECKTOWER" -gt 0 ]
                                     then
                                         echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32mSubmitted successfully\e[0m"
                                     else
-                                        echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
+                                        sleep 60
+                                        SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
+                                        CHECKTOWER=`expr $SEEK2 - $SEEK3`
+                                        export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                                        if [ "$CHECKTOWER" -gt 0 ]
+                                        then
+                                            echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32mSubmitted successfully\e[0m"
+                                        else
+                                            echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
+                                        fi
                                     fi
+                                else
+                                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                                    echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
                                 fi
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
