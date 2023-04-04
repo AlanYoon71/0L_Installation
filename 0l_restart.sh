@@ -315,7 +315,7 @@ do
                             export TIME=`date +%Y-%m-%dT%H:%M:%S`
                             if [ -z "$SEEK1" ]
                             then
-                                echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
+                                echo -e "$TIME [WARN] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             else
                                 SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
@@ -336,12 +336,12 @@ do
                                         then
                                             echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32msubmitted\e[0m"
                                         else
-                                            echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
+                                            echo -e "$TIME [WARN] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
                                         fi
                                     fi
                                 else
                                     export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                                    echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
+                                    echo -e "$TIME [WARN] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
                                 fi
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
