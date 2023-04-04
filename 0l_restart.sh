@@ -227,11 +227,11 @@ do
                     export TIME=`date +%Y-%m-%dT%H:%M:%S`
                     if [ -z "$syn11" ]
                     then
-                        echo "$TIME [INFO] No comparison data right now."
+                        echo "$TIME [INFO] No comparable data right now."
                     else
                         if [ -z "$syn1" ]
                         then
-                            echo "$TIME [INFO] No comparison data right now."
+                            echo "$TIME [INFO] No comparable data right now."
                         else
                             export NDIFF=`expr $syn2 - $syn1`
                             export LDIFF=`expr $syn22 - $syn11`
@@ -246,7 +246,7 @@ do
                             then
                                 if [ -z "$syn1" ]
                                 then
-                                    echo "$TIME [INFO] No comparison data right now."
+                                    echo "$TIME [INFO] No comparable data right now."
                                 else
                                     echo "$TIME [INFO] Sync     epoch : $EPOCH"
                                     echo "$TIME [INFO] Network    TPS : $NTPS[tx/s]"
@@ -256,7 +256,7 @@ do
                             else
                                 if [ -z "$syn1" ]
                                 then
-                                    echo "$TIME [INFO] No comparison data right now."
+                                    echo "$TIME [INFO] No comparable data right now."
                                 else
                                     echo "$TIME [INFO] Sync     epoch : $EPOCH"
                                     echo "$TIME [INFO] Network    TPS : $NTPS[tx/s]"
