@@ -326,7 +326,7 @@ do
                                 then
                                     if [ "$CHECKTOWER" -gt 0 ]
                                     then
-                                        echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32mSubmitted successfully\e[0m"
+                                        echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32mSubmitted\e[0m"
                                     else
                                         sleep 60
                                         SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
@@ -334,7 +334,7 @@ do
                                         export TIME=`date +%Y-%m-%dT%H:%M:%S`
                                         if [ "$CHECKTOWER" -gt 0 ]
                                         then
-                                            echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32mSubmitted successfully\e[0m"
+                                            echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32mSubmitted\e[0m"
                                         else
                                             echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
                                         fi
