@@ -141,7 +141,7 @@ do
                     export LAG=`expr $syn11 - $syn1`
                     if [ "$LAG" -gt -200 ]
                     then
-                        echo -e "$TIME [INFO] Synced  height : $syn11 \e[1m\e[32mFully synced\e[0m"
+                        echo "$TIME [INFO] Synced  height : $syn11"
                     else
                         echo -e "$TIME [INFO] Synced  height : $syn11 Lag : \e[1m\e[35m$LAG\e[0m"
                     fi
@@ -220,7 +220,7 @@ do
                     export LAG=`expr $syn22 - $syn2`
                     if [ "$LAG" -gt -200 ]
                     then
-                        echo -e "$TIME [INFO] Synced  height : $syn22 \e[1m\e[32mFully synced\e[0m"
+                        echo "$TIME [INFO] Synced  height : $syn22"
                     else
                         echo -e "$TIME [INFO] Synced  height : $syn22 Lag : \e[1m\e[35m$LAG\e[0m"
                     fi
@@ -315,7 +315,7 @@ do
                             export TIME=`date +%Y-%m-%dT%H:%M:%S`
                             if [ -z "$SEEK1" ]
                             then
-                                echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
+                                echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31msubmission failed\e[0m"
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             else
                                 SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
@@ -326,7 +326,7 @@ do
                                 then
                                     if [ "$CHECKTOWER" -gt 0 ]
                                     then
-                                        echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32mSubmitted\e[0m"
+                                        echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32msubmitted\e[0m"
                                     else
                                         sleep 60
                                         SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
@@ -334,14 +334,14 @@ do
                                         export TIME=`date +%Y-%m-%dT%H:%M:%S`
                                         if [ "$CHECKTOWER" -gt 0 ]
                                         then
-                                            echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32mSubmitted\e[0m"
+                                            echo -e "$TIME [INFO] Proof on chain : $SEEK2 \e[1m\e[32msubmitted\e[0m"
                                         else
-                                            echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
+                                            echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31msubmission failed\e[0m"
                                         fi
                                     fi
                                 else
                                     export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                                    echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
+                                    echo -e "$TIME [ERROR] Proof on chain : \e[1m\e[31msubmission failed\e[0m"
                                 fi
                                 SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
