@@ -93,11 +93,7 @@ do
         sleep 0.1
         if [ "$round1" -lt "$round2" ] ; then round2=0 ; fi
         RD=`expr $round1 - $round2`
-        if [ "$RD" -lt 1 ]
-        then
-            export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round1 Stuck!\e[0m"
-        fi
+
         if [ -z "$syn1" ]
         then
             export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
@@ -132,18 +128,24 @@ do
                     echo -e "$TIME [INFO] \e[1m\e[32m========= Validator restarted!! =========\e[0m"
                 fi
             else
-                echo -e "$TIME [INFO] Current  round : \e[1m\e[32m$round1\e[0m"
-                echo "$TIME [INFO] Block   height : $syn1"
-                if [ -z "$syn11" ]
+                if [ "$RD" -lt 1 ]
                 then
-                    export syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                    echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round1 Stuck!\e[0m"
                 else
-                    export LAG=`expr $syn11 - $syn1`
-                    if [ "$LAG" -gt -200 ]
+                    echo -e "$TIME [INFO] Current  round : \e[1m\e[32m$round1\e[0m"
+                    echo "$TIME [INFO] Block   height : $syn1"
+                    if [ -z "$syn11" ]
                     then
-                        echo "$TIME [INFO] Synced  height : $syn11"
+                        export syn11=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
                     else
-                        echo -e "$TIME [INFO] Synced  height : $syn11 Lag : \e[1m\e[35m$LAG\e[0m"
+                        export LAG=`expr $syn11 - $syn1`
+                        if [ "$LAG" -gt -200 ]
+                        then
+                            echo "$TIME [INFO] Synced  height : $syn11"
+                        else
+                            echo -e "$TIME [INFO] Synced  height : $syn11 Lag : \e[1m\e[35m$LAG\e[0m"
+                        fi
                     fi
                 fi
             fi
