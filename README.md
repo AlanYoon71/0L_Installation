@@ -66,3 +66,5 @@
            you can check catchup status and remained catchup time(estimated).
         7. Monitors TPS between network and local and automatically restarts validator
            if local speed drops significantly to prevent syncing stop.
+        8. If consensus and network block height stops, restarts after 2 hours,
+           and if only the consensus stops, restarts immediately.
