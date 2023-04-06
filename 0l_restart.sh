@@ -84,7 +84,7 @@ do
             if [ "$EPOCH1" -gt "$EPOCH3" ]
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                echo -e "$TIME [INFO] \e[1m\e[32m========= State sync epoch jumped to $EPOCH1 =========\e[0m"
+                echo -e "$TIME [INFO] \e[1m\e[32m========= Epoch jumped to $EPOCH1 =========\e[0m"
                 round2=0
             fi
         fi
@@ -171,7 +171,7 @@ do
             if [ "$EPOCH2" -gt "$EPOCH1" ]
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                echo -e "$TIME [INFO] \e[1m\e[32m========= State sync epoch jumped to $EPOCH2 =========\e[0m"
+                echo -e "$TIME [INFO] \e[1m\e[32m========= Epoch jumped to $EPOCH2 =========\e[0m"
             fi
         fi
         sleep 0.2
@@ -434,7 +434,7 @@ do
             if [ "$EPOCH3" -gt "$EPOCH2" ]
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                echo -e "$TIME [INFO] \e[1m\e[32m========= State sync epoch jumped to $EPOCH3 =========\e[0m"
+                echo -e "$TIME [INFO] \e[1m\e[32m========= Epoch jumped to $EPOCH3 =========\e[0m"
             fi
         fi
         sleep 0.2
