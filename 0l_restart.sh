@@ -42,16 +42,16 @@ do
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             echo "$TIME [INFO] Validator stopped for restarting!"
-            pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+            pgrep diem-node || nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
             sleep 5
             CC=`pgrep diem-node`
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$CC" ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                mv ~/.0L/db ~/.0L/db_backup ; -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                mv /home/node/.0L/db /home/node/.0L/db_backup ; -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
-                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
                 sleep 2
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 KK=`pgrep diem-node`
@@ -105,16 +105,16 @@ do
             if [ -z "$syn1" ]
             then
                 echo "$TIME [WARN] >>> Validator already stopped!! <<<"
-                pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                pgrep diem-node || nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
                 sleep 1
                 BB=`pgrep diem-node`
                 sleep 0.1
                 if [ -z "$BB" ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                    mv ~/.0L/db ~/.0L/db_backup ; rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    mv /home/node/.0L/db /home/node/.0L/db_backup ; rm -rf /home/node/.0L/db && pgrep diem-node || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
-                    nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                    nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
                     sleep 2
                     export TIME=`date +%Y-%m-%dT%H:%M:%S`
                     EE=`pgrep diem-node`
@@ -189,7 +189,7 @@ do
             if [ -z "$syn2" ]
             then
                 echo "$TIME [WARN] >>> Validator already stopped!! <<<"
-                pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                pgrep diem-node || nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
                 sleep 1
                 BB=`pgrep diem-node`
                 sleep 0.1
@@ -197,9 +197,9 @@ do
                 if [ -z "$BB" ]
                 then
                     echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                    mv ~/.0L/db ~/.0L/db_backup ; rm -rf ~/.0L/db && pgrep diem-node || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                    mv /home/node/.0L/db /home/node/.0L/db_backup ; rm -rf /home/node/.0L/db && pgrep diem-node || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
                     sleep 10
-                    nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                    nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
                     sleep 2
                     export TIME=`date +%Y-%m-%dT%H:%M:%S`
                     EE=`pgrep diem-node`
@@ -284,16 +284,16 @@ do
                                                         echo -e "$TIME [WARN] \e[1m\e[31mThe lagging level is serious.\e[0m"
                                                         echo "$TIME [INFO] Validator stopped for restarting!"
                                                         R=0
-                                                        pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                                                        pgrep diem-node || nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
                                                         sleep 5
                                                         CC=`pgrep diem-node`
                                                         export TIME=`date +%Y-%m-%dT%H:%M:%S`
                                                         if [ -z "$CC" ]
                                                         then
                                                             echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                                                            mv ~/.0L/db ~/.0L/db_backup ; rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                                                            mv /home/node/.0L/db /home/node/.0L/db_backup ; rm -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
                                                             sleep 10
-                                                            nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                                                            nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
                                                             sleep 2
                                                             export TIME=`date +%Y-%m-%dT%H:%M:%S`
                                                             KK=`pgrep diem-node`
@@ -313,14 +313,14 @@ do
                                     fi
                                 fi
                             fi
-                            SEEK1=`tail -4 ~/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
+                            SEEK1=`tail -4 /home/node/.0L/logs/tower.log |grep "Success: Proof committed to chain"`
                             export TIME=`date +%Y-%m-%dT%H:%M:%S`
                             if [ -z "$SEEK1" ]
                             then
                                 echo -e "$TIME [WARN] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
-                                SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
+                                SEEK3=`tail -2 /home/node/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             else
-                                SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
+                                SEEK2=`tail -2 /home/node/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                                 if [ -z "$SEEK2" ] ; then SEEK2=0 ; fi
                                 if [ -z "$SEEK3" ] ; then SEEK3=0 ; fi
                                 CHECKTOWER=`expr $SEEK2 - $SEEK3`
@@ -336,7 +336,7 @@ do
                                         fi
                                     else
                                         sleep 60
-                                        SEEK2=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
+                                        SEEK2=`tail -2 /home/node/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                                         CHECKTOWER=`expr $SEEK2 - $SEEK3`
                                         export TIME=`date +%Y-%m-%dT%H:%M:%S`
                                         if [ "$CHECKTOWER" -gt 0 ]
@@ -355,7 +355,7 @@ do
                                     export TIME=`date +%Y-%m-%dT%H:%M:%S`
                                     echo -e "$TIME [WARN] Proof on chain : \e[1m\e[31mSubmission failed\e[0m"
                                 fi
-                                SEEK3=`tail -2 ~/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
+                                SEEK3=`tail -2 /home/node/.0L/logs/tower.log | sed -n 1p | grep -o '[0-9]*'`
                             fi
                         fi
                     fi
@@ -386,13 +386,13 @@ do
                     then
                         echo -e "$TIME [ERROR] \e[1m\e[31mIf the consensus does not continue, validator will be restarted in an hour.\e[0m"
                         R=`expr $R + 1`
-                        ~/.0L/logs/0l_non-voting_address.sh > /dev/null
-                        ~/.0L/logs/non-voting_alert_bot.sh > /dev/null
+                        /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
+                        /home/node/.0L/logs/non-voting_alert_bot.sh > /dev/null
                     else
                         echo -e "$TIME [ERROR] \e[1m\e[31mIf the consensus does not continue, validator will be restarted in two hours.\e[0m"
                         R=`expr $R + 1`
-                        ~/.0L/logs/0l_non-voting_address.sh > /dev/null
-                        ~/.0L/logs/non-voting_alert_bot.sh > /dev/null
+                        /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
+                        /home/node/.0L/logs/non-voting_alert_bot.sh > /dev/null
                     fi
                 else
                     PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
@@ -445,16 +445,16 @@ do
         export LL=`pgrep diem-node`
         if [ -z "$LL" ]
         then
-            pgrep diem-node || nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+            pgrep diem-node || nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
             sleep 5
             CC=`pgrep diem-node`
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$CC" ]
             then
                 echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                mv ~/.0L/db ~/.0L/db_backup ; rm -rf ~/.0L/db && pgrep diem-node > /dev/null || ~/bin/ol restore >> ~/.0L/logs/restore.log 2>&1 > /dev/null &
+                mv /home/node/.0L/db /home/node/.0L/db_backup ; rm -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
                 sleep 10
-                nohup ~/bin/diem-node --config ~/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 ~/.0L/logs/node > /dev/null &
+                nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
                 sleep 2
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 KK=`pgrep diem-node`
@@ -483,8 +483,8 @@ do
     then
         export TIME=`date +%Y-%m-%dT%H:%M:%S`
         echo -e "$TIME [ERROR] \e[1m\e[35m>>> Tower disconnected!! <<<\e[0m"
-        #nohup ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
-        nohup nice -n -15 ~/bin/tower -o start >> ~/.0L/logs/tower.log 2>&1 &
+        #nohup /home/node/bin/tower -o start >> /home/node/.0L/logs/tower.log 2>&1 &
+        nohup nice -n -15 /home/node/bin/tower -o start >> /home/node/.0L/logs/tower.log 2>&1 &
         sleep 2
         export QQ=`pgrep tower`
         if [ -n "$QQ" ]
