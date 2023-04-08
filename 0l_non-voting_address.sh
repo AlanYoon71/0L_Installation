@@ -36,7 +36,7 @@ else
     if [ -z "$total" ] ; then total=$set1 ; fi 
     votediff=`expr $set1 - $total`
     export rate=$(echo "scale=2; $total / $set1 * 100" | bc)
-    echo "Total voting : $total nodes, Total in set : $set1 nodes"
+    echo "Nodes with voting activity : $total nodes, Validator set : $set1 nodes"
     echo -e "Vote    Rate : $rate%, \e[1m\e[31m$votediff \e[0mnodes are not voting now."
     echo ""
     nonvoting=$(grep -vf voting_address.txt active_validator_set.txt)
@@ -53,7 +53,7 @@ else
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
         echo -e "\e[1m\e[31m================================\e[0m"
         export total2=`cat non-voting_address.txt | wc -l`
-        echo -e "Total non-voting : \e[1m\e[31m$total2 \e[0mnodes, Total in set : $set1 nodes"
+        echo -e "Nodes with no voting activity : \e[1m\e[31m$total2 \e[0mnodes, Validator set : $set1 nodes"
         if [ "$votediff" -eq "$total2" ]
         then
             voting2=$(grep -f non-voting_address.txt voting_address.txt)
