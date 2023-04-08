@@ -10,7 +10,7 @@ echo -e "Active validator addresses were extracted from https://0lexplorer.io/va
 echo -e "\e[1m\e[33m================================\e[0m"
 cat active_validator_set.txt
 echo -e "\e[1m\e[33m================================\e[0m"
-set1=`cat active_validator_set.txt | wc -l`
+export set1=`cat active_validator_set.txt | wc -l`
 sleep 0.1
 echo "Active validators total : $set1 nodes"
 echo ""
@@ -52,7 +52,7 @@ else
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
         echo -e "\e[1m\e[31m================================\e[0m"
-        total2=`cat non-voting_address.txt | wc -l`
+        export total2=`cat non-voting_address.txt | wc -l`
         echo -e "Total non-voting : \e[1m\e[31m$total2 \e[0mnodes, Total in set : $set1 nodes"
         if [ "$votediff" -eq "$total2" ]
         then
