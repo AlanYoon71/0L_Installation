@@ -53,7 +53,7 @@ else
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
         echo -e "\e[1m\e[31m================================\e[0m"
         export total2=`cat non-voting_address.txt | wc -l`
-        echo -e "Nodes with no voting activity : \e[1m\e[31m$total2 \e[0mnodes, Validator set : $set1 nodes"
+        echo -e "No voting activity : \e[1m\e[31m$total2 \e[0mnodes, Validator set : $set1 nodes"
         if [ "$votediff" -eq "$total2" ]
         then
             voting2=$(grep -f non-voting_address.txt voting_address.txt)
