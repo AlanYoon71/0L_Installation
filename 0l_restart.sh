@@ -386,9 +386,13 @@ do
                     then
                         echo -e "$TIME [ERROR] \e[1m\e[31mIf the consensus does not continue, validator will be restarted in an hour.\e[0m"
                         R=`expr $R + 1`
+                        ~/.0L/logs/0l_non-voting_address.sh > /dev/null
+                        ~/.0L/logs/non-voting_alert_bot.sh > /dev/null
                     else
                         echo -e "$TIME [ERROR] \e[1m\e[31mIf the consensus does not continue, validator will be restarted in two hours.\e[0m"
                         R=`expr $R + 1`
+                        ~/.0L/logs/0l_non-voting_address.sh > /dev/null
+                        ~/.0L/logs/non-voting_alert_bot.sh > /dev/null
                     fi
                 else
                     PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
