@@ -35,7 +35,7 @@ else
     sleep 0.1
     if [ -z "$total" ] ; then total=$set1 ; fi 
     votediff=`expr $set1 - $total`
-    export rate=$(echo "scale=2; $total / $set1 * 100" | bc)
+    export rate=$(echo "scale=0; $total / $set1 * 100" | bc)
     echo "Nodes with voting activity : $total nodes, Validator set : $set1 nodes"
     echo -e "Vote    Rate : $rate%, \e[1m\e[31m$votediff \e[0mnodes are not voting now."
     echo ""
