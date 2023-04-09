@@ -66,15 +66,5 @@ else
                 echo ""
             fi
         fi
-        cut -c 1-8 non-voting_address.txt > first_eight_chars.txt
-        rm non-voting_account.txt
-        touch non-voting_account.txt
-        while read line; do
-            grep "${line}" validator_account.txt | sort -u >> non-voting_account.txt
-        done < first_eight_chars.txt
-        echo ""
-        export total3=`cat non-voting_account.txt | wc -l`
-        echo "Discord IDs of $total3 nodes have been verified."
-        cat non-voting_account.txt
     fi
 fi
