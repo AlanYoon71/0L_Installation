@@ -6,6 +6,7 @@ echo "$TIME [INFO] [Restart Script] started."
 J=1
 K=10
 export R=0
+export delay=0
 while [ $J -lt $K ]
 do
     export s1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
@@ -30,41 +31,47 @@ do
     fi
     if [ $t1 -gt 1 ]
     then
-        export TIME=`date +%Y-%m-%dT%H:%M:%S`
-        echo -e "$TIME [ERROR] \e[1m\e[31mEMERGENCY! Sync operation suddenly stopped!! \e[0m"
-        echo "$TIME [INFO] Block   height : $s1"
-        echo -e "$TIME [INFO] Synced  height : $c1, Lag : \e[1m\e[31m$EMERG\e[0m"
-        sleep 0.1
-        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-        sleep 10
-        export D=`pgrep diem-node`
-        if [ -z "$D" ]
+        if [ $delay -gt 11 ]
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            echo "$TIME [INFO] Validator stopped for restarting!"
-            pgrep diem-node || nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
-            sleep 5
-            CC=`pgrep diem-node`
-            export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            if [ -z "$CC" ]
+            echo -e "$TIME [ERROR] \e[1m\e[31mEMERGENCY! Sync operation suddenly stopped!! \e[0m"
+            echo "$TIME [INFO] Block   height : $s1"
+            echo -e "$TIME [INFO] Synced  height : $c1, Lag : \e[1m\e[31m$EMERG\e[0m"
+            sleep 0.1
+            PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+            sleep 10
+            delay=0
+            export D=`pgrep diem-node`
+            if [ -z "$D" ]
             then
-                echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
-                mv /home/node/.0L/db /home/node/.0L/db_backup ; -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
-                sleep 10
-                nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
-                sleep 2
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                KK=`pgrep diem-node`
-                if [ -z "$KK" ]
+                echo "$TIME [INFO] Validator stopped for restarting!"
+                pgrep diem-node || nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
+                sleep 5
+                CC=`pgrep diem-node`
+                export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                if [ -z "$CC" ]
                 then
-                    echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. Your original db directory already renamed as \"db_backup\".\e[0m"
+                    echo -e "$TIME [ERROR] \e[1m\e[35m>>> Failed to restart.. Trying to restore DB now. <<<\e[0m"
+                    mv /home/node/.0L/db /home/node/.0L/db_backup ; -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
+                    sleep 10
+                    nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
+                    sleep 2
+                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
+                    KK=`pgrep diem-node`
+                    if [ -z "$KK" ]
+                    then
+                        echo -e "$TIME [ERROR] \e[1m\e[35mFailed to restore DB. Your original db directory already renamed as \"db_backup\".\e[0m"
+                    else
+                        echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted successfully! =========\e[0m"
+                    fi
                 else
-                    echo -e "$TIME [INFO] \e[1m\e[32m========= Restored DB from network and restarted successfully! =========\e[0m"
+                    echo -e "$TIME [INFO] \e[1m\e[32m======= Validator restarted successfully!! =======\e[0m"
                 fi
-            else
-                echo -e "$TIME [INFO] \e[1m\e[32m======= Validator restarted successfully!! =======\e[0m"
             fi
         fi
+    else
+        delay=0
     fi
     export MIN=`date "+%M"`
     ACTION1=20
@@ -515,4 +522,5 @@ do
         fi
     fi
     sleep 20
+    delay=$delay+1
 done
