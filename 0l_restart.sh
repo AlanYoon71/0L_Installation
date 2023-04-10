@@ -546,5 +546,5 @@ do
         fi
     fi
     sleep 20
-    delay=$delay+1
+    delay=$((delay + 1))
 done
