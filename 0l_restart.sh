@@ -1,5 +1,18 @@
 #!/bin/bash
 PATH=$PATH:/home/node/bin
+while true; do
+    echo ""
+    echo "Input your validator account."
+    read -p "account : " accountinput
+    echo ""
+    if [[ $accountinput =~ ^[A-Z0-9]{32}$ ]]; then
+        echo "Your account is $accountinput. Accepted."
+        break
+    else
+        echo "Input full account address exactly, please."
+    fi
+done
+echo "Your validator will be restarted when stop syncing and voting action."
 echo ""
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
 echo "$TIME [INFO] [Restart Script] started."
