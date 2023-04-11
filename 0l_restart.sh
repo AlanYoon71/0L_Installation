@@ -5,7 +5,6 @@ export TIME=`date +%Y-%m-%dT%H:%M:%S`
 echo "$TIME [INFO] [Restart Script] started."
 J=1
 K=10
-export R=0
 export delay=0
 while [ $J -lt $K ]
 do
@@ -385,19 +384,12 @@ do
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round2 Stuck!\e[0m"
-            if [ "$R" -lt 2 ]
+            if [ "$NDIFF" -lt 10 ]
             then
-                if [ "$NDIFF" -lt 300 ]
+                if [ "$LDIFF" -lt -10 ]
                 then
-                    if [ "$R" -eq 23 ]
+                    if [ "$LAG" -gt -10 ]
                     then
-                        echo -e "$TIME [ERROR] \e[1m\e[31mIf the consensus does not continue, validator will be restarted in an hour.\e[0m"
-                        R=`expr $R + 1`
-                        
-                        /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
-                        sleep 0.1
-                        /home/node/.0L/logs/non-voting_alert_bot.sh > /dev/null
-                    else
                         cat /dev/null > non-voting_address.txt
                         /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
                         sleep 0.1
@@ -412,38 +404,9 @@ do
                                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                                 echo -e "$TIME [ERROR] \e[1m\e[31mYour validator is not voting. It is inactive and should be restarted.\e[0m"
                                 echo "$TIME [INFO] Validator stopped for restarting!"
-                                R=0
                             fi
-                        else
-                            echo -e "$TIME [ERROR] \e[1m\e[31mIf the consensus does not continue, validator will be restarted in two hours.\e[0m"
-                            R=`expr $R + 1`
-                            cat /dev/null > non-voting_address.txt
-                            /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
-                            sleep 0.1
-                            /home/node/.0L/logs/non-voting_alert_bot.sh > /dev/null
                         fi
                     fi
-                else
-                    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                    sleep 10
-                    export D=`pgrep diem-node`
-                    if [ -z "$D" ]
-                    then
-                        export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                        echo -e "$TIME [ERROR] The network is fine, but \e[1m\e[31mlocal syncing and rounding have stopped.\e[0m"
-                        echo "$TIME [INFO] Validator stopped for restarting!"
-                        R=0
-                    fi
-                fi
-            else
-                PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-                sleep 10
-                export D=`pgrep diem-node`
-                if [ -z "$D" ]
-                then
-                    export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                    echo "$TIME [INFO] Validator stopped for restarting!"
-                    R=0
                 fi
             fi
         else
