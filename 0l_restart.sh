@@ -408,7 +408,7 @@ do
                         /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
                         sleep 0.1
                         /home/node/.0L/logs/non-voting_alert_bot.sh > /dev/null
-                        if grep -q $account "non-voting_address.txt"
+                        if grep -q $account "/home/node/.0L/logs/non-voting_address.txt"
                         then
                             PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                             sleep 10
