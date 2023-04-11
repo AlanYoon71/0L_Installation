@@ -6,7 +6,8 @@ while true; do
     read -p "account : " accountinput
     echo ""
     if [[ $accountinput =~ ^[A-Z0-9]{32}$ ]]; then
-        echo "Your account is $accountinput. Accepted."
+        export account=$accountinput
+        echo "Your account is $account. Accepted."
         break
     else
         echo "Input full account address exactly, please."
@@ -407,7 +408,7 @@ do
                         /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
                         sleep 0.1
                         /home/node/.0L/logs/non-voting_alert_bot.sh > /dev/null
-                        if grep -q "32F24E0488A4E189D38FCCD1F2A94B53" "non-voting_address.txt"
+                        if grep -q $account "non-voting_address.txt"
                         then
                             PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
                             sleep 10
@@ -415,7 +416,7 @@ do
                             if [ -z "$D" ]
                             then
                                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
-                                echo -e "$TIME [ERROR] \e[1m\e[31mYour validator is not voting. It is inactive and should be restarted.\e[0m"
+                                echo -e "$TIME [ERROR] \e[1m\e[31mYour validator is not voting. It means node is inactive and should be restarted.\e[0m"
                                 echo "$TIME [INFO] Validator stopped for restarting!"
                             fi
                         fi
