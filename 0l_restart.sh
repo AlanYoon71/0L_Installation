@@ -19,6 +19,7 @@ export TIME=`date +%Y-%m-%dT%H:%M:%S`
 echo "$TIME [INFO] [Restart Script] started."
 J=1
 K=10
+jump=0
 export delay=0
 while [ $J -lt $K ]
 do
@@ -90,6 +91,14 @@ do
     ACTION1=20
     if [ $MIN == $ACTION1 ]
     then
+        if [ "$jump" -eq 1 ]
+        then
+            cat /dev/null > /home/node/.0L/logs/0l_non-voting_address.sh
+            sleep 0.1
+            /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
+            sleep 0.1
+            export jump=0
+        fi
         export EPOCH1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
         export TIME=`date +%Y-%m-%dT%H:%M:%S`
         export syn1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\"} | grep -o '[0-9]*'`
@@ -105,6 +114,7 @@ do
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo -e "$TIME [INFO] \e[1m\e[32m========= Epoch jumped to $EPOCH1 =========\e[0m"
+                export jump=1
                 round2=0
             fi
         fi
@@ -192,6 +202,7 @@ do
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo -e "$TIME [INFO] \e[1m\e[32m========= Epoch jumped to $EPOCH2 =========\e[0m"
+                export jump=1
             fi
         fi
         sleep 0.2
@@ -445,6 +456,7 @@ do
             then
                 export TIME=`date +%Y-%m-%dT%H:%M:%S`
                 echo -e "$TIME [INFO] \e[1m\e[32m========= Epoch jumped to $EPOCH3 =========\e[0m"
+                export jump=1
             fi
         fi
         sleep 0.2
