@@ -404,7 +404,7 @@ do
                 then
                     if [ "$LAG" -gt -10 ]
                     then
-                        cat /dev/null > non-voting_address.txt
+                        cat /dev/null > /home/node/.0L/logs/non-voting_address.txt
                         /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
                         sleep 0.1
                         /home/node/.0L/logs/non-voting_alert_bot.sh > /dev/null
