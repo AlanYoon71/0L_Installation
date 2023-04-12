@@ -39,8 +39,11 @@
 
     1) Restart script command (you can just download and run it by user "node")
 
-     ~/0l_restart.sh
-     Open terminal, run at home directory under TMUX session.
+     Download 0l_restart.sh and 0l_non-voting_address.sh at /home/node/.0L/logs directory.
+     Change permission(chmod +x) and run it(./0l_restart.sh) under TMUX session.
+     You need input your validator account to make sure votes is in progress when
+     consensus round stopped by scanning "broadcast to all peers" log.
+
      >> Notice
      - If you are not in the active validator set, do not use this script.
      - This script need package dependencies "bc" for calculating TPS,
