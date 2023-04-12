@@ -1,12 +1,10 @@
 #!/bin/bash
 
-#!/bin/bash
+# Get the HTML data from the website
+html_data=$(curl -s https://0lexplorer.io/)
 
-# Get the JSON data from the website
-json_data=$(curl -s https://0lexplorer.io/)
+# Extract the first version number using grep and awk
+version_number=$(echo "$html_data" | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
 
-# Extract the version number using jq
-version_number=$(echo "$json_data" | jq '.version')
-
-# Print the version number
-echo "Version: $version_number"
+# Print the first version number
+echo "The latest version: $version_number"
