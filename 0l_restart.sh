@@ -98,6 +98,16 @@ do
             /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
             sleep 0.1
             export jump=0
+            valsetupdate=`grep -oE '[0-9A-Z]{32}' /home/node/.0L/logs/active_validator_set.txt | grep -vFf <(grep -oE '[0-9A-Z]{8}' /home/node/.0L/logs/validator_account.txt)`
+            sleep 0.1
+            export TIME=`date +%Y-%m-%dT%H:%M:%S`
+            if [ -z "$valsetupdate" ]
+            then
+                echo -e "$TIME [INFO] \e[1m\e[32mThe validator_account.txt has no problem.\e[0m"
+            else
+                echo -e "$TIME [WARN] \e[1m\e[31mThe validator_account.txt needs to be updated!"
+                echo -e "$TIME [WARN] \e[1m\e[31m$valsetupdate is not in validator_account.txt now"
+            fi
         fi
         export EPOCH1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
         export TIME=`date +%Y-%m-%dT%H:%M:%S`
