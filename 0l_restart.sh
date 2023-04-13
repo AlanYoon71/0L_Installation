@@ -100,13 +100,14 @@ do
             export jump=0
             valsetupdate=`grep -oE '[0-9A-Z]{32}' /home/node/.0L/logs/active_validator_set.txt | grep -vFf <(grep -oE '[0-9A-Z]{8}' /home/node/.0L/logs/validator_account.txt)`
             sleep 0.1
+            grep -oE '[0-9A-Z]{32}' /home/node/.0L/logs/active_validator_set.txt | grep -vFf <(grep -oE '[0-9A-Z]{8}' /home/node/.0L/logs/validator_account.txt) | awk '{print substr($1, 1, 8) " <@Unknown>"}' >> /home/node/.0L/logs/validator_account.txt
+            sleep 0.1
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$valsetupdate" ]
             then
-                echo -e "$TIME [INFO] \e[1m\e[32mThe validator_account.txt has no problem.\e[0m"
+                echo -e "$TIME [INFO] \e[1m\e[32mThe active_validator_set.txt in current epoch has no problem.\e[0m"
             else
-                echo -e "$TIME [WARN] \e[1m\e[31mThe validator_account.txt needs to be updated!"
-                echo -e "$TIME [WARN] \e[1m\e[31m$valsetupdate is not in validator_account.txt now"
+                echo -e "$TIME [WARN] \e[1m\e[32m$valsetupdate is addred to validator_account.txt with <@Unknown>.\e[0m"
             fi
         fi
         export EPOCH1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
