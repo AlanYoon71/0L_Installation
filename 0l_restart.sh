@@ -93,7 +93,7 @@ do
     then
         if [ "$jump" -eq 1 ]
         then
-            cat /dev/null > /home/node/.0L/logs/0l_non-voting_address.sh
+            cat /dev/null > /home/node/.0L/logs/non-voting_address.txt
             sleep 0.1
             /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
             sleep 0.1
