@@ -16,7 +16,7 @@ echo "Active validators total : $set1 nodes"
 echo ""
 echo "Script is searching the log for \"broadcast to all peers\" for 20 seconds."
 echo ""
-voting=`timeout 20s tail -f ~/.0L/logs/node/current | grep "broadcast to all peers"`
+voting=`timeout 20s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
 sleep 0.1
 echo "$voting" > broadcast_log.txt
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
