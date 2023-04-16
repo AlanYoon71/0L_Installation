@@ -91,6 +91,8 @@ do
     ACTION1=20
     if [ $MIN == $ACTION1 ]
     then
+        html_data=$(curl -s https://0lexplorer.io/)
+        BLOC1=$(echo "$html_data" | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
         if [ "$jump" -lt 3 ]
         then
             cat /dev/null > /home/node/.0L/logs/non-voting_address.txt
@@ -197,6 +199,8 @@ do
     ACTION2=50
     if [ $MIN == $ACTION2 ]
     then
+        html_data=$(curl -s https://0lexplorer.io/)
+        BLOC2=$(echo "$html_data" | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
         #if [ -z "$syn1" ] ; then syn1=0 ; fi
         #if [ -z "$syn11" ] ; then syn11=0 ; fi
         export TIME=`date +%Y-%m-%dT%H:%M:%S`
@@ -410,18 +414,21 @@ do
     ACTION3=58
     if [ $MIN == $ACTION3 ]
     then
+        html_data=$(curl -s https://0lexplorer.io/)
+        BLOC3=$(echo "$html_data" | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
         if [ -z "$round1" ] ; then round1=0 ; fi
         if [ -z "$round2" ] ; then round2=10000000000 ; fi
         sleep 0.1
         if [ "$round2" -lt "$round1" ] ; then round1=0 ; fi
         RD=`expr $round2 - $round1`
         sleep 0.2
-        if [ "$RD" -lt 10 ]
+        if [ "$BLOC1" -lt 10 ]
+        if [[ "$BLOC1" == "$BLOC2" ]] && [[ "$BLOC1" == "$BLOC3" ]]
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            if [ "$NDIFF" -lt 10 ]
+            if [ "$NDIFF" -lt 50 ]
             then
-                if [ "$LDIFF" -lt -10 ]
+                if [ "$LDIFF" -lt -50 ]
                 then
                     if [ "$LAG" -gt -10 ]
                     then
@@ -429,7 +436,7 @@ do
                         then
                             echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round2 Stuck!\e[0m"
                         else
-                            echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round2 Consensus progress is very slow!\e[0m"
+                            echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round2 Consensus progress is too slow!\e[0m"
                         fi
                         cat /dev/null > /home/node/.0L/logs/non-voting_address.txt
                         /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
