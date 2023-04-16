@@ -91,7 +91,7 @@ do
     ACTION1=20
     if [ $MIN == $ACTION1 ]
     then
-        if [ "$jump" -lt 4 ]
+        if [ "$jump" -lt 3 ]
         then
             cat /dev/null > /home/node/.0L/logs/non-voting_address.txt
             sleep 0.1
