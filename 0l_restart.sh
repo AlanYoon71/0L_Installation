@@ -107,9 +107,9 @@ do
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
             if [ -z "$valsetupdate" ]
             then
-                echo -e "$TIME [INFO] \e[1m\e[32mThe active_validator_set.txt in current epoch has no problem.\e[0m"
+                echo "$TIME [INFO] The active_validator_set.txt has been checked. No problem."
             else
-                echo -e "$TIME [WARN] \e[1m\e[32m$valsetupdate is addred to validator_account.txt with <@Unknown>.\e[0m"
+                echo "$TIME [INFO] \"$valsetupdate\" is addred to validator_account.txt with <@Unknown>."
             fi
         fi
         export EPOCH1=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep "diem_state_sync_epoch" | grep -o '[0-9]*'`
