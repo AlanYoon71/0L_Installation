@@ -422,7 +422,6 @@ do
         if [ "$round2" -lt "$round1" ] ; then round1=0 ; fi
         RD=`expr $round2 - $round1`
         sleep 0.2
-        if [ "$BLOC1" -lt 10 ]
         if [[ "$BLOC1" == "$BLOC2" ]] && [[ "$BLOC1" == "$BLOC3" ]]
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
