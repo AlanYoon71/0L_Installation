@@ -416,16 +416,21 @@ do
         if [ "$round2" -lt "$round1" ] ; then round1=0 ; fi
         RD=`expr $round2 - $round1`
         sleep 0.2
-        if [ "$RD" -lt 1 ]
+        if [ "$RD" -lt 10 ]
         then
             export TIME=`date +%Y-%m-%dT%H:%M:%S`
-            echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round2 Stuck!\e[0m"
             if [ "$NDIFF" -lt 10 ]
             then
                 if [ "$LDIFF" -lt -10 ]
                 then
                     if [ "$LAG" -gt -10 ]
                     then
+                        if [ "$RD" -lt 1 ]
+                        then
+                            echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round2 Stuck!\e[0m"
+                        else
+                            echo -e "$TIME [ERROR] Current  round : \e[1m\e[31m$round2 Consensus progress is very slow!\e[0m"
+                        fi
                         cat /dev/null > /home/node/.0L/logs/non-voting_address.txt
                         /home/node/.0L/logs/0l_non-voting_address.sh > /dev/null
                         sleep 0.1
