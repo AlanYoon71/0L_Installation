@@ -18,6 +18,10 @@ echo "Script is searching the log for \"broadcast to all peers\" for 30 seconds.
 echo ""
 voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
 sleep 0.1
+if [ -z "$voting" ]
+then
+    voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
+fi
 echo "$voting" > broadcast_log.txt
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
 if [ -z "$voting" ]
