@@ -30,9 +30,10 @@ sleep 0.1
 #         then
 #             nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
 #             sleep 6
+#             CC=`pgrep diem-node`
 #             if [ -z "$CC" ]
 #             then
-#                 mv /home/node/.0L/db /home/node/.0L/db_backup ; -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
+#                 rm -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
 #                 sleep 10
 #                 nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
 #                 sleep 2
