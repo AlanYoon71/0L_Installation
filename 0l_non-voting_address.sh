@@ -18,33 +18,33 @@ echo "Script is searching the log for \"broadcast to all peers\" for 30 seconds.
 echo ""
 voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
 sleep 0.1
-if [ -z "$voting" ]
-then
-    voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
-    if [ -z "$voting" ]
-    then
-        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-        sleep 3
-        CC=`pgrep diem-node`
-        if [ -z "$CC" ]
-        then
-            nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
-            sleep 6
-            if [ -z "$CC" ]
-            then
-                mv /home/node/.0L/db /home/node/.0L/db_backup ; -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
-                sleep 10
-                nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
-                sleep 2
-            fi
-            voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
-            if [ -z "$voting" ]
-            then
-                voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
-            fi
-        fi
-    fi
-fi
+# if [ -z "$voting" ]
+# then
+#     voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
+#     if [ -z "$voting" ]
+#     then
+#         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+#         sleep 3
+#         CC=`pgrep diem-node`
+#         if [ -z "$CC" ]
+#         then
+#             nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
+#             sleep 6
+#             if [ -z "$CC" ]
+#             then
+#                 mv /home/node/.0L/db /home/node/.0L/db_backup ; -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
+#                 sleep 10
+#                 nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
+#                 sleep 2
+#             fi
+#             voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
+#             if [ -z "$voting" ]
+#             then
+#                 voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
+#             fi
+#         fi
+#     fi
+# fi
 echo "$voting" > broadcast_log.txt
 export TIME=`date +%Y-%m-%dT%H:%M:%S`
 if [ -z "$voting" ]
