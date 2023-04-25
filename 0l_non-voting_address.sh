@@ -24,7 +24,7 @@ sleep 0.1
 #     if [ -z "$voting" ]
 #     then
 #         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-#         sleep 3
+#         sleep 10
 #         CC=`pgrep diem-node`
 #         if [ -z "$CC" ]
 #         then
@@ -34,9 +34,9 @@ sleep 0.1
 #             if [ -z "$CC" ]
 #             then
 #                 rm -rf /home/node/.0L/db && pgrep diem-node > /dev/null || /home/node/bin/ol restore >> /home/node/.0L/logs/restore.log 2>&1 > /dev/null &
-#                 sleep 10
+#                 sleep 15
 #                 nohup /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml 2>&1 | multilog s104857600 n10 /home/node/.0L/logs/node > /dev/null &
-#                 sleep 2
+#                 sleep 6
 #             fi
 #             voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
 #             if [ -z "$voting" ]
