@@ -12,7 +12,7 @@ cat active_validator_set.txt
 echo -e "\e[1m\e[33m================================\e[0m"
 export set1=`cat active_validator_set.txt | wc -l`
 sleep 0.1
-if [ -z "$set1" ]
+if [ "$set1" -eq 0 ]
 then
     echo "The webpage is down now. Failed to extract active validator list."
 else
@@ -40,7 +40,7 @@ else
     sleep 0.1
     if [ -z "$total" ] ; then total=$set1 ; fi 
     votediff=`expr $set1 - $total`
-    if [ -z "$set1" ]
+    if [ "$set1" -eq 0 ]
     then
         :
     else
@@ -54,7 +54,7 @@ else
     export TIME=`date +%Y-%m-%dT%H:%M:%S`
     if [ -z "$nonvoting" ]
     then
-        if [ -z "$set1" ]
+        if [ "$set1" -eq 0 ]
         then
             :
         else
@@ -68,7 +68,7 @@ else
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
         echo -e "\e[1m\e[31m================================\e[0m"
         export total2=`cat non-voting_address.txt | wc -l`
-        if [ -z "$set1" ]
+        if [ "$set1" -eq 0 ]
         then
             :
         else
