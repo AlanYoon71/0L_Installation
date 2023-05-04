@@ -12,10 +12,15 @@ cat active_validator_set.txt
 echo -e "\e[1m\e[33m================================\e[0m"
 export set1=`cat active_validator_set.txt | wc -l`
 sleep 0.1
-echo "Active validators total : $set1 nodes"
-echo ""
-echo "Script is searching the log for \"broadcast to all peers\" for 30 seconds."
-echo ""
+if [ -z "$set1" ]
+then
+    echo "The webpage is down now. Failed to extract active validator list."
+else
+    echo "Active validators total : $set1 nodes"
+    echo ""
+    echo "Script is searching the log for \"broadcast to all peers\" for 30 seconds."
+    echo ""
+fi
 voting=`timeout 30s tail -f /home/node/.0L/logs/node/current | grep "broadcast to all peers"`
 sleep 0.1
 echo "$voting" > broadcast_log.txt
@@ -35,16 +40,26 @@ else
     sleep 0.1
     if [ -z "$total" ] ; then total=$set1 ; fi 
     votediff=`expr $set1 - $total`
-    export rate=`echo "scale=1; ($total * 100) / $set1" | bc`
-    echo "Nodes with voting activity : $total nodes, Validator set : $set1 nodes"
-    echo -e "Vote    Rate : $rate%, \e[1m\e[31m$votediff \e[0mnodes are not voting now."
-    echo ""
+    if [ -z "$set1" ]
+    then
+        :
+    else
+        export rate=`echo "scale=1; ($total * 100) / $set1" | bc`
+        echo "Nodes with voting activity : $total nodes, Validator set : $set1 nodes"
+        echo -e "Vote    Rate : $rate%, \e[1m\e[31m$votediff \e[0mnodes are not voting now."
+        echo ""
+    fi
     nonvoting=$(grep -vf voting_address.txt active_validator_set.txt)
     sleep 0.1
     export TIME=`date +%Y-%m-%dT%H:%M:%S`
     if [ -z "$nonvoting" ]
     then
-        echo "$TIME [INFO] All validators in the set are active and voting now. Great!"
+        if [ -z "$set1" ]
+        then
+            :
+        else
+            echo "$TIME [INFO] All validators in the set are active and voting now. Great!"
+        fi
     else
         echo "$TIME [INFO] These addresses are not in a pending vote and timeout state. It's normal while consensus is in progress."
         echo -e "$TIME [INFO] If the consensus has already stopped, these addresses can be considered \e[1m\e[31minactive\e[0m."
@@ -53,7 +68,12 @@ else
         echo "$nonvoting" | grep -oE '[[:xdigit:]]{32}' | cut -d ' ' -f1 | sort | uniq > non-voting_address.txt
         echo -e "\e[1m\e[31m================================\e[0m"
         export total2=`cat non-voting_address.txt | wc -l`
-        echo -e "No voting activity : \e[1m\e[31m$total2 \e[0mnodes, Validator set : $set1 nodes"
+        if [ -z "$set1" ]
+        then
+            :
+        else
+            echo -e "No voting activity : \e[1m\e[31m$total2 \e[0mnodes, Validator set : $set1 nodes"
+        fi
         if [ "$votediff" -eq "$total2" ]
         then
             voting2=$(grep -f non-voting_address.txt voting_address.txt)
