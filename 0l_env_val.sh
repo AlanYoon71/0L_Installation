@@ -9,6 +9,13 @@ echo "=====================================";
 echo "                           2023-05-12"
 echo ""
 echo "This script was created only for installing \"0L network validator(fullnode mode)\"."
+sleep 2
+echo ""
+echo "If you get more than 8 VDF proofs and 4 vouchers, you can convert mode fullnode to validator."
+sleep 2
+echo ""
+echo "Script starts!"
+sleep 1
 echo ""
 echo ""
 echo -e "\e[1m\e[32m0. Wiping user \"node\" and files for preventing confliction. \e[0m"
