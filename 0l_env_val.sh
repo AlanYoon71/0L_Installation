@@ -8,7 +8,7 @@ echo ""
 echo "=====================================";
 echo "                           2023-05-12"
 echo ""
-echo "This script was created only for installing \"0L network validator(fullnode)\"."
+echo "This script was created only for installing \"0L network validator(fullnode mode)\"."
 echo ""
 echo ""
 echo -e "\e[1m\e[32m0. Wiping user \"node\" and files for preventing confliction. \e[0m"
