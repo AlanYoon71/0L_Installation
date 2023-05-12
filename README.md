@@ -9,12 +9,11 @@
    who have used fficial guide to install a node and understand the process.
    Please read the official guide documentation first.
    This script was created and checked on ubuntu 20.04 LTS only.
-1. Validator(fullnode) and tower
+2. Validator(fullnode) and tower
 
    1) Install script command
 
    cd ~ && git clone https://github.com/AlanYoon71/0L_Installation.git && \cp -f 0L_Installation/* ./ && chmod +x *sh && bash ./0l_env_val.sh
-
 
    Open terminal input upper one line command at root home directory as root user,
    and check TMUX sessions in another terminal
