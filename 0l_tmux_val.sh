@@ -13,7 +13,7 @@ echo "Script for TMUX background started."
 echo ""
 sleep 1
 
-tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . $HOME/.bashrc && cargo install toml-cli && git clone https://github.com/0o-de-lally/libra.git && cd $HOME/libra && make bins install' C-m
+tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . $HOME/.bashrc && cargo install toml-cli && git clone --branch v5.2.0 https://github.com/0LNetworkCommunity/libra.git && cd $HOME/libra && make bins install' C-m
 sleep 1
 
 tmux send-keys -t $session:$window '\n
