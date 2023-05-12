@@ -1,12 +1,12 @@
 #!/bin/bash
 clear
 echo ""
-echo "==============================";
+echo "=====================================";
 echo ""
-echo "Created by  //-\ ][_ //-\ ][\[";
+echo "Created by Alan Yoon #2149 0L Network";
 echo ""
-echo "==============================";
-echo "                    2023-05-12"
+echo "=====================================";
+echo "                           2023-05-12"
 echo ""
 echo "This script was created only for installing \"0L network validator(fullnode)\"."
 echo ""
