@@ -13,7 +13,7 @@ echo "Script for TMUX background started."
 echo ""
 sleep 1
 
-tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . $HOME/.bashrc && cargo install toml-cli && git clone https://github.com/OLSF/libra.git && cd $HOME/libra && make bins install' C-m
+tmux send-keys -t $session:$window 'cd && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . $HOME/.bashrc && cargo install toml-cli && git clone https://github.com/0o-de-lally/libra.git && cd $HOME/libra && make bins install' C-m
 sleep 1
 
 tmux send-keys -t $session:$window '\n
@@ -81,7 +81,7 @@ do
                 tmux rename-window -t $session1:$window 'restore'
                 sleep 1
 
-                tmux send-keys -t $session1:$window 'ulimit -n 100000 && ol restore && diem-node --config $HOME/.0L/fullnode.node.yaml' C-m
+                tmux send-keys -t $session1:$window 'ulimit -n 100000 && ol restore && diem-node --config $HOME/.0L/fullnode.node.yaml 2>&1 | multilog s104857600 n10 $HOME/.0L/logs/node' C-m
                 sleep 60
 
                 session2="waypoint"
@@ -152,7 +152,7 @@ do
                                     tmux rename-window -t $session:$window 'validator'
                                     sleep 1
 
-                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf $HOME/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && cat $HOME/bin/keygen.txt && $HOME/bin/diem-node --config $HOME/.0L/fullnode.node.yaml >> ~/.0L/logs/fullnode.log 2>&1' C-m
+                                    tmux send-keys -t $session:$window 'ulimit -n 100000 && WAY=$(cat $HOME/bin/waypoint.txt) && rm -Rf $HOME/.0L/db && sleep 10 && $HOME/bin/ol restore && sleep 20 && $HOME/bin/ol init --key-store --waypoint $WAY && sleep 10 && cat $HOME/bin/keygen.txt && $HOME/bin/diem-node --config $HOME/.0L/fullnode.node.yaml 2>&1 | multilog s104857600 n10 $HOME/.0L/logs/node' C-m
                                     sleep 180
 
                                     cat $HOME/bin/keygen.txt &&
@@ -358,45 +358,6 @@ do
                                             echo -e "[ \e[1m\e[32mtxs create-account --authkey $AUTH --coins 1 \e[0m] if you want to run \e[1m\e[33m\"fullnode\" \e[0mmode only"
                                             echo ""
                                             sleep 2
-                                            
-                                            # echo -e "\e[1m\e[32m9. Starting restart script.. \e[0m"
-                                            # echo "===================="
-                                            # echo ""
-
-                                            # session="restart"
-                                            # tmux new-session -d -s $session
-                                            # window=0
-                                            # tmux rename-window -t $session:$window 'restart'
-                                            # sleep 1
-
-                                            # tmux send-keys -t $session:$window '$HOME/0l_restart.sh >> $HOME/.0L/logs/restart.log 2>&1' C-m
-                                            # sleep 1
-
-                                            # session="restart_log"
-                                            # tmux new-session -d -s $session
-                                            # window=0
-                                            # tmux rename-window -t $session:$window 'restart_log'
-                                            # sleep 1
-
-                                            # tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/restart.log' C-m
-
-                                            # YY=1
-                                            # ZZ=10
-                                            # while [ $YY -lt $ZZ ]
-                                            # do
-                                            #     sleep 5
-                                            #     if [ -f $HOME/.0L/logs/restart.log ]
-                                            #     then
-                                            #         echo "Restart script started!"
-                                            #         echo ""
-                                            #         echo ""
-                                            #         echo "If network block height increase stopped during 30minutes, your validator will be restarted at every hour on the hour until block height increases"
-                                            #         echo ""
-                                            #         echo ""
-                                            #         YY=15
-                                            #     fi
-                                            # done
-                                            
                                             tmux ls > $HOME/bin/tmux_status.txt &&
                                             sleep 2
                                             echo -e "\e[1m\e[32m[ TMUX sessions ] \e[0m"
