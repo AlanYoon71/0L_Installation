@@ -14,7 +14,7 @@ echo ""
 echo "If you get more than 8 VDF proofs and 4 vouchers, you can convert mode fullnode to validator."
 sleep 2
 echo ""
-echo "Script starts!"
+echo "Script starts! Maybe it'll be over in two hours."
 sleep 1
 echo ""
 echo ""
