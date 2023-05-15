@@ -23,7 +23,7 @@ echo "===================="
 echo ""
 sudo pgrep -f node | sudo xargs kill &> /dev/null ; sleep 1 ; sudo pgrep -f node | sudo xargs kill &> /dev/null ;
 sleep 1
-sudo userdel node &> /dev/null && sudo rm -rf /home/node &> /dev/null && sudo rm $HOME/0L_Installation &> /dev/null
+sudo userdel node &> /dev/null ; sudo rm -rf /home/node &> /dev/null ; sudo rm $HOME/0L_Installation &> /dev/null
 sleep 1
 echo "Wiped all."
 echo ""
