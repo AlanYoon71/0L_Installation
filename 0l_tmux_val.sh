@@ -165,14 +165,17 @@ do
                                     tmux new-session -d -s $session
                                     window=0
                                     tmux rename-window -t $session:$window 'validator_log'
+                                    tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/node/current' C-m
 
                                     J=1
                                     K=10
                                     while [ $J -lt $K ]
                                     do                                    
-                                        if [ -s $HOME/.0L/logs/node/current ]
+                                        checktail=$(pgrep tail)
+                                        if [ -z $checktail ]
                                         then
-                                            tmux send-keys -t $session:$window 'tail -f $HOME/.0L/logs/node/current' C-m
+                                            echo "ERROR! Validator looks like not started, so it needs to be checked manually..."
+                                        else
                                             echo -e "Validator started! It is run as \e[1m\e[33m\"fullnode mode\" \e[0mnow."
                                             echo "You can restart node as \"validator\" mode after fully synced and onboarded by other an active validator."
                                             echo ""
