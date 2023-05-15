@@ -189,7 +189,7 @@ do
                                             echo ""
                                             sleep 300
 
-                                            syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                            syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\") &&
                                             echo $syn &&
                                             export syn1=$(echo $syn | grep -o '[0-9]*') &&
                                             echo ""
@@ -200,7 +200,7 @@ do
                                             while [ $S -lt $SS ]
                                             do
                                                 sleep 20
-                                                export syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                                export syn=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\") &&
                                                 echo $syn &&
                                                 export syn2=$(echo $syn | grep -o '[0-9]*') &&
                                                 if [ $syn2 == $syn1 ]
@@ -274,7 +274,7 @@ do
                                                 echo ""
                                             fi
 
-                                            export highest=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"highest\") &&
+                                            export highest=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\") &&
                                             export synced=$(curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\") &&
                                             sleep 1
                                             export highest1=$(echo $highest | grep -o '[0-9]*') &&
