@@ -322,13 +322,14 @@ do
                                             
                                             Y=1
                                             Z=10
-                                            export PROOF=$HOME/.0L/logs/tower.log
+                                            export PROOF=`cat /home/node/.0L/logs/tower.log | grep "backlog committed to chain"`
                                             while [ $Y -lt $Z ]
                                             do
-                                                sleep 15
-                                                export SIZE=$(stat -c%s "$PROOF")                                            
-                                                if [[ $SIZE -gt 800  ]]
+                                                sleep 15                                          
+                                                if [ -z "$PROOF" ]
                                                 then
+                                                    :
+                                                else
                                                     echo "Tower started!"
                                                     echo ""
                                                     echo ""
