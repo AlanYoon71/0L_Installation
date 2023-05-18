@@ -51,10 +51,10 @@ echo "This script includes genesis mining and tower, so it takes 1 hour more ent
 echo ""
 sudo useradd node -m -s /bin/bash &&
 sleep 2
-sudo \cp -f ./0l_tmux_val.sh /home/node &> /dev/null ; sudo \cp -f ./autopay_batch.json /home/node &> /dev/null ; sudo \cp -f ./0l_restart.sh /home/node &> /dev/null ;
+sudo \cp -f ./0l_tmux_val.sh /home/node &> /dev/null ; sudo \cp -f ./autopay_batch.json /home/node &> /dev/null
 sleep 2
-sudo chmod +x /home/node/0l_tmux_val.sh && sudo chmod +x /home/node/0l_restart.sh &&
-sudo chmod go+rw /home/node/0l_tmux_val.sh && sudo chmod go+rw /home/node/0l_restart.sh &&
+sudo chmod +x /home/node/0l_tmux_val.sh
+sudo chmod go+rw /home/node/0l_tmux_val.sh
 sudo -u node /home/node/0l_tmux_val.sh &&
 CUR_DATE=`date +%Y%m%d_%I%M%S_%p` &&
 sudo mkdir -p $HOME/0l_config_backup/"$CUR_DATE" &> /dev/null ;
