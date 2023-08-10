@@ -35,7 +35,7 @@
    7. Mnemonic and answers for question should be input by user twice
       manually to prove not malicious bot or script.
 
-# Monitoring(discord) and restart Script for validator
+# Monitoring(discord) and restart script for validator
 
 1. Prepare discord bot env.
    - Make discord bot and connect bot to the channel in your own server.
