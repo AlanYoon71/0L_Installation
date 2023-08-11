@@ -8,7 +8,7 @@ else
     sudo apt install -y bc
 fi
 PATH=$PATH:/home/node/bin
-webhook_url="https://discord.com/api/webhooks/1095707274348656258/FePYoqHSYqEp4_feZzfdkL9Ybnd9VWk3lzVXvyZ7RvFwqowdr56qOKdayYOzSPCw0OS9"
+webhook_url=""
 
 # Initialize previous values
 prev_epoch=0
@@ -411,11 +411,13 @@ while true; do
         hourglass=":watch:"
         current_time=$(date +%s)
         time_difference=$((current_time - start_time))
-        hours=$((time_difference / 3600))
+        days=$((time_difference / 86400))
+        hours=$(( (time_difference % 86400) / 3600 ))
         minutes=$(( (time_difference % 3600) / 60 ))
+        days=$(printf "%02d" $days)
         hours=$(printf "%02d" $hours)
         minutes=$(printf "%02d" $minutes)
-        export JUMPTIME=`echo "${hours}:${minutes}"`
+        export JUMPTIME=`echo "${days}:${hours}:${minutes}"`
       fi
       if [[ $scriptstart -eq 0 ]]; then
         VOTEEPOCH="$ROUND"
