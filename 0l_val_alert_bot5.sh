@@ -67,7 +67,7 @@ while true; do
   else
     Lag="_ Lag"
     if [ ${#LAG} -ge 3 ]; then
-      LAG=$(echo "scale=0; ($LAG + 500) / 1000 -1" | bc)K
+      LAG=$(echo "scale=0; ($LAG + 500) / 1000" | bc)K
     fi
   fi
   if [ -n "$SYNC" ] && [ "$SYNC" -ne 0 ]; then
@@ -223,7 +223,7 @@ while true; do
           else
             Lag="_ Lag"
             if [ ${#LAG} -ge 3 ]; then
-              LAG=$(echo "scale=0; ($LAG + 500) / 1000 -1" | bc)K
+              LAG=$(echo "scale=0; ($LAG + 500) / 1000" | bc)K
             fi
           fi
         fi
@@ -378,7 +378,7 @@ while true; do
       else
         Lag="_ Lag"
         if [ ${#LAG} -ge 3 ]; then
-          LAG=$(echo "scale=0; ($LAG + 500) / 1000 -1" | bc)K
+          LAG=$(echo "scale=0; ($LAG + 500) / 1000" | bc)K
         fi
       fi
       if [ -n "$SYNC" ] && [ "$SYNC" -ne 0 ]; then
