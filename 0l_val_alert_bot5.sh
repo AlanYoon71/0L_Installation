@@ -55,7 +55,7 @@ while true; do
   TARG=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
   sleep 0.3
   LAG=`expr $TARG - $SYNC`
-  sleep 0.3
+  sleep 1
   if [[ "$LAG" -le 1 ]]; then
     if [[ "$LAG" -lt 1 ]]; then
       Lag=""
