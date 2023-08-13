@@ -175,6 +175,21 @@ while true; do
     then
       if [[ "$BLOCK2" == "$BLOCK1" ]] || [[ "$BLOCK1" == "$BLOCK3" ]] || [[ "$BLOCK2" == "$BLOCK3" ]]
       then
+        if [ -z "$start_time" ]; then
+          hourglass=""
+          JUMPTIME=""
+        else
+          hourglass=":watch:"
+          current_time=$(date +%s)
+          time_difference=$((current_time - start_time))
+          days=$((time_difference / 86400))
+          hours=$(( (time_difference % 86400) / 3600 ))
+          minutes=$(( (time_difference % 3600) / 60 ))
+          days=$(printf "%02d" $days)
+          hours=$(printf "%02d" $hours)
+          minutes=$(printf "%02d" $minutes)
+          export JUMPTIME=`echo "${days}:${hours}:${minutes}"`
+        fi
         unchanged_counter=$((unchanged_counter + 1))
         changed_counter=0
         if [[ $BLOCK2 -eq 0 ]]; then
@@ -258,6 +273,21 @@ while true; do
         restart_flag=1
       fi
     else
+      if [ -z "$start_time" ]; then
+        hourglass=""
+        JUMPTIME=""
+      else
+        hourglass=":watch:"
+        current_time=$(date +%s)
+        time_difference=$((current_time - start_time))
+        days=$((time_difference / 86400))
+        hours=$(( (time_difference % 86400) / 3600 ))
+        minutes=$(( (time_difference % 3600) / 60 ))
+        days=$(printf "%02d" $days)
+        hours=$(printf "%02d" $hours)
+        minutes=$(printf "%02d" $minutes)
+        export JUMPTIME=`echo "${days}:${hours}:${minutes}"`
+      fi
       BLOCKLIGHT=":green_circle:"
       if [[ $SYNCDIFF -eq 0 ]]; then
         SYNCLIGHT=":red_circle:"
