@@ -414,6 +414,16 @@ while true; do
       if [ -n "$SYNC" ] && [ "$SYNC" -ne 0 ]; then
         SYNCK=$(echo "scale=0; ($SYNC + 500) / 1000 -1" | bc)K
       fi
+      ADDRESSLIST=`curl -i https://0lexplorer.io/validators | grep -oE 'account_address":"([[:xdigit:]]{32})"' | cut -d':' -f2 | tr -d '\"'`
+      ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
+      export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
+      sleep 0.3
+      if [[ -z $TOWERRANK ]]; then
+        RANK=""
+        TOWERRANK=""
+      else
+        RANK="Power Ranking"
+      fi
       VOTEEPOCH="$ROUND"
       VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
       export start_time=$(date +%s)
@@ -431,7 +441,7 @@ while true; do
         ufw deny 9101 > /dev/null; lock=":lock:"
       fi
       restartcount=0 && restorecount=0 &&
-      message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH  New epoch started!\`  :high_brightness:\`\nSync  : $SYNC $Lag $LAG\` $LAGCHECK\`\nRound : $ROUND\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT"
+      message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH  New epoch started!\`  :high_brightness:\`\nSync  : $SYNC $Lag $LAG\` $LAGCHECK\`\nRound : $ROUND\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\`  $RANK $TOWERRANK\`"
       send_discord_message "$message"
     else
       if [ -z "$start_time" ]; then
@@ -450,6 +460,16 @@ while true; do
         export JUMPTIME=`echo "${days}:${hours}:${minutes}"`
       fi
       if [[ $scriptstart -eq 0 ]]; then
+        ADDRESSLIST=`curl -i https://0lexplorer.io/validators | grep -oE 'account_address":"([[:xdigit:]]{32})"' | cut -d':' -f2 | tr -d '\"'`
+        ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
+        export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
+        sleep 0.3
+        if [[ -z $TOWERRANK ]]; then
+          RANK=""
+          TOWERRANK=""
+        else
+          RANK="Power Ranking"
+        fi
         VOTEEPOCH="$ROUND"
         if [[ $SYNCDIFF -eq 0 ]]; then
           SYNCLIGHT=":red_circle:"
@@ -478,7 +498,7 @@ while true; do
             TOWERLIGHT=":green_circle:"
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAG\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTEEPOCH _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT"
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAG\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTEEPOCH _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\`  $RANK $TOWERRANK\`"
           send_discord_message "$message"
         else
           if [[ $SYNCDIFF -eq 0 ]]; then
@@ -492,7 +512,7 @@ while true; do
             TOWERLIGHT=":green_circle:"
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAG\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTEEPOCH _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT"
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAG\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTEEPOCH _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\`  $RANK $TOWERRANK\`"
           send_discord_message "$message"
         fi
       fi
