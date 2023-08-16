@@ -66,12 +66,18 @@ while true; do
     fi
   else
     Lag="_ Lag"
-    if [ ${#LAG} -ge 3 ]; then
-      LAG=$(echo "scale=0; ($LAG + 500) / 1000" | bc)K
+    if [[ "$LAG" -ge 1000 ]]; then
+      LAG=$(echo "scale=1; $LAG / 1000" | bc)K
+    else
+      LAG=$(echo "scale=0; $LAG" | bc)
     fi
   fi
   if [ -n "$SYNC" ] && [ "$SYNC" -ne 0 ]; then
-    SYNCK=$(echo "scale=0; ($SYNC + 500) / 1000 -1" | bc)K
+    if [[ "$SYNC" -gt 1000 ]]; then
+      SYNCK=$(echo "scale=1; $SYNC / 1000" | bc)K
+    else
+      SYNCK=$(echo "scale=0; $SYNC / 10" | bc)
+    fi
   fi
   sleep 0.3
   VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
@@ -79,13 +85,6 @@ while true; do
   PROPOSAL=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\"\} | grep -o '[0-9]*'`
   sleep 0.3
   PROOF=`tac /home/node/.0L/logs/tower.log | grep -m1 -oE '# [0-9]+' | grep -oE '[0-9]+$'`
-  sleep 0.3
-  #VSET=`cat active_validator_set.txt | wc -l`
-  # if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
-  #   VSET=""
-  # else
-  #   VSET="_ $VSET set"
-  # fi
   sleep 0.3
   BLOCKLIGHT=":green_circle:"
   VOTELIGHT=":green_circle:"
@@ -237,13 +236,19 @@ while true; do
             fi
           else
             Lag="_ Lag"
-            if [ ${#LAG} -ge 3 ]; then
-              LAG=$(echo "scale=0; ($LAG + 500) / 1000" | bc)K
+            if [[ "$LAG" -ge 1000 ]]; then
+              LAG=$(echo "scale=1; $LAG / 1000" | bc)K
+            else
+              LAG=$(echo "scale=0; $LAG" | bc)
             fi
           fi
-        fi
-        if [ -n "$SYNC" ] && [ "$SYNC" -ne 0 ]; then
-          SYNCK=$(echo "scale=0; ($SYNC + 500) / 1000 -1" | bc)K
+          if [ -n "$SYNC" ] && [ "$SYNC" -ne 0 ]; then
+            if [[ "$SYNC" -gt 1000 ]]; then
+              SYNCK=$(echo "scale=1; $SYNC / 1000" | bc)K
+            else
+              SYNCK=$(echo "scale=0; $SYNC / 10" | bc)
+            fi
+          fi
         fi
         send_discord_message() {
           local message=$1
@@ -400,23 +405,35 @@ while true; do
       if [[ "$LAG" -le 1 ]]; then
         if [[ "$LAG" -lt 1 ]]; then
           Lag=""
-          LAGCHECK=""
+          LAG=""
         else
           Lag="_ Synced!"
-          LAGCHECK=":high_brightness:"
+          LAG=""
         fi
       else
         Lag="_ Lag"
-        if [ ${#LAG} -ge 3 ]; then
-          LAG=$(echo "scale=0; ($LAG + 500) / 1000" | bc)K
+        if [[ "$LAG" -ge 1000 ]]; then
+          LAG=$(echo "scale=1; $LAG / 1000" | bc)K
+        else
+          LAG=$(echo "scale=0; $LAG" | bc)
         fi
       fi
       if [ -n "$SYNC" ] && [ "$SYNC" -ne 0 ]; then
-        SYNCK=$(echo "scale=0; ($SYNC + 500) / 1000 -1" | bc)K
+        if [[ "$SYNC" -gt 1000 ]]; then
+          SYNCK=$(echo "scale=1; $SYNC / 1000" | bc)K
+        else
+          SYNCK=$(echo "scale=0; $SYNC / 10" | bc)
+        fi
       fi
       ADDRESSLIST=`curl -i https://0lexplorer.io/validators | grep -oE 'account_address":"([[:xdigit:]]{32})"' | cut -d':' -f2 | tr -d '\"'`
       ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
       export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
+      export VSET=`echo "$ADDRESSLIST" | wc -l`
+      if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
+        VSET=""
+      else
+        VSET="_ $VSET set"
+      fi
       sleep 0.3
       if [[ -z $TOWERRANK ]]; then
         RANK=""
@@ -463,6 +480,12 @@ while true; do
         ADDRESSLIST=`curl -i https://0lexplorer.io/validators | grep -oE 'account_address":"([[:xdigit:]]{32})"' | cut -d':' -f2 | tr -d '\"'`
         ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
         export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
+        export VSET=`echo "$ADDRESSLIST" | wc -l`
+        if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
+          VSET=""
+        else
+          VSET="_ $VSET set"
+        fi
         sleep 0.3
         if [[ -z $TOWERRANK ]]; then
           RANK=""
