@@ -52,6 +52,7 @@ while true; do
   sleep 0.3
   SYNC=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.3
+  if [[ -z "$SYNC" ]]; then SYNC=0; fi
   TARG=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"target\"} | grep -o '[0-9]*'`
   sleep 0.3
   LAG=`expr $TARG - $SYNC`
@@ -661,10 +662,11 @@ while true; do
       send_discord_message "$message"
     fi
   fi
+  if [ -z "$SYNC" ]; then SYNC=0; fi
   if [ -z "$ROUND" ]; then ROUND=0; fi
   if [ -z "$VOTE" ]; then VOTE=0; fi
   if [ -z "$PROPOSAL" ]; then PROPOSAL=0; fi
-  if [[ $ROUND -eq 0 ]] && [[ $VOTE -eq 0 ]] && [[ $PROPOSAL -eq 0 ]]; then
+  if [[ $SYNC -eq 0 ]] && [[ $VOTE -eq 0 ]] && [[ $PROPOSAL -eq 0 ]]; then
     RESTORECHECK=$((RESTORECHECK + 1))
     if [[ $RESTORECHECK -eq 2 ]]; then
       message="\`\nCan't get data from DB!!\`  :astonished:\`\nDB regen is required with ol restore.\`"
