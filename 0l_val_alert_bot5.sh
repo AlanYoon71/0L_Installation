@@ -159,7 +159,7 @@ while true; do
     VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
   fi
   sleep 0.3
-  if [[ $prev_round == $ROUND ]] && [[ "$SYNCDIFF" -eq 0 ]]; then
+  if [[ $prev_round == $ROUND ]]; then
     BLOCK1=$(curl -s https://0lexplorer.io/ | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
     sleep 40
     if [ -z "$BLOCK1" ]; then BLOCK1=0; fi
