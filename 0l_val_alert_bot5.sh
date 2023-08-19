@@ -222,6 +222,7 @@ while true; do
         fi
         SYNC=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
         sleep 0.3
+        if [[ -z "$SYNC" ]]; then SYNC=0; fi
         if [[ -z "$BLOCK2" ]]; then BLOCK2=0; fi
         if [[ "$BLOCK2" -eq 0 ]]; then
           BLOCK2=""
