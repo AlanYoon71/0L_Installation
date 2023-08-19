@@ -624,7 +624,7 @@ while true; do
     #consensus_restart=1
     #delay=1
   #fi
-  if [[ $unchanged_counter -ge 2 ]] && [[ $message_printed -ge 2 ]]; then
+  if [[ $unchanged_counter -ge 1 ]] && [[ $message_printed -ge 1 ]]; then
     # cat /dev/null > non-voting_address.txt
     # sleep 1
     # /home/node/.0L/logs/0l_non-voting_address.sh
@@ -638,13 +638,15 @@ while true; do
     consensus_restart=1
     ROUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_current_round | grep -o '[0-9]*'` &&
     sleep 0.3
+    VOTEDROUND=`curl 127.0.0.1:9101/metrics 2>/dev/null | grep last_voted_round | grep -o '[0-9]*'`
+    sleep 0.3
     ROUNDCHECK=$(curl -s https://0lexplorer.io/ | grep -oPm1 '(?<=Round":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
     sleep 0.3
     if [ -z "$ROUND" ]; then ROUND=0; fi
     sleep 0.5
     if [ -z "$ROUNDCHECK" ]; then ROUNDCHECK=0; fi
     sleep 0.5
-    if [[ "$ROUNDCHECK" -le "$ROUND" ]]; then
+    if [[ "$ROUNDCHECK" -le "$VOTEDROUND" ]] || [[ "$ROUNDCHECK" -le "$ROUND" ]] || [[ "$ROUND" -le "$VOTEDROUND" ]]; then
       :
     else
       send_discord_message() {
