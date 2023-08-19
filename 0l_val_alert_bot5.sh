@@ -50,7 +50,24 @@ while true; do
   sleep 0.3
   VOTEDROUND=`curl 127.0.0.1:9101/metrics 2>/dev/null | grep last_voted_round | grep -o '[0-9]*'`
   sleep 0.3
-  if [ -z "$VOTEDROUND" ]; then VOTEDROUND=0; fi
+  if [[ -z "$VOTEDROUND" ]]; then VOTEDROUND=0; fi
+  if [[ $VOTEDROUND -eq 0 ]]; then
+    send_discord_message() {
+      local message=$1
+      curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+    }
+    message="\`\nAlert!! You're not on the latest round!!\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
+    send_discord_message "$message"
+    PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+    sleep 6
+    sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+    sleep 6
+    restartcount=$((restartcount + 1))
+    PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
+    sleep 3
+    PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+    send_discord_message "$message"
+  fi
   SYNC=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.3
   if [[ -z "$SYNC" ]]; then SYNC=0; fi
@@ -648,25 +665,21 @@ while true; do
     if [[ "$ROUNDCHECK" -ge "$ROUND" ]]; then
       :
     else
-      if [[ $ROUNDCHECK -eq 0 ]]; then
-        :
-      else
-        send_discord_message() {
-          local message=$1
-          curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
-        }
-        message="\`\nAlert!! You're not on the latest round!!\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
-        send_discord_message "$message"
-        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-        sleep 6
-        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
-        sleep 6
-        restartcount=$((restartcount + 1))
-        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
-        sleep 3
-        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
-        send_discord_message "$message"
-      fi
+      send_discord_message() {
+        local message=$1
+        curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+      }
+      message="\`\nAlert!! You're not on the latest round!!\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
+      send_discord_message "$message"
+      PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+      sleep 6
+      sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+      sleep 6
+      restartcount=$((restartcount + 1))
+      PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
+      sleep 3
+      PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+      send_discord_message "$message"
     fi
   fi
   if [ -z "$SYNC" ]; then SYNC=0; fi
