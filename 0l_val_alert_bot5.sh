@@ -257,6 +257,8 @@ while true; do
         }
         message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTEEPOCH _ Lack of power..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
         send_discord_message "$message"
+        BLOCK2=""
+        BLOCKCOMMENT=""
         message_printed=$((message_printed + 1))
         BLOCK3=$(curl -s https://0lexplorer.io/ | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
         sleep 40
@@ -325,6 +327,8 @@ while true; do
       message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTEEPOCH\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
       message="\`\nAlert!! Validator is not voting.\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
       send_discord_message "$message"
+      BLOCK2=""
+      BLOCKCOMMENT=""
       PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
       sleep 6
       sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
@@ -606,7 +610,7 @@ while true; do
   #     setcheck=2
   #   fi
   # fi
-  if [[ $unchanged_counter -ge 2 ]] && [[ $message_printed -ge 2 ]] && [[ $delay -eq 0 ]]; then
+  #if [[ $unchanged_counter -ge 2 ]] && [[ $message_printed -ge 1 ]] && [[ $delay -eq 0 ]]; then
     # cat /dev/null > non-voting_address.txt
     # sleep 1
     # /home/node/.0L/logs/0l_non-voting_address.sh
@@ -617,12 +621,12 @@ while true; do
     # sleep 3
     # /home/node/.0L/logs/non-voting_alert_bot.sh
     # sleep 1
-    restart_message_printed=0
-    message_printed=0
-    consensus_restart=1
-    delay=1
-  fi
-  if [[ $unchanged_counter -ge 3 ]] && [[ $message_printed -ge 3 ]] && [[ $delay -eq 1 ]]; then
+    #restart_message_printed=0
+    #message_printed=0
+    #consensus_restart=1
+    #delay=1
+  #fi
+  if [[ $unchanged_counter -ge 2 ]] && [[ $message_printed -ge 2 ]]; then
     # cat /dev/null > non-voting_address.txt
     # sleep 1
     # /home/node/.0L/logs/0l_non-voting_address.sh
