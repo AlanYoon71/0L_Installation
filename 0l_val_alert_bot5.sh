@@ -577,9 +577,9 @@ while true; do
     setcheck=0
   else
     if [[ $restart_flag -eq 1 ]]; then
-      prev_round=0
-      prev_vote=0
-      prev_proposal=0
+      #prev_round=0
+      #prev_vote=0
+      #prev_proposal=0
       prev_proof=`expr $PROOF - $refresh3`
       setcheck=$((setcheck + 1))
       restart_flag=0
