@@ -453,7 +453,7 @@ while true; do
       else
         RANK="Power Ranking"
       fi
-      VOTEEPOCH=0
+      VOTEEPOCH="$ROUND"
       VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
       export start_time=$(date +%s)
       hourglass=":watch:"
@@ -514,7 +514,7 @@ while true; do
         else
           RANK="Power Ranking"
         fi
-        VOTEEPOCH=0
+        VOTEEPOCH="$ROUND"
         if [[ $SYNCDIFF -eq 0 ]]; then
           SYNCLIGHT=":red_circle:"
           PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
