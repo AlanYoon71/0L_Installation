@@ -161,11 +161,11 @@ while true; do
   sleep 0.3
   if [[ $prev_round == $ROUND ]]; then
     BLOCK1=$(curl -s https://0lexplorer.io/ | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
-    sleep 40
+    sleep 20
     if [ -z "$BLOCK1" ]; then BLOCK1=0; fi
     sleep 2
     BLOCK2=$(curl -s https://0lexplorer.io/ | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
-    sleep 40
+    sleep 20
     if [ -z "$BLOCK2" ]; then BLOCK2=0; fi
     sleep 2
     if [ -z "$BLOCK3" ]; then BLOCK3=0; fi
@@ -624,7 +624,7 @@ while true; do
     #consensus_restart=1
     #delay=1
   #fi
-  if [[ $unchanged_counter -ge 1 ]] && [[ $message_printed -ge 1 ]]; then
+  if [[ $unchanged_counter -ge 2 ]] && [[ $message_printed -ge 2 ]]; then
     # cat /dev/null > non-voting_address.txt
     # sleep 1
     # /home/node/.0L/logs/0l_non-voting_address.sh
@@ -636,8 +636,6 @@ while true; do
     restart_message_printed=0
     message_printed=0
     consensus_restart=1
-    ROUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_current_round | grep -o '[0-9]*'` &&
-    sleep 0.3
     VOTEDROUND=`curl 127.0.0.1:9101/metrics 2>/dev/null | grep last_voted_round | grep -o '[0-9]*'`
     sleep 0.3
     ROUNDCHECK=$(curl -s https://0lexplorer.io/ | grep -oPm1 '(?<=Round":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
@@ -646,8 +644,26 @@ while true; do
     sleep 0.5
     if [ -z "$ROUNDCHECK" ]; then ROUNDCHECK=0; fi
     sleep 0.5
-    if [[ "$ROUNDCHECK" -le "$VOTEDROUND" ]] || [[ "$ROUNDCHECK" -le "$ROUND" ]] || [[ "$ROUND" -le "$VOTEDROUND" ]]; then
-      :
+    if [[ "$ROUNDCHECK" -le "$VOTEDROUND" ]]; then
+      if [[ "$ROUNDCHECK" -ne 0 ]] && [[ "$VOTEDROUND" -eq 0 ]] && [[ "$SYNCDIFF" -eq 0 ]]; then
+        send_discord_message() {
+          local message=$1
+          curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+        }
+        message="\`\nAlert!! You're not on the latest round!!\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
+        send_discord_message "$message"
+        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+        sleep 6
+        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+        sleep 6
+        restartcount=$((restartcount + 1))
+        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
+        sleep 3
+        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+        send_discord_message "$message"
+      else
+        :
+      fi
     else
       send_discord_message() {
         local message=$1
