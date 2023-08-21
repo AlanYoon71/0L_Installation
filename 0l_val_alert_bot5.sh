@@ -16,11 +16,11 @@ prev_round=0
 prev_sync=0
 prev_vote=0
 last_vote=0
-VOTEEPOCH=0
 prev_proposal=0
 prev_proof=0
 refresh3=0
 setcheck=0
+RVOTE=0
 # Initialize counters
 unchanged_counter=0
 changed_counter=0
@@ -82,6 +82,8 @@ while true; do
   fi
   sleep 0.3
   VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
+  if [[ -z "$VOTE" ]]; then VOTE=0; fi
+  VOTE=`expr $VOTE - $RVOTE`
   sleep 0.3
   PROPOSAL=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\"\} | grep -o '[0-9]*'`
   sleep 0.3
@@ -136,7 +138,6 @@ while true; do
   if [ -z "$ROUND" ]; then ROUND=0; fi
   if [ -z "$SYNC" ]; then SYNC=0; fi
   if [ -z "$VOTE" ]; then VOTE=0; fi
-  if [ -z "$VOTEEPOCH" ]; then VOTEEPOCH=0; fi
   if [ -z "$PROPOSAL" ]; then PROPOSAL=0; fi
   if [ -z "$PROOF" ]; then PROOF=0; fi
   if [ -z "$EPOCH" ]; then
@@ -148,7 +149,6 @@ while true; do
   ROUNDDIFF=`expr $ROUND - $prev_round`
   SYNCDIFF=`expr $SYNC - $prev_sync`
   VOTEDIFF=`expr $VOTE - $prev_vote`
-  VOTEEPOCH=`expr $VOTEEPOCH + $VOTEDIFF`
   PROPOSALDIFF=`expr $PROPOSAL - $prev_proposal`
   if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
   if [ -z "$VOTEDIFF" ]; then VOTEDIFF=0; fi
@@ -253,7 +253,7 @@ while true; do
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND(Voted) _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTEEPOCH _ Lack of power..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND(Voted) _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE _ Lack of power..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
         send_discord_message "$message"
         BLOCK2=""
         BLOCKCOMMENT=""
@@ -322,7 +322,7 @@ while true; do
         local message=$1
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
       }
-      message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND(Voted) _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTEEPOCH\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+      message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND(Voted) _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
       message="\`\nAlert!! Validator is not voting.\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
       send_discord_message "$message"
       BLOCK2=""
@@ -453,7 +453,8 @@ while true; do
       else
         RANK="Power Ranking"
       fi
-      VOTEEPOCH="$ROUND"
+      VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
+      RVOTE="$VOTE"
       VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
       export start_time=$(date +%s)
       hourglass=":watch:"
@@ -514,7 +515,6 @@ while true; do
         else
           RANK="Power Ranking"
         fi
-        VOTEEPOCH="$ROUND"
         if [[ $SYNCDIFF -eq 0 ]]; then
           SYNCLIGHT=":red_circle:"
           PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
@@ -542,7 +542,7 @@ while true; do
             TOWERLIGHT=":green_circle:"
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTEEPOCH _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           if [[ $SYNCDIFF -eq 0 ]]; then
@@ -556,7 +556,7 @@ while true; do
             TOWERLIGHT=":green_circle:"
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTEEPOCH _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         fi
       fi
@@ -567,6 +567,8 @@ while true; do
     restart_flag=0
     refresh3="$PROOF"
     prev_epoch="$EPOCH"
+    VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
+    RVOTE="$VOTE"
     prev_vote="$VOTE"
     prev_round=0
     PROPOSAL=0
@@ -576,6 +578,8 @@ while true; do
   else
     if [[ $restart_flag -eq 1 ]]; then
       #prev_round=0
+      VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
+      RVOTE="$VOTE"
       prev_vote="$VOTE"
       prev_proposal="$PROPOSAL"
       prev_proof=`expr $PROOF - $refresh3`
@@ -650,7 +654,7 @@ while true; do
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\nAlert!! You're not on the latest round!!\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
+        message="\`\nAlert!! You're not on the latest round!!\nPreparing to restart...\`"
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 6
@@ -669,7 +673,7 @@ while true; do
         local message=$1
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
       }
-      message="\`\nAlert!! You're not on the latest round!!\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
+      message="\`\nAlert!! You're not on the latest round!!\nPreparing to restart...\`"
       send_discord_message "$message"
       PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
       sleep 6
