@@ -567,8 +567,7 @@ while true; do
     restart_flag=0
     refresh3="$PROOF"
     prev_epoch="$EPOCH"
-    VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
-    RVOTE="$VOTE"
+    RVOTE=0
     prev_vote="$VOTE"
     prev_round=0
     PROPOSAL=0
@@ -578,8 +577,7 @@ while true; do
   else
     if [[ $restart_flag -eq 1 ]]; then
       #prev_round=0
-      VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
-      RVOTE="$VOTE"
+      RVOTE=0
       prev_vote="$VOTE"
       prev_proposal="$PROPOSAL"
       prev_proof=`expr $PROOF - $refresh3`
@@ -654,7 +652,7 @@ while true; do
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\nAlert!! You're not on the latest round!!\nPreparing to restart...\`"
+        message="\`\nAlert!! You're not on the latest round.\nPreparing to restart...\`"
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 6
@@ -673,7 +671,7 @@ while true; do
         local message=$1
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
       }
-      message="\`\nAlert!! You're not on the latest round!!\nPreparing to restart...\`"
+      message="\`\nAlert!! You're not on the latest round.\nPreparing to restart...\`"
       send_discord_message "$message"
       PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
       sleep 6
