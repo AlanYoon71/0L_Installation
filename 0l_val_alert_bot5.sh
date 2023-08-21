@@ -626,7 +626,7 @@ while true; do
     #consensus_restart=1
     #delay=1
   #fi
-  if [[ $unchanged_counter -ge 2 ]] && [[ $message_printed -ge 2 ]]; then
+  if [[ $unchanged_counter -ge 1 ]] && [[ $message_printed -ge 1 ]]; then
     # cat /dev/null > non-voting_address.txt
     # sleep 1
     # /home/node/.0L/logs/0l_non-voting_address.sh
