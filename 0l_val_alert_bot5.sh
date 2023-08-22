@@ -688,7 +688,7 @@ while true; do
   if [ -z "$ROUND" ]; then ROUND=0; fi
   if [ -z "$VOTE" ]; then VOTE=0; fi
   if [ -z "$PROPOSAL" ]; then PROPOSAL=0; fi
-  if [[ $SYNC -eq 0 ]] && [[ $VOTE -eq 0 ]] && [[ $PROPOSAL -eq 0 ]]; then
+  if [[ $SYNC -eq 0 ]] && [[ $ROUND -eq 0 ]] && [[ $PROPOSAL -eq 0 ]]; then
     RESTORECHECK=$((RESTORECHECK + 1))
     if [[ $RESTORECHECK -eq 2 ]]; then
       message="\`\nCan't get data from DB!!\`  :astonished:\`\nDB regen is required with ol restore.\`"
