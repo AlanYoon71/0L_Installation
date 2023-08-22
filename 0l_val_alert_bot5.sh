@@ -117,6 +117,7 @@ while true; do
       sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db_backup ; mv /home/node/.0L/db /home/node/.0L/db_backup && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
       sleep 6
       restorecount=$((restorecount + 1))
+      restart_flag=1
       PID=$(pgrep diem-node) && message="\`\n\`:fist:  \`Validator has been restored and restarted!!\`  :fist:"
       sleep 1
       PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
@@ -140,12 +141,6 @@ while true; do
   if [ -z "$VOTE" ]; then VOTE=0; fi
   if [ -z "$PROPOSAL" ]; then PROPOSAL=0; fi
   if [ -z "$PROOF" ]; then PROOF=0; fi
-  if [ -z "$EPOCH" ]; then
-    EPOCH=0
-    sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
-    sleep 6
-    restartcount=$((restartcount + 1))
-  fi
   ROUNDDIFF=`expr $ROUND - $prev_round`
   SYNCDIFF=`expr $SYNC - $prev_sync`
   VOTEDIFF=`expr $VOTE - $prev_vote`
@@ -659,6 +654,7 @@ while true; do
         sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
         sleep 6
         restartcount=$((restartcount + 1))
+        restart_flag=1
         PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
         sleep 3
         PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
@@ -678,6 +674,7 @@ while true; do
       sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
       sleep 6
       restartcount=$((restartcount + 1))
+      restart_flag=1
       PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
       sleep 3
       PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
@@ -698,6 +695,7 @@ while true; do
       sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db_backup ; mv /home/node/.0L/db /home/node/.0L/db_backup && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
       sleep 6
       restorecount=$((restorecount + 1))
+      restart_flag=1
       send_discord_message() {
         local message=$1
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
@@ -710,7 +708,7 @@ while true; do
       RESTORECHECK=0
     fi
   fi
-  if [[ $changed_counter -ge 2 ]] && [[ $consensus_restart -eq 1 ]] && [[ $restart_message_printed -eq 0 ]] && [[ $SYNCDIFF -gt 0 ]]; then
+  if [[ $changed_counter -ge 1 ]] && [[ $consensus_restart -eq 1 ]] && [[ $restart_message_printed -eq 0 ]] && [[ $SYNCDIFF -gt 0 ]]; then
     send_discord_message() {
       local message=$1
       curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
