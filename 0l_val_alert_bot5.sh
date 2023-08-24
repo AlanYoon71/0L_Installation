@@ -187,7 +187,7 @@ while true; do
         unchanged_counter=$((unchanged_counter + 1))
         changed_counter=0
         if [[ $BLOCK2 -eq 0 ]]; then
-          BLOCKCOMMENT="Can't get the latest block.."
+          BLOCKCOMMENT="0lexplorer isn't responding."
         fi
         BLOCKLIGHT=":red_circle:"
         PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
