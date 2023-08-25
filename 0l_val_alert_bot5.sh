@@ -565,7 +565,7 @@ while true; do
     refresh3="$PROOF"
     prev_epoch="$EPOCH"
     RVOTE=0
-    prev_vote="$VOTE"
+    prev_vote=0
     prev_round=0
     PROPOSAL=0
     prev_proposal="$PROPOSAL"
@@ -575,7 +575,7 @@ while true; do
     if [[ $restart_flag -eq 1 ]]; then
       #prev_round=0
       RVOTE=0
-      prev_vote="$VOTE"
+      prev_vote=0
       prev_proposal="$PROPOSAL"
       prev_proof=`expr $PROOF - $refresh3`
       setcheck=$((setcheck + 1))
