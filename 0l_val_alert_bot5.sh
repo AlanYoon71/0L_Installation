@@ -46,6 +46,7 @@ send_discord_message() {
 while true; do
   EPOCH=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_epoch | grep -o '[0-9]*'`
   sleep 0.3
+  if [[ -z "$EPOCH" ]]; then EPOCH=0; fi
   ROUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_current_round | grep -o '[0-9]*'`
   sleep 0.3
   VOTEDROUND=`curl 127.0.0.1:9101/metrics 2>/dev/null | grep last_voted_round | grep -o '[0-9]*'`
@@ -399,7 +400,8 @@ while true; do
     fi
     RTPS=$(printf "%0.1f" "$(echo "scale=2; $ROUNDDIFF / 600" | bc)")
     QQ=`pgrep tower`
-    if (( $(echo "$ROUNDDIFF < 0" | bc -l) )) && [[ $EPOCH -ne 0 ]]; then
+    #if (( $(echo "$ROUNDDIFF < 0" | bc -l) )) && [[ $EPOCH -ne 0 ]]; then
+    if [[ $EPOCH -gt $prev_epoch ]] && [[ $EPOCH -ne 0 ]] && [[ $prev_epoch -ne 0 ]]; then
       if [[ "$LAG" -le 1 ]]; then
         if [[ "$LAG" -lt 1 ]]; then
           Lag=""
