@@ -146,6 +146,9 @@ while true; do
   ROUNDDIFF=`expr $ROUND - $prev_round`
   SYNCDIFF=`expr $SYNC - $prev_sync`
   VOTEDIFF=`expr $VOTE - $prev_vote`
+  if [[ "$VOTEDIFF" -lt 0 ]]; then
+    VOTEDIFF="$VOTE"
+  fi
   PROPOSALDIFF=`expr $PROPOSAL - $prev_proposal`
   if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
   if [ -z "$VOTEDIFF" ]; then VOTEDIFF=0; fi
@@ -370,6 +373,7 @@ while true; do
     fi
     if [ -z "$prev_vote" ]; then prev_vote=$VOTE; fi 
     VOTEDIFF=`expr $VOTE - $prev_vote`
+    if [[ "$VOTEDIFF" -lt 0 ]]; then VOTEDIFF="$VOTE"; fi
     if [ -z "$VOTEDIFF" ]; then VOTEDIFF=0; fi
     if [ "$VOTEDIFF" -gt 1000 ]; then
       VOTELIGHT=":green_circle:"
@@ -564,6 +568,7 @@ while true; do
     restart_flag=0
     refresh3="$PROOF"
     prev_epoch="$EPOCH"
+    prev_vote="$VOTE"
     prev_vote_reset="$VOTE"
     prev_round=0
     PROPOSAL=0
@@ -573,6 +578,7 @@ while true; do
   else
     if [[ $restart_flag -eq 1 ]]; then
       prev_vote="$VOTE"
+      prev_vote_reset="$VOTE"
       prev_proposal="$PROPOSAL"
       prev_proof=`expr $PROOF - $refresh3`
       setcheck=$((setcheck + 1))
