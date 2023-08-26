@@ -15,12 +15,12 @@ prev_epoch=0
 prev_round=0
 prev_sync=0
 prev_vote=0
+prev_vote_reset=0
 last_vote=0
 prev_proposal=0
 prev_proof=0
 refresh3=0
 setcheck=0
-RVOTE=0
 # Initialize counters
 unchanged_counter=0
 changed_counter=0
@@ -83,8 +83,9 @@ while true; do
   fi
   sleep 0.3
   VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
+  sleep 0.3
+  VOTE=`expr $VOTE - $prev_vote_reset`
   if [[ -z "$VOTE" ]]; then VOTE=0; fi
-  VOTE=`expr $VOTE - $RVOTE`
   sleep 0.3
   PROPOSAL=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\"\} | grep -o '[0-9]*'`
   sleep 0.3
@@ -400,7 +401,6 @@ while true; do
     fi
     RTPS=$(printf "%0.1f" "$(echo "scale=2; $ROUNDDIFF / 600" | bc)")
     QQ=`pgrep tower`
-    #if (( $(echo "$ROUNDDIFF < 0" | bc -l) )) && [[ $EPOCH -ne 0 ]]; then
     if [[ $EPOCH -gt $prev_epoch ]] && [[ $EPOCH -ne 0 ]] && [[ $prev_epoch -ne 0 ]]; then
       if [[ "$LAG" -le 1 ]]; then
         if [[ "$LAG" -lt 1 ]]; then
@@ -451,7 +451,6 @@ while true; do
         RANK="Power Ranking"
       fi
       VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
-      RVOTE="$VOTE"
       VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
       export start_time=$(date +%s)
       hourglass=":watch:"
@@ -487,6 +486,7 @@ while true; do
         export JUMPTIME=`echo "${days}:${hours}:${minutes}"`
       fi
       if [[ $scriptstart -eq 0 ]]; then
+        prev_vote_reset="$VOTE"
         ADDRESSLIST=`curl -i https://0lexplorer.io/validators | grep -oE 'account_address":"([[:xdigit:]]{32})"' | cut -d':' -f2 | tr -d '\"'`
         ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
         export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
@@ -564,8 +564,7 @@ while true; do
     restart_flag=0
     refresh3="$PROOF"
     prev_epoch="$EPOCH"
-    RVOTE=0
-    prev_vote=0
+    prev_vote_reset="$VOTE"
     prev_round=0
     PROPOSAL=0
     prev_proposal="$PROPOSAL"
@@ -573,9 +572,7 @@ while true; do
     setcheck=0
   else
     if [[ $restart_flag -eq 1 ]]; then
-      #prev_round=0
-      RVOTE=0
-      prev_vote=0
+      prev_vote="$VOTE"
       prev_proposal="$PROPOSAL"
       prev_proof=`expr $PROOF - $refresh3`
       setcheck=$((setcheck + 1))
@@ -591,59 +588,16 @@ while true; do
   fi
   prev_round="$ROUND"
   prev_sync="$SYNC"
-  # if [[ $setcheck -lt 3 ]]; then
-  #   /home/node/.0L/logs/0l_non-voting_address.sh
-  #   sleep 1
-  #   valsetupdate=`grep -oE '[0-9A-Z]{32}' /home/node/.0L/logs/active_validator_set.txt | grep -vFf <(grep -oE '[0-9A-Z]{8}' /home/node/.0L/logs/validator_account.txt)`
-  #   sleep 3
-  #   grep -oE '[0-9A-Z]{32}' /home/node/.0L/logs/active_validator_set.txt | grep -vFf <(grep -oE '[0-9A-Z]{8}' /home/node/.0L/logs/validator_account.txt) | awk '{print substr($1, 1, 8) " <@Unknown>"}' >> /home/node/.0L/logs/validator_account.txt
-  #   sleep 3
-  #   if [ -z "$valsetupdate" ]
-  #   then
-  #     :
-  #   else
-  #     message="\`\nThis address is added to validator_account.txt with ID <@Unknown>.\`\n:new:  \`$valsetupdate\`"
-  #     send_discord_message "$message"
-  #     setcheck=2
-  #   fi
-  # fi
-  #if [[ $unchanged_counter -ge 2 ]] && [[ $message_printed -ge 1 ]] && [[ $delay -eq 0 ]]; then
-    # cat /dev/null > non-voting_address.txt
-    # sleep 1
-    # /home/node/.0L/logs/0l_non-voting_address.sh
-    # sleep 1
-    # valsetupdate=`grep -oE '[0-9A-Z]{32}' /home/node/.0L/logs/active_validator_set.txt | grep -vFf <(grep -oE '[0-9A-Z]{8}' /home/node/.0L/logs/validator_account.txt)`
-    # sleep 3
-    # grep -oE '[0-9A-Z]{32}' /home/node/.0L/logs/active_validator_set.txt | grep -vFf <(grep -oE '[0-9A-Z]{8}' /home/node/.0L/logs/validator_account.txt) | awk '{print substr($1, 1, 8) " <@Unknown>"}' >> /home/node/.0L/logs/validator_account.txt
-    # sleep 3
-    # /home/node/.0L/logs/non-voting_alert_bot.sh
-    # sleep 1
-    #restart_message_printed=0
-    #message_printed=0
-    #consensus_restart=1
-    #delay=1
-  #fi
   if [[ $unchanged_counter -ge 1 ]] && [[ $message_printed -ge 1 ]]; then
-    # cat /dev/null > non-voting_address.txt
-    # sleep 1
-    # /home/node/.0L/logs/0l_non-voting_address.sh
-    # sleep 1
-    # grep -oE '[0-9A-Z]{32}' /home/node/.0L/logs/active_validator_set.txt | grep -vFf <(grep -oE '[0-9A-Z]{8}' /home/node/.0L/logs/validator_account.txt) | awk '{print substr($1, 1, 8) " <@Unknown>"}' >> /home/node/.0L/logs/validator_account.txt
-    # sleep 3
-    # /home/node/.0L/logs/non-voting_alert_bot.sh
-    # sleep 1
     restart_message_printed=0
     message_printed=0
     consensus_restart=1
     ROUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_current_round | grep -o '[0-9]*'`
     VOTEDROUND=`curl 127.0.0.1:9101/metrics 2>/dev/null | grep last_voted_round | grep -o '[0-9]*'`
-    #ROUNDCHECK=$(curl -s https://0lexplorer.io/ | grep -oPm1 '(?<=Round":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
     if [ -z "$VOTEDROUND" ]; then VOTEDROUND=0; fi
     if [ -z "$ROUND" ]; then ROUND=0; fi
-    #if [ -z "$ROUNDCHECK" ]; then ROUNDCHECK=0; fi
     sleep 0.5
     if [[ "$ROUND" -gt "$VOTEDROUND" ]] && [[ "$SYNCDIFF" -eq 0 ]]; then
-      #if [[ "$ROUNDCHECK" -ne 0 ]] && [[ "$VOTEDROUND" -eq 0 ]] && [[ "$SYNCDIFF" -eq 0 ]]; then
       send_discord_message() {
         local message=$1
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
