@@ -84,6 +84,7 @@ while true; do
   sleep 0.3
   VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
   sleep 0.3
+  if [[ -z "$VOTE" ]]; then VOTE=0; fi
   VOTE=`expr $VOTE - $prev_vote_reset`
   if [[ -z "$VOTE" ]]; then VOTE=0; fi
   sleep 0.3
@@ -144,8 +145,10 @@ while true; do
   if [ -z "$PROPOSAL" ]; then PROPOSAL=0; fi
   if [ -z "$PROOF" ]; then PROOF=0; fi
   ROUNDDIFF=`expr $ROUND - $prev_round`
+  if [[ -z "$ROUNDDIFF" ]]; then ROUNDDIFF=0; fi
   SYNCDIFF=`expr $SYNC - $prev_sync`
   VOTEDIFF=`expr $VOTE - $prev_vote`
+  if [[ -z "$VOTEDIFF" ]]; then VOTEDIFF=0; fi
   if [[ "$VOTEDIFF" -lt 0 ]]; then
     VOTEDIFF="$VOTE"
   fi
@@ -595,31 +598,35 @@ while true; do
   prev_round="$ROUND"
   prev_sync="$SYNC"
   if [[ $unchanged_counter -ge 1 ]] && [[ $message_printed -ge 1 ]]; then
-    restart_message_printed=0
-    message_printed=0
-    consensus_restart=1
-    ROUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_current_round | grep -o '[0-9]*'`
-    VOTEDROUND=`curl 127.0.0.1:9101/metrics 2>/dev/null | grep last_voted_round | grep -o '[0-9]*'`
-    if [ -z "$VOTEDROUND" ]; then VOTEDROUND=0; fi
-    if [ -z "$ROUND" ]; then ROUND=0; fi
-    sleep 0.5
-    if [[ "$ROUND" -gt "$VOTEDROUND" ]] && [[ "$SYNCDIFF" -eq 0 ]]; then
-      send_discord_message() {
-        local message=$1
-        curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
-      }
-      message="\`\nAlert!! You're not on the latest round.\nPreparing to restart...\`"
-      send_discord_message "$message"
-      PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-      sleep 6
-      sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
-      sleep 6
-      restartcount=$((restartcount + 1))
-      restart_flag=1
-      PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
-      sleep 3
-      PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
-      send_discord_message "$message"
+    if [[ $SYNC -eq 0 ]] && [[ $ROUND -eq 0 ]] && [[ $PROPOSAL -eq 0 ]]; then
+      :
+    else
+      restart_message_printed=0
+      message_printed=0
+      consensus_restart=1
+      ROUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_current_round | grep -o '[0-9]*'`
+      VOTEDROUND=`curl 127.0.0.1:9101/metrics 2>/dev/null | grep last_voted_round | grep -o '[0-9]*'`
+      if [ -z "$VOTEDROUND" ]; then VOTEDROUND=0; fi
+      if [ -z "$ROUND" ]; then ROUND=0; fi
+      sleep 0.5
+      if [[ "$ROUND" -gt "$VOTEDROUND" ]] && [[ "$SYNCDIFF" -eq 0 ]]; then
+        send_discord_message() {
+          local message=$1
+          curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+        }
+        message="\`\nAlert!! You're not on the latest round.\nPreparing to restart...\`"
+        send_discord_message "$message"
+        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+        sleep 6
+        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+        sleep 6
+        restartcount=$((restartcount + 1))
+        restart_flag=1
+        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
+        sleep 3
+        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+        send_discord_message "$message"
+      fi
     fi
   fi
   if [ -z "$SYNC" ]; then SYNC=0; fi
@@ -656,6 +663,7 @@ while true; do
     }
     message="\`\n\`:airplane_departure:  \`Consensus restarted!\`  :airplane:"
     send_discord_message "$message"
+    rm -rf /home/node/.0L/db_backup &> /dev/null
     message_printed=0
     consensus_restart=0
     restart_message_printed=1
