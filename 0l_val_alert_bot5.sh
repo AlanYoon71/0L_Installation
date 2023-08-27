@@ -321,37 +321,41 @@ while true; do
         RLag="On the final round."
         RLAG=""
       fi
-      send_discord_message() {
-        local message=$1
-        curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
-      }
-      message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
-      message="\`\nAlert!! Validator is not voting.\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
-      send_discord_message "$message"
-      BLOCK2=""
-      BLOCKCOMMENT=""
-      PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-      sleep 6
-      sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
-      sleep 6
-      restartcount=$((restartcount + 1))
-      if [ -z "$VSUCCESS" ]; then VSUCCESS=0; fi
-      sleep 0.5
-      if (( $(echo "$VSUCCESS < 70" | bc -l) )); then
-        PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
-        FAST2=":thinking:"
-      else
-        QQ=`pgrep tower`
-        if [ -z "$QQ" ]; then
-          sudo -u node tmux send-keys -t tower:0 'nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+      if [[ "$LAG" -lt 50 ]]; then
+        send_discord_message() {
+          local message=$1
+          curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+        }
+        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+        message="\`\nAlert!! Validator is not voting.\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
+        send_discord_message "$message"
+        BLOCK2=""
+        BLOCKCOMMENT=""
+        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+        sleep 6
+        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+        sleep 6
+        restartcount=$((restartcount + 1))
+        if [ -z "$VSUCCESS" ]; then VSUCCESS=0; fi
+        sleep 0.5
+        if (( $(echo "$VSUCCESS < 70" | bc -l) )); then
+          PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+          FAST2=":thinking:"
+        else
+          QQ=`pgrep tower`
+          if [ -z "$QQ" ]; then
+            sudo -u node tmux send-keys -t tower:0 'nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+          fi
         fi
+        sleep 1
+        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
+        sleep 3
+        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+        send_discord_message "$message"
+        restart_flag=1
+      else
+        :
       fi
-      sleep 1
-      PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
-      sleep 3
-      PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
-      send_discord_message "$message"
-      restart_flag=1
     fi
   else
     changed_counter=$((changed_counter + 1))
