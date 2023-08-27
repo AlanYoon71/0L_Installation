@@ -354,7 +354,26 @@ while true; do
         send_discord_message "$message"
         restart_flag=1
       else
-        :
+        send_discord_message() {
+          local message=$1
+          curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+        }
+        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+        message="\`\nAlert!! Validator is not voting.\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
+        send_discord_message "$message"
+        BLOCK2=""
+        BLOCKCOMMENT=""
+        if [ -z "$VSUCCESS" ]; then VSUCCESS=0; fi
+        sleep 0.5
+        if (( $(echo "$VSUCCESS < 70" | bc -l) )); then
+          PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+          FAST2=":thinking:"
+        else
+          QQ=`pgrep tower`
+          if [ -z "$QQ" ]; then
+            sudo -u node tmux send-keys -t tower:0 'nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+          fi
+        fi
       fi
     fi
   else
