@@ -354,6 +354,7 @@ while true; do
         send_discord_message "$message"
         restart_flag=1
       else
+        BLOCKLIGHT=":red_circle:"
         send_discord_message() {
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
