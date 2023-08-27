@@ -597,8 +597,9 @@ while true; do
   fi
   prev_round="$ROUND"
   prev_sync="$SYNC"
+  VOTERECHECK=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=`
   if [[ $unchanged_counter -ge 1 ]] && [[ $message_printed -ge 1 ]]; then
-    if [[ $SYNC -eq 0 ]] && [[ $ROUND -eq 0 ]] && [[ $PROPOSAL -eq 0 ]]; then
+    if [[ $SYNC -eq 0 ]] && [[ -z $VOTERECHECK ]] && [[ $PROPOSAL -eq 0 ]]; then
       :
     else
       restart_message_printed=0
@@ -633,7 +634,7 @@ while true; do
   if [ -z "$ROUND" ]; then ROUND=0; fi
   if [ -z "$VOTE" ]; then VOTE=0; fi
   if [ -z "$PROPOSAL" ]; then PROPOSAL=0; fi
-  if [[ $SYNC -eq 0 ]] && [[ $ROUND -eq 0 ]] && [[ $PROPOSAL -eq 0 ]]; then
+  if [[ $SYNC -eq 0 ]] && [[ -z $VOTERECHECK ]] && [[ $PROPOSAL -eq 0 ]]; then
     RESTORECHECK=$((RESTORECHECK + 1))
     if [[ $RESTORECHECK -eq 2 ]]; then
       message="\`\nCan't get data from DB!!\`  :astonished:\`\nDB regen is required with ol restore.\`"
