@@ -359,7 +359,7 @@ while true; do
         LDIFF=`expr $SYNC - $prev_sync`
         if [ -z "$LDIFF" ]; then LDIFF=0; fi
         if [[ $LDIFF -lt 0 ]]; then LDIFF=0; fi
-        LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 600" | bc)")
+        LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 660" | bc)")
         SPEED=$(echo "scale=2; $LTPS" | bc)
         CATCHUP=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
         BLOCKLIGHT=":red_circle:"
