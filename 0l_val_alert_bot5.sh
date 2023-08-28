@@ -354,6 +354,7 @@ while true; do
         send_discord_message "$message"
         restart_flag=1
       else
+        Lag="Lag"
         if [ -z "$prev_sync" ]; then prev_sync=$SYNC; fi
         LDIFF=`expr $SYNC - $prev_sync`
         if [ -z "$LDIFF" ]; then LDIFF=0; fi
