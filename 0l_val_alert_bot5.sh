@@ -97,6 +97,8 @@ while true; do
   SYNCLIGHT=":green_circle:"
   TOWERLIGHT=":green_circle:"
   sleep 0.3
+  BALANCE=$(/home/node/bin/ol --config /home/node/.0L/0L.toml query --balance | awk '{print $NF}' | grep -oP '(?<!m)\d+(?:,\d+)*\.?\d*') &&
+  sleep 0.3
   output=$(free)
   used_mem=$(echo "$output" | awk 'NR==2 {print $2}')
   available_mem=$(echo "$output" | awk 'NR==2 {print $7}')
