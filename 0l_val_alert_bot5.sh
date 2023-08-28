@@ -367,7 +367,7 @@ while true; do
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $Lag $LAGK _ ETA $CATCHUP[Hr]\nRound : Waiting to be fully synced.\nVote  : Waiting to be fully synced.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $Lag $LAGK _ ETA $CATCHUP[Hr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
         send_discord_message "$message"
         BLOCK2=""
         BLOCKCOMMENT=""
