@@ -361,7 +361,7 @@ while true; do
         if [[ $LDIFF -lt 0 ]]; then LDIFF=0; fi
         LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 660" | bc)")
         SPEED=$(echo "scale=2; $LTPS" | bc)
-        CATCHUP=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
+        CATCHUP=$(printf "%0.2f" "$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)")
         BLOCKLIGHT=":red_circle:"
         send_discord_message() {
           local message=$1
