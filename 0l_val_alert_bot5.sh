@@ -354,12 +354,19 @@ while true; do
         send_discord_message "$message"
         restart_flag=1
       else
+        if [ -z "$prev_sync" ]; then prev_sync=$SYNC; fi
+        LDIFF=`expr $SYNC - $prev_sync`
+        if [ -z "$LDIFF" ]; then LDIFF=0; fi
+        if [[ $LDIFF -lt 0 ]]; then LDIFF=0; fi
+        LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 600" | bc)")
+        SPEED=$(echo "scale=2; $LTPS" | bc)
+        CATCHUP=$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)
         BLOCKLIGHT=":red_circle:"
         send_discord_message() {
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE Catching up..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $Lag $LAGK _ ETA $CATCHUP[Hr]\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE Waiting to be fully synced.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
         send_discord_message "$message"
         BLOCK2=""
         BLOCKCOMMENT=""
@@ -379,7 +386,7 @@ while true; do
   else
     changed_counter=$((changed_counter + 1))
     unchanged_counter=0
-    if [ -z "$prev_sync" ]; then prev_sync=$SYNC; fi 
+    if [ -z "$prev_sync" ]; then prev_sync=$SYNC; fi
     LDIFF=`expr $SYNC - $prev_sync`
     if [ -z "$LDIFF" ]; then LDIFF=0; fi
     if [[ $LDIFF -lt 0 ]]; then LDIFF=0; fi
