@@ -614,7 +614,7 @@ while true; do
   else
     if [[ $restart_flag -eq 1 ]]; then
       prev_vote="$VOTE"
-      prev_vote_reset="$VOTE"
+      prev_vote_reset=0
       prev_proposal="$PROPOSAL"
       prev_proof=`expr $PROOF - $refresh3`
       setcheck=$((setcheck + 1))
