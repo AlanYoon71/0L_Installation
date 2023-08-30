@@ -115,7 +115,7 @@ while true; do
     curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
   }
   if (( $(echo "$USEDMEM >= 85.00" | bc -l) )); then
-      message="\`\nThe memory usage is too high!!\`  :astonished:\`\nDB regen is required with ol restore.\`"
+      message="\`\n==================================\nAlert!! The memory usage is too high.\`  :astonished:\`\nDB regen is required with ol restore.\`"
       send_discord_message "$message"
       PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
       sleep 6
@@ -123,9 +123,9 @@ while true; do
       sleep 6
       restorecount=$((restorecount + 1))
       restart_flag=1
-      PID=$(pgrep diem-node) && message="\`\n\`:fist:  \`Validator has been restored and restarted!!\`  :fist:"
+      PID=$(pgrep diem-node) && message="\`\n\`:fist:  \`Validator has been restored and restarted!!\`  :fist:\`\n==================================\`"
       sleep 1
-      PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+      PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:\`\n==================================\`"
       send_discord_message "$message"
       ufw deny 9101 > /dev/null; lock=":lock:"
   fi
@@ -270,16 +270,16 @@ while true; do
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\nAlert!! Validator is not syncing.\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
+        message="\`\n==================================\nAlert!! Validator is not syncing.\`  :astonished:\`\nPreparing to restart...\`"
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 6
         sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
         sleep 6
         restartcount=$((restartcount + 1))
-        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
+        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:\`\n==================================\`"
         sleep 3
-        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:\`\n==================================\`"
         send_discord_message "$message"
         restart_flag=1
       fi
@@ -329,7 +329,7 @@ while true; do
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
         message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
-        message="\`\nAlert!! Validator is not voting.\`  :scream: :scream_cat:\`\nPreparing to restart...\`"
+        message="\`\n==================================\nAlert!! Validator is not voting.\`  :astonished:\`\nPreparing to restart...\`"
         send_discord_message "$message"
         BLOCK2=""
         BLOCKCOMMENT=""
@@ -350,9 +350,9 @@ while true; do
           fi
         fi
         sleep 1
-        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
+        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:\`\n==================================\`"
         sleep 3
-        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:\`\n==================================\`"
         send_discord_message "$message"
         restart_flag=1
       else
@@ -364,7 +364,11 @@ while true; do
         LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 660" | bc)")
         SPEED=$(echo "scale=2; $LTPS" | bc)
         CATCHUP=$(printf "%0.2f" "$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)")
-        BLOCKLIGHT=":red_circle:"
+        if [[ "$BLOCK2" == "$BLOCK1" ]] || [[ "$BLOCK1" == "$BLOCK3" ]] || [[ "$BLOCK2" == "$BLOCK3" ]]; then
+          BLOCKLIGHT=":red_circle:"
+        else
+          BLOCKLIGHT=":green_circle:"
+        fi
         send_discord_message() {
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
@@ -648,7 +652,7 @@ while true; do
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\nAlert!! You're not on the latest round.\nPreparing to restart...\`"
+        message="\`\n==================================\nAlert!! You're not on the latest round.\`  :astonished:\`\nPreparing to restart...\`"
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 6
@@ -656,9 +660,9 @@ while true; do
         sleep 6
         restartcount=$((restartcount + 1))
         restart_flag=1
-        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:"
+        PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:\`\n==================================\`"
         sleep 3
-        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:\`\n==================================\`"
         send_discord_message "$message"
       fi
     fi
@@ -670,7 +674,7 @@ while true; do
   if [[ $SYNC -eq 0 ]] && [[ -z $VOTERECHECK ]] && [[ $PROPOSAL -eq 0 ]]; then
     RESTORECHECK=$((RESTORECHECK + 1))
     if [[ $RESTORECHECK -eq 2 ]]; then
-      message="\`\nCan't get data from DB!!\`  :astonished:\`\nDB regen is required with ol restore.\`"
+      message="\`\n==================================\nAlert!! Can't get data from DB.\`  :astonished:\`\nDB regen is required with ol restore.\`"
       send_discord_message "$message"
       PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
       sleep 6
@@ -682,9 +686,9 @@ while true; do
         local message=$1
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
       }
-      PID=$(pgrep diem-node) && message="\`\n\`:fist:  \`Validator has been restored and restarted!!\`  :fist:"
+      PID=$(pgrep diem-node) && message="\`\n\`:fist:  \`Validator has been restored and restarted!!\`  :fist:\`\n==================================\`"
       sleep 1
-      PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:"
+      PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:\`\n==================================\`"
       send_discord_message "$message"
       sleep 1
       RESTORECHECK=0
