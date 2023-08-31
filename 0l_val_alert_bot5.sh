@@ -652,7 +652,7 @@ while true; do
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\n==================================\nAlert!! You're not on the latest round.\`  :astonished:\`\nPreparing to restart...\`"
+        message="\`\n==================================\nYou're not on the latest round.\`  :astonished:\`\nPreparing to restart...\`"
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 6
