@@ -274,7 +274,7 @@ while true; do
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 6
-        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && cat /dev/null > validator.log && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
         sleep 6
         restartcount=$((restartcount + 1))
         PID=$(pgrep diem-node) && message="\`\nValidator restarted successfully!\`  :sunglasses:\`\n==================================\`"
@@ -335,7 +335,7 @@ while true; do
         BLOCKCOMMENT=""
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 6
-        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && cat /dev/null > validator.log && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
         sleep 6
         restartcount=$((restartcount + 1))
         if [ -z "$VSUCCESS" ]; then VSUCCESS=0; fi
@@ -656,7 +656,7 @@ while true; do
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
         sleep 6
-        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && cat /dev/null > validator.log && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
         sleep 6
         restartcount=$((restartcount + 1))
         restart_flag=1
