@@ -119,7 +119,7 @@ while true; do
       send_discord_message "$message"
       PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
       sleep 6
-      sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db_backup ; mv /home/node/.0L/db /home/node/.0L/db_backup && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+      sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
       sleep 6
       restorecount=$((restorecount + 1))
       restart_flag=1
@@ -678,7 +678,7 @@ while true; do
       send_discord_message "$message"
       PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
       sleep 6
-      sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db_backup ; mv /home/node/.0L/db /home/node/.0L/db_backup && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+      sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
       sleep 6
       restorecount=$((restorecount + 1))
       restart_flag=1
@@ -701,7 +701,6 @@ while true; do
     }
     message="\`\n\`:airplane_departure:  \`Consensus restarted!\`  :airplane:"
     send_discord_message "$message"
-    rm -rf /home/node/.0L/db_backup &> /dev/null
     message_printed=0
     consensus_restart=0
     restart_message_printed=1
