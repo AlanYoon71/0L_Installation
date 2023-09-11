@@ -471,6 +471,9 @@ while true; do
       fi
       ADDRESSLIST=`curl -i https://0lexplorer.io/validators | grep -oE 'account_address":"([[:xdigit:]]{32})"' | cut -d':' -f2 | tr -d '\"'`
       ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
+      ACCOUNT2=`echo $ACCOUNT | tr 'A-Z' 'a-z'`
+      ADDRESSLIST2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep 'network_id=\"Validator\",peer_id=\"'$ACCOUNT2'\",remote_peer_id=' | tr -d '\"' | wc -l`
+      ADDRESSLIST3=`expr $ADDRESSLIST2 + 1`
       export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
       export FULLACCOUNT=`echo "$ADDRESSLIST" | grep "$ACCOUNT"`
       BALANCE=$(/home/node/bin/ol --config /home/node/.0L/0L.toml query --balance | awk '{print $NF}' | grep -oP '(?<!m)\d+(?:,\d+)*\.?\d*') &&
@@ -481,7 +484,11 @@ while true; do
         BALANCE=$(echo "scale=6; $BALANCE / 1000000" | bc)
         BALANCE2=$(printf "%'.3f\n" $BALANCE)
       fi
-      export VSET=`echo "$ADDRESSLIST" | wc -l`
+      if [[ -z "$ADDRESSLIST" ]]; then
+        export VSET=`echo "$ADDRESSLIST3"`
+      else
+        export VSET=`echo "$ADDRESSLIST" | wc -l`
+      fi
       if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
         VSET=""
       else
@@ -533,6 +540,9 @@ while true; do
         prev_vote_reset="$VOTE"
         ADDRESSLIST=`curl -i https://0lexplorer.io/validators | grep -oE 'account_address":"([[:xdigit:]]{32})"' | cut -d':' -f2 | tr -d '\"'`
         ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
+        ACCOUNT2=`echo $ACCOUNT | tr 'A-Z' 'a-z'`
+        ADDRESSLIST2=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep 'network_id=\"Validator\",peer_id=\"'$ACCOUNT2'\",remote_peer_id=' | tr -d '\"' | wc -l`
+        ADDRESSLIST3=`expr $ADDRESSLIST2 + 1`
         export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
         export FULLACCOUNT=`echo "$ADDRESSLIST" | grep "$ACCOUNT"`
         BALANCE=$(/home/node/bin/ol --config /home/node/.0L/0L.toml query --balance | awk '{print $NF}' | grep -oP '(?<!m)\d+(?:,\d+)*\.?\d*') &&
@@ -543,7 +553,11 @@ while true; do
           BALANCE=$(echo "scale=6; $BALANCE / 1000000" | bc)
           BALANCE2=$(printf "%'.3f\n" $BALANCE)
         fi
-        export VSET=`echo "$ADDRESSLIST" | wc -l`
+        if [[ -z "$ADDRESSLIST" ]]; then
+          export VSET=`echo "$ADDRESSLIST3"`
+        else
+          export VSET=`echo "$ADDRESSLIST" | wc -l`
+        fi
         if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
           VSET=""
         else
