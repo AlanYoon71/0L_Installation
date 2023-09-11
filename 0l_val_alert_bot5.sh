@@ -484,11 +484,7 @@ while true; do
         BALANCE=$(echo "scale=6; $BALANCE / 1000000" | bc)
         BALANCE2=$(printf "%'.3f\n" $BALANCE)
       fi
-      if [[ -z "$ADDRESSLIST" ]]; then
-        export VSET=`echo "$ADDRESSLIST3"`
-      else
-        export VSET=`echo "$ADDRESSLIST" | wc -l`
-      fi
+      export VSET=`echo "$ADDRESSLIST3"`
       if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
         VSET=""
       else
@@ -553,11 +549,7 @@ while true; do
           BALANCE=$(echo "scale=6; $BALANCE / 1000000" | bc)
           BALANCE2=$(printf "%'.3f\n" $BALANCE)
         fi
-        if [[ -z "$ADDRESSLIST" ]]; then
-          export VSET=`echo "$ADDRESSLIST3"`
-        else
-          export VSET=`echo "$ADDRESSLIST" | wc -l`
-        fi
+        export VSET=`echo "$ADDRESSLIST3"`
         if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
           VSET=""
         else
