@@ -85,6 +85,7 @@ while true; do
   VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
   sleep 0.3
   if [[ -z "$VOTE" ]]; then VOTE=0; fi
+  if [[ -z "$prev_vote_reset" ]]; then prev_vote_reset=0; fi
   VOTE=`expr $VOTE - $prev_vote_reset`
   if [[ -z "$VOTE" ]]; then VOTE=0; fi
   sleep 0.3
