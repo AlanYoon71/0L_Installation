@@ -119,9 +119,9 @@ while true; do
       message="\`\n==================================\nAlert!! The memory usage is too high.\`  :astonished:\`\nDB regen is required with ol restore.\`"
       send_discord_message "$message"
       PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-      sleep 6
+      sleep 10
       sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
-      sleep 6
+      sleep 20
       restorecount=$((restorecount + 1))
       restart_flag=1
       PID=$(pgrep diem-node) && message="\`\n\`:fist:  \`Validator has been restored and restarted!!\`  :fist:\`\n==================================\`"
@@ -274,7 +274,7 @@ while true; do
         message="\`\n==================================\nAlert!! Validator is not syncing.\`  :astonished:\`\nPreparing to restart...\`"
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-        sleep 6
+        sleep 10
         sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && cat /dev/null > validator.log && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
         sleep 6
         restartcount=$((restartcount + 1))
@@ -335,7 +335,7 @@ while true; do
         BLOCK2=""
         BLOCKCOMMENT=""
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-        sleep 6
+        sleep 10
         sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && cat /dev/null > validator.log && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
         sleep 6
         restartcount=$((restartcount + 1))
@@ -662,7 +662,7 @@ while true; do
         message="\`\n==================================\nYou're not on the latest round.\`  :astonished:\`\nPreparing to restart...\`"
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-        sleep 6
+        sleep 10
         sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || ulimit -n 100000 && cat /dev/null > validator.log && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
         sleep 6
         restartcount=$((restartcount + 1))
@@ -684,9 +684,9 @@ while true; do
       message="\`\n==================================\nAlert!! Can't get data from DB.\`  :astonished:\`\nDB regen is required with ol restore.\`"
       send_discord_message "$message"
       PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-      sleep 6
+      sleep 10
       sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
-      sleep 6
+      sleep 20
       restorecount=$((restorecount + 1))
       restart_flag=1
       send_discord_message() {
