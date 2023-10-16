@@ -1,6 +1,6 @@
 # For beginners who want to install 0L node and experience a crownless emperor 0L network
 
-# Installation Script
+# Installation script
 
 0. You should familiarize yourself with 0L official guide documentation before using this script.
    https://github.com/0LNetworkCommunity/libra/blob/main/ol/documentation/node-ops/validators/validator_onboarding_hard_mode.md
