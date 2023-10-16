@@ -341,7 +341,7 @@ while true; do
         restartcount=$((restartcount + 1))
         if [ -z "$VSUCCESS" ]; then VSUCCESS=0; fi
         sleep 0.5
-        if (( $(echo "$VSUCCESS < 70" | bc -l) )); then
+        if (( $(echo "$VSUCCESS < 20" | bc -l) )); then
           PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
           FAST2=":thinking:"
         else
@@ -380,7 +380,7 @@ while true; do
         BLOCKCOMMENT=""
         if [ -z "$VSUCCESS" ]; then VSUCCESS=0; fi
         sleep 0.5
-        if (( $(echo "$VSUCCESS < 70" | bc -l) )); then
+        if (( $(echo "$VSUCCESS < 20" | bc -l) )); then
           PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
           FAST2=":thinking:"
         else
