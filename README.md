@@ -55,7 +55,7 @@
    - Change user to `root`.
    - Move to `/home/node/.0L/logs`
    - Open tmux bot session. (`tmux new -s bot`)
-   - Run the script. (`./0l_val_alert_bot5.sh`)  
+   - Run the script. (`./0l_val_alert_bot5.sh`) 
 5. Restart/restore condition and others.
    - Basic info will be sent to your own channel with 10min interval.
    - If validator stops syncing or voting, it will be restarted.
@@ -65,8 +65,8 @@
      it will run ol restore and catch up.
    - If memory usage increase to 85%(when no new block and voting crawls),
      the script will run ol restore regen your DB.
-   - If there’s no new block or vote ratio(delta value in 10min)
-     goes down under 70%, tower will be stopped for a while.
+   - If there’s no new block or vote success ratio(in 10min)
+     goes down under 20%, tower will be stopped for a while.
    - Metrics port locking is default.
      If there’s no new block and syncing stops, it will be opened for cross-check.
    - If the 0lexplorer dashboard tab is not updated in real time,
