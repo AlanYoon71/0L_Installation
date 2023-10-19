@@ -62,8 +62,6 @@
      it will run ol restore and catch up.
    - If memory usage increase to 85%(when no new block and voting crawls),
      the script will run ol restore regen your DB.
-   - If there’s no new block or vote success ratio(in 10min)
-     goes down under 20%, tower will be stopped for a while.
    - Metrics port locking is default.
      If there’s no new block and syncing stops, it will be opened for cross-check.
    - If the 0lexplorer dashboard tab is not updated in real time,
