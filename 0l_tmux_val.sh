@@ -174,7 +174,9 @@ do
                                         checknode=$(pgrep diem-node)
                                         if [ -z $checknode ]
                                         then
-                                            echo "ERROR! Validator(fullnode mode) looks like not started, so it needs to be checked manually..."
+                                            echo "Waiting your mnemonic now..."
+                                            J=`expr $J + 1`
+                                            sleep 600
                                         else
                                             echo -e "Validator started! It is run as \e[1m\e[33m\"fullnode mode\" \e[0mnow."
                                             echo "You can restart node as \"validator\" mode after fully synced and onboarded by other an active validator."
