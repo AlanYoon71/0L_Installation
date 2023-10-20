@@ -64,5 +64,7 @@
      the script will run ol restore regen your DB.
    - Metrics port locking is default.
      If there’s no new block and syncing stops, it will be opened for cross-check.
+   - If the validator exits the active set during script running,
+     it is automatically recognized as full node mode and does not restart even if the voting stops.
    - If the 0lexplorer dashboard tab is not updated in real time,
      the restart function may not work even if the validator stops syncing.
