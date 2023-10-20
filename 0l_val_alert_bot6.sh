@@ -15,7 +15,7 @@ else
     sudo apt install sysstat
 fi
 PATH=$PATH:/home/node/bin
-webhook_url="https://discord.com/api/webhooks/1164910092852920421/W4CLUcHzgpgg09uo4ZWc9QX6luj5WskDGjs1Xn61oYC8xzKKhhKHkCMddQpShhc7_X-y"
+webhook_url=""
 
 # Initialize previous values
 prev_epoch=0
