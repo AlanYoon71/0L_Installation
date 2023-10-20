@@ -340,7 +340,23 @@ while true; do
       fi
       if [[ "$LAG" -lt 50 ]]; then
         if [[ "$fullnode" -eq 1 ]]; then
-          :
+          if [[ $SYNCDIFF -eq 0 ]]; then
+            SYNCLIGHT=":red_circle:"
+            #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+            TOWERLIGHT=":zzz:"
+            ufw allow 9101 > /dev/null; lock=":unlock:"
+          else
+            SYNCLIGHT=":green_circle:"
+            #sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+            TOWERLIGHT=":green_circle:"
+            ufw deny 9101 > /dev/null; lock=":lock:"
+          fi
+          send_discord_message() {
+            local message=$1
+            curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+          }
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH \nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` \nBal.  : $BALANCE2\`"
+          send_discord_message "$message"
         else
           send_discord_message() {
             local message=$1
@@ -364,7 +380,9 @@ while true; do
           else
             QQ=`pgrep tower`
             if [ -z "$QQ" ]; then
-              sudo -u node tmux send-keys -t tower:0 'nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+              if [[ "$fullnode" -eq 0 ]]; then
+                sudo -u node tmux send-keys -t tower:0 'nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+              fi
             fi
           fi
           sleep 1
@@ -404,7 +422,9 @@ while true; do
         else
           QQ=`pgrep tower`
           if [ -z "$QQ" ]; then
-            sudo -u node tmux send-keys -t tower:0 'nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+            if [[ "$fullnode" -eq 0 ]]; then
+              sudo -u node tmux send-keys -t tower:0 'nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+            fi
           fi
         fi
       fi
@@ -459,7 +479,9 @@ while true; do
       fi
       QQ=`pgrep tower`
       if [ -z "$QQ" ]; then
-        sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+        if [[ "$fullnode" -eq 0 ]]; then
+          sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+        fi
       fi
     fi
     RTPS=$(printf "%0.1f" "$(echo "scale=2; $ROUNDDIFF / 600" | bc)")
@@ -528,7 +550,9 @@ while true; do
         ufw allow 9101 > /dev/null; lock=":unlock:"
       else
         SYNCLIGHT=":green_circle:"
-        sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+        if [[ "$fullnode" -eq 0 ]]; then
+          sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+        fi
         TOWERLIGHT=":green_circle:"
         ufw deny 9101 > /dev/null; lock=":lock:"
       fi
@@ -588,12 +612,19 @@ while true; do
           ufw allow 9101 > /dev/null; lock=":unlock:"
         else
           SYNCLIGHT=":green_circle:"
-          sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+          if [[ "$fullnode" -eq 0 ]]; then
+            sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+          fi
           TOWERLIGHT=":green_circle:"
           ufw deny 9101 > /dev/null; lock=":lock:"
         fi
-        message="\`\nScript started!\`  :robot:\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $Lag $LAGK\nRound : $ROUND\nVote  : Calculating from now on.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\nBal.  : $BALANCE2\`"
-        send_discord_message "$message"
+        if [[ "$fullnode" -eq 1 ]]; then
+          message="\`\nScript started!\`  :robot:\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $Lag $LAGK\nRound : You're not in validator set.\nVote  : You're not in validator set.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\nBal.  : $BALANCE2\`"
+          send_discord_message "$message"
+        else
+          message="\`\nScript started!\`  :robot:\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $Lag $LAGK\nRound : $ROUND\nVote  : Calculating from now on.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\nBal.  : $BALANCE2\`"
+          send_discord_message "$message"
+        fi
         scriptstart=1
       else
         if [[ $firstepoch -eq 0 ]]; then
@@ -604,7 +635,9 @@ while true; do
             ufw allow 9101 > /dev/null; lock=":unlock:"
           else
             SYNCLIGHT=":green_circle:"
-            sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+            if [[ "$fullnode" -eq 0 ]]; then
+              sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+            fi
             TOWERLIGHT=":green_circle:"
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
@@ -618,7 +651,9 @@ while true; do
             ufw allow 9101 > /dev/null; lock=":unlock:"
           else
             SYNCLIGHT=":green_circle:"
-            sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+            if [[ "$fullnode" -eq 0 ]]; then
+              sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+            fi
             TOWERLIGHT=":green_circle:"
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
@@ -674,7 +709,25 @@ while true; do
       sleep 0.5
       if [[ "$ROUND" -gt "$VOTEDROUND" ]] && [[ "$SYNCDIFF" -eq 0 ]]; then
         if [[ "$fullnode" -eq 1 ]]; then
-          :
+          if [[ $SYNCDIFF -eq 0 ]]; then
+            SYNCLIGHT=":red_circle:"
+            #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+            TOWERLIGHT=":zzz:"
+            ufw allow 9101 > /dev/null; lock=":unlock:"
+          else
+            SYNCLIGHT=":green_circle:"
+            if [[ "$fullnode" -eq 0 ]]; then
+              sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+            fi
+            TOWERLIGHT=":green_circle:"
+            ufw deny 9101 > /dev/null; lock=":lock:"
+          fi
+          send_discord_message() {
+            local message=$1
+            curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+          }
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH \nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` \nBal.  : $BALANCE2\`"
+          send_discord_message "$message"
         else
           send_discord_message() {
             local message=$1
@@ -703,28 +756,24 @@ while true; do
   if [[ $SYNC -eq 0 ]] && [[ -z $VOTERECHECK ]] && [[ $PROPOSAL -eq 0 ]]; then
     RESTORECHECK=$((RESTORECHECK + 1))
     if [[ $RESTORECHECK -eq 2 ]]; then
-      #if [[ "$fullnode" -eq 1 ]]; then
-      #  :
-      #else
-        message="\`\n==================================\nAlert!! Can't get data from DB.\`  :astonished:\`\nDB regen is required with ol restore.\`"
-        send_discord_message "$message"
-        PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
-        sleep 10
-        sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
-        sleep 20
-        restorecount=$((restorecount + 1))
-        restart_flag=1
-        send_discord_message() {
-          local message=$1
-          curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
-        }
-        PID=$(pgrep diem-node) && message="\`\n\`:fist:  \`Validator has been restored and restarted!!\`  :fist:\`\n==================================\`"
-        sleep 1
-        PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:\`\n==================================\`"
-        send_discord_message "$message"
-        sleep 1
-        RESTORECHECK=0
-      #fi
+      message="\`\n==================================\nAlert!! Can't get data from DB.\`  :astonished:\`\nDB regen is required with ol restore.\`"
+      send_discord_message "$message"
+      PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
+      sleep 10
+      sudo -u node tmux send-keys -t validator:0 'pgrep diem-node || rm -rf /home/node/.0L/db && ol restore && ulimit -n 100000 && /home/node/bin/diem-node --config /home/node/.0L/validator.node.yaml >> /home/node/.0L/logs/validator.log 2>&1' C-m
+      sleep 20
+      restorecount=$((restorecount + 1))
+      restart_flag=1
+      send_discord_message() {
+        local message=$1
+        curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+      }
+      PID=$(pgrep diem-node) && message="\`\n\`:fist:  \`Validator has been restored and restarted!!\`  :fist:\`\n==================================\`"
+      sleep 1
+      PID=$(pgrep diem-node) || message="\`\nValidator failed to restart!! You need to check it.\`  :scream: :scream_cat:\`\n==================================\`"
+      send_discord_message "$message"
+      sleep 1
+      RESTORECHECK=0
     fi
   fi
   if [[ $changed_counter -ge 1 ]] && [[ $consensus_restart -eq 1 ]] && [[ $restart_message_printed -eq 0 ]] && [[ $SYNCDIFF -gt 0 ]]; then
