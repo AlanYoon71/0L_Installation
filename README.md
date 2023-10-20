@@ -46,13 +46,13 @@
      as upper condition. (`tmux new -s validator`, `tmux new -s tower`)
 3. Prepare script env. as `root`.
    - Download script in `/home/node/.0L/logs` (Don’t change path)
-   - Change permission. (`chmod +x 0l_val_alert_bot5.sh`)
+   - Change permission. (`chmod +x 0l_val_alert_bot6.sh`)
    - Edit webhook_url in the script with your own webhook_url. (line 11)
 4. Check the script location and run it.
    - Change user to `root`.
    - Move to `/home/node/.0L/logs`
    - Open tmux bot session. (`tmux new -s bot`)
-   - Run the script. (`./0l_val_alert_bot5.sh`) 
+   - Run the script. (`./0l_val_alert_bot6.sh`) 
 5. Restart/restore condition and others.
    - Basic info will be sent to your own channel with 10min interval.
    - If validator stops syncing or voting, it will be restarted.
