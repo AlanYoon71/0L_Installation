@@ -15,7 +15,7 @@ else
     sudo apt install sysstat
 fi
 PATH=$PATH:/home/node/bin
-webhook_url=""
+webhook_url="https://discord.com/api/webhooks/1164910092852920421/W4CLUcHzgpgg09uo4ZWc9QX6luj5WskDGjs1Xn61oYC8xzKKhhKHkCMddQpShhc7_X-y"
 
 # Initialize previous values
 prev_epoch=0
@@ -208,7 +208,7 @@ while true; do
           BLOCKCOMMENT="0lexplorer isn't responding."
         fi
         BLOCKLIGHT=":red_circle:"
-        PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+        #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
         TOWERLIGHT=":zzz:"
         if [[ $SYNCDIFF -eq 0 ]]; then
           SYNCLIGHT=":red_circle:"
@@ -310,7 +310,7 @@ while true; do
       BLOCKLIGHT=":green_circle:"
       if [[ $SYNCDIFF -eq 0 ]]; then
         SYNCLIGHT=":red_circle:"
-        PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+        #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
         TOWERLIGHT=":zzz:"
       else
         SYNCLIGHT=":green_circle:"
@@ -349,7 +349,7 @@ while true; do
         if [ -z "$VSUCCESS" ]; then VSUCCESS=0; fi
         sleep 0.5
         if (( $(echo "$VSUCCESS < 1" | bc -l) )); then
-          PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+          #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
           FAST2=":thinking:"
         else
           QQ=`pgrep tower`
@@ -388,7 +388,7 @@ while true; do
         if [ -z "$VSUCCESS" ]; then VSUCCESS=0; fi
         sleep 0.5
         if (( $(echo "$VSUCCESS < 1" | bc -l) )); then
-          PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+          #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
           FAST2=":thinking:"
         else
           QQ=`pgrep tower`
@@ -407,7 +407,7 @@ while true; do
     if [[ $LDIFF -lt 0 ]]; then LDIFF=0; fi
     if [[ $LDIFF -eq 0 ]]; then
       BLOCKLIGHT=":red_circle:"
-      PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+      #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
       TOWERLIGHT=":zzz:"
     fi
     LTPS=$(printf "%0.1f" "$(echo "scale=2; $LDIFF / 600" | bc)")
@@ -438,7 +438,7 @@ while true; do
     if (( $(echo "$VSUCCESS < 70" | bc -l) ))
     then
       FAST2=":thinking:"
-      PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+      #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
       TOWERLIGHT=":zzz:"
     else
       if [ "$VOTEDIFF" -gt 1000 ]; then
@@ -512,7 +512,7 @@ while true; do
       firstepoch=1
       if [[ $SYNCDIFF -eq 0 ]]; then
         SYNCLIGHT=":red_circle:"
-        PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+        #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
         TOWERLIGHT=":zzz:"
         ufw allow 9101 > /dev/null; lock=":unlock:"
       else
@@ -572,7 +572,7 @@ while true; do
         fi
         if [[ $SYNCDIFF -eq 0 ]]; then
           SYNCLIGHT=":red_circle:"
-          PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+          #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
           TOWERLIGHT=":zzz:"
           ufw allow 9101 > /dev/null; lock=":unlock:"
         else
@@ -588,7 +588,7 @@ while true; do
         if [[ $firstepoch -eq 0 ]]; then
           if [[ $SYNCDIFF -eq 0 ]]; then
             SYNCLIGHT=":red_circle:"
-            PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+            #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
             TOWERLIGHT=":zzz:"
             ufw allow 9101 > /dev/null; lock=":unlock:"
           else
@@ -602,7 +602,7 @@ while true; do
         else
           if [[ $SYNCDIFF -eq 0 ]]; then
             SYNCLIGHT=":red_circle:"
-            PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+            #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
             TOWERLIGHT=":zzz:"
             ufw allow 9101 > /dev/null; lock=":unlock:"
           else
