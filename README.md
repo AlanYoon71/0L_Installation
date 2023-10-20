@@ -47,7 +47,7 @@
 3. Prepare script env. as `root`.
    - Download script in `/home/node/.0L/logs` (Don’t change path)
    - Change permission. (`chmod +x 0l_val_alert_bot6.sh`)
-   - Edit webhook_url in the script with your own webhook_url. (line 11)
+   - Edit webhook_url in the script with your own webhook_url. (line 18)
 4. Check the script location and run it.
    - Change user to `root`.
    - Move to `/home/node/.0L/logs`
