@@ -703,9 +703,9 @@ while true; do
   if [[ $SYNC -eq 0 ]] && [[ -z $VOTERECHECK ]] && [[ $PROPOSAL -eq 0 ]]; then
     RESTORECHECK=$((RESTORECHECK + 1))
     if [[ $RESTORECHECK -eq 2 ]]; then
-      if [[ "$fullnode" -eq 1 ]]; then
-        :
-      else
+      #if [[ "$fullnode" -eq 1 ]]; then
+      #  :
+      #else
         message="\`\n==================================\nAlert!! Can't get data from DB.\`  :astonished:\`\nDB regen is required with ol restore.\`"
         send_discord_message "$message"
         PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep diem-node) && kill -TERM $PID &> /dev/null
@@ -724,7 +724,7 @@ while true; do
         send_discord_message "$message"
         sleep 1
         RESTORECHECK=0
-      fi
+      #fi
     fi
   fi
   if [[ $changed_counter -ge 1 ]] && [[ $consensus_restart -eq 1 ]] && [[ $restart_message_printed -eq 0 ]] && [[ $SYNCDIFF -gt 0 ]]; then
