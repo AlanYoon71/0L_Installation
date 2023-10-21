@@ -338,7 +338,7 @@ while true; do
         RLag="On the final round."
         RLAG=""
       fi
-      if [[ "$LAG" -lt 50 ]]; then
+      if [[ "$LAG" -lt 200 ]]; then
         if [[ "$fullnode" -eq 1 ]]; then
           if [[ $SYNCDIFF -eq 0 ]]; then
             SYNCLIGHT=":red_circle:"
