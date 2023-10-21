@@ -355,7 +355,7 @@ while true; do
             local message=$1
             curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
           }
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH \nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` \nBal.  : $BALANCE2\`"
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Metrics\` $lock\`\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` \nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           send_discord_message() {
@@ -619,7 +619,7 @@ while true; do
           ufw deny 9101 > /dev/null; lock=":lock:"
         fi
         if [[ "$fullnode" -eq 1 ]]; then
-          message="\`\nScript started!\`  :robot:\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $Lag $LAGK\nRound : You're not in validator set.\nVote  : You're not in validator set.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\nBal.  : $BALANCE2\`"
+          message="\`\nScript started!\`  :robot:\`\nSync  : $SYNC $Lag $LAGK\nRound : You're not in validator set.\nVote  : You're not in validator set.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           message="\`\nScript started!\`  :robot:\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $Lag $LAGK\nRound : $ROUND\nVote  : Calculating from now on.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\nBal.  : $BALANCE2\`"
