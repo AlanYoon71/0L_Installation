@@ -207,7 +207,7 @@ while true; do
           days=$(printf "%02d" $days)
           hours=$(printf "%02d" $hours)
           minutes=$(printf "%02d" $minutes)
-          export JUMPTIME=`echo "${days}:${hours}:${minutes}"`
+          export JUMPTIME=`echo "${days}d ${hours}h ${minutes}m"`
         fi
         unchanged_counter=$((unchanged_counter + 1))
         changed_counter=0
@@ -312,7 +312,7 @@ while true; do
         days=$(printf "%02d" $days)
         hours=$(printf "%02d" $hours)
         minutes=$(printf "%02d" $minutes)
-        export JUMPTIME=`echo "${days}:${hours}:${minutes}"`
+        export JUMPTIME=`echo "${days}d ${hours}h ${minutes}m"`
       fi
       BLOCKLIGHT=":green_circle:"
       if [[ $SYNCDIFF -eq 0 ]]; then
@@ -573,7 +573,7 @@ while true; do
         days=$(printf "%02d" $days)
         hours=$(printf "%02d" $hours)
         minutes=$(printf "%02d" $minutes)
-        export JUMPTIME=`echo "${days}:${hours}:${minutes}"`
+        export JUMPTIME=`echo "${days}d ${hours}h ${minutes}m"`
       fi
       if [[ $scriptstart -eq 0 ]]; then
         prev_vote_reset="$VOTE"
