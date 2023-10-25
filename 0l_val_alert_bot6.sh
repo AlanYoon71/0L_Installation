@@ -269,17 +269,37 @@ while true; do
             fi
           fi
         fi
-        send_discord_message() {
-          local message=$1
-          curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
-        }
-        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE _ Voting stopped..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
-        send_discord_message "$message"
-        BLOCK2=""
-        BLOCKCOMMENT=""
-        message_printed=$((message_printed + 1))
-        BLOCK3=$(curl -s https://0lexplorer.io/ | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
-        sleep 40
+        if [[ "$fullnode" -eq 1 ]]; then
+          if [[ $SYNCDIFF -eq 0 ]]; then
+            SYNCLIGHT=":red_circle:"
+            #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
+            TOWERLIGHT=":zzz:"
+            ufw allow 9101 > /dev/null; lock=":unlock:"
+          else
+            SYNCLIGHT=":green_circle:"
+            #sudo -u node tmux send-keys -t tower:0 'pgrep tower || nohup /home/node/bin/tower --config /home/node/.0L/0L.toml -o start >> /home/node/.0L/logs/tower.log &' C-m
+            TOWERLIGHT=":green_circle:"
+            ufw deny 9101 > /dev/null; lock=":lock:"
+          fi
+          send_discord_message() {
+            local message=$1
+            curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+          }
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Metrics\` $lock\`\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` \nBal.  : $BALANCE2\`"
+          send_discord_message "$message"
+        else
+          send_discord_message() {
+            local message=$1
+            curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
+          }
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nBlock : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE _ Voting stopped..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+          send_discord_message "$message"
+          BLOCK2=""
+          BLOCKCOMMENT=""
+          message_printed=$((message_printed + 1))
+          BLOCK3=$(curl -s https://0lexplorer.io/ | grep -oPm1 '(?<=version":)[^"]*' | awk -F ',' 'NR==1{print $1; exit}')
+          sleep 40
+        fi
       else
         send_discord_message() {
           local message=$1
