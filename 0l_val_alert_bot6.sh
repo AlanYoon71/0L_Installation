@@ -190,7 +190,7 @@ while true; do
     sleep 2
     if [ -z "$BLOCK3" ]; then BLOCK3=0; fi
     sleep 2
-    if [[ "$SYNC" == "$prev_sync" ]]
+    if [[ "$SYNC" == "$prev_sync" ]] && [[ "LAG" -lt 10 ]]
     then
       if [[ "$BLOCK2" == "$BLOCK1" ]] || [[ "$BLOCK1" == "$BLOCK3" ]] || [[ "$BLOCK2" == "$BLOCK3" ]]
       then
