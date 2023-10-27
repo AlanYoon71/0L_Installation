@@ -4,15 +4,15 @@ if [ -x /usr/bin/bc ]; then
     :
 else
     echo "Installing bc package for calculating data.."
-    sudo apt update
-    sudo apt install -y bc
+    sudo apt-get update
+    sudo apt-get install -y bc
 fi
 if [ -x /usr/bin/mpstat ]; then
     :
 else
     echo "Installing sysstat package for monitoring resource.."
-    sudo apt update
-    sudo apt install sysstat
+    sudo apt-get update
+    sudo apt-get install sysstat
 fi
 PATH=$PATH:/home/node/bin
 webhook_url=""
