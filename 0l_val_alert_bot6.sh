@@ -396,7 +396,7 @@ while true; do
           sleep 0.5
           if (( $(echo "$VSUCCESS < 1" | bc -l) )); then
             #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
-            FAST2=":thinking:"
+            FAST2=":exclamation:"
           else
             QQ=`pgrep tower`
             if [ -z "$QQ" ]; then
@@ -438,7 +438,7 @@ while true; do
         sleep 0.5
         if (( $(echo "$VSUCCESS < 1" | bc -l) )); then
           #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
-          FAST2=":thinking:"
+          FAST2=":exclamation:"
         else
           QQ=`pgrep tower`
           if [ -z "$QQ" ]; then
@@ -488,7 +488,7 @@ while true; do
     fi
     if (( $(echo "$VSUCCESS < 70" | bc -l) ))
     then
-      FAST2=":thinking:"
+      FAST2=":exclamation:"
       #PID=$(pgrep tower) && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(pgrep tower) && kill -TERM $PID &> /dev/null
       TOWERLIGHT=":zzz:"
     else
