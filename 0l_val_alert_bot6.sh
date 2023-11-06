@@ -560,7 +560,12 @@ while true; do
         RANK="Power Ranking"
       fi
       VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"construct_and_sign_vote\",result=\"success\"\} | grep -o '[0-9]*'`
-      VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
+      if [[ $ROUNDDIFF -eq 0 ]]; then
+        :
+      else
+        if [[ $VOTEDIFF -lt 0 ]]; then VOTEDIFF=0; fi
+        VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
+      fi
       export start_time=$(date +%s)
       hourglass=":watch:"
       firstepoch=1
