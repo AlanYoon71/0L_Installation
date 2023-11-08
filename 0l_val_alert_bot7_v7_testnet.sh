@@ -451,6 +451,7 @@ while true; do
         if [ -z "$LDIFF" ]; then LDIFF=0; fi
         if [[ $LDIFF -lt 0 ]]; then LDIFF=0; fi
         LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 660" | bc)")
+        LTPS2=TPS_$TPS
         SPEED=$(echo "scale=2; $LTPS" | bc)
         CATCHUP=$(printf "%0.2f" "$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)")
         if [[ "$BLOCK2" == "$BLOCK1" ]] || [[ "$BLOCK1" == "$BLOCK3" ]] || [[ "$BLOCK2" == "$BLOCK3" ]]; then
@@ -493,7 +494,8 @@ while true; do
       #PID=$(ps -ef | grep tower | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(ps -ef | grep tower | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
       TOWERLIGHT=":zzz:"
     fi
-    LTPS=$(printf "%0.1f" "$(echo "scale=2; $LDIFF / 600" | bc)")
+    LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 660" | bc)")
+    LTPS2=TPS_$TPS
     if [ -z "$prev_round" ]; then prev_round=$ROUND; fi 
     ROUNDDIFF=`expr $ROUND - $prev_round`
     if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
@@ -692,7 +694,7 @@ while true; do
             TOWERLIGHT=":green_circle:"
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           if [[ $SYNCDIFF -eq 0 ]]; then
@@ -708,7 +710,7 @@ while true; do
             TOWERLIGHT=":green_circle:"
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT   \`Metrics\` $lock\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : +$SYNCDIFF > $SYNCK $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         fi
       fi
