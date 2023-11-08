@@ -166,7 +166,7 @@ while true; do
       send_discord_message "$message"
       PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null
       sleep 10
-      sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || cd /home/ubuntu/epoch-archive-testnet && make wipe-db && make restore-all && ulimit -n 100000 && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
+      sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || cd /home/ubuntu/epoch-archive-testnet && make wipe-db && make restore-all && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
       sleep 20
       restorecount=$((restorecount + 1))
       restart_flag=1
@@ -451,7 +451,7 @@ while true; do
         if [ -z "$LDIFF" ]; then LDIFF=0; fi
         if [[ $LDIFF -lt 0 ]]; then LDIFF=0; fi
         LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 660" | bc)")
-        LTPS2=TPS_$TPS
+        LTPS2=TPS_$LTPS
         SPEED=$(echo "scale=2; $LTPS" | bc)
         CATCHUP=$(printf "%0.2f" "$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)")
         if [[ "$BLOCK2" == "$BLOCK1" ]] || [[ "$BLOCK1" == "$BLOCK3" ]] || [[ "$BLOCK2" == "$BLOCK3" ]]; then
@@ -495,7 +495,7 @@ while true; do
       TOWERLIGHT=":zzz:"
     fi
     LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 660" | bc)")
-    LTPS2=TPS_$TPS
+    LTPS2=TPS_$LTPS
     if [ -z "$prev_round" ]; then prev_round=$ROUND; fi 
     ROUNDDIFF=`expr $ROUND - $prev_round`
     if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
@@ -813,7 +813,7 @@ while true; do
       send_discord_message "$message"
       PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null
       sleep 10
-      sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || cd /home/ubuntu/epoch-archive-testnet && make wipe-db && make restore-all && ulimit -n 100000 && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
+      sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || cd /home/ubuntu/epoch-archive-testnet && make wipe-db && make restore-all && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
       sleep 20
       restorecount=$((restorecount + 1))
       restart_flag=1
