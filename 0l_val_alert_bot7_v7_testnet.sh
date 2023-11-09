@@ -451,7 +451,7 @@ while true; do
         if [ -z "$LDIFF" ]; then LDIFF=0; fi
         if [[ $LDIFF -lt 0 ]]; then LDIFF=0; fi
         LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 660" | bc)")
-        LTPS2=_ $LTPS[TPS]
+        LTPS2="_ $LTPS[TPS]"
         SPEED=$(echo "scale=2; $LTPS" | bc)
         CATCHUP=$(printf "%0.2f" "$(echo "scale=2; ( $LAG / $SPEED ) / 3600" | bc)")
         if [[ "$BLOCK2" == "$BLOCK1" ]] || [[ "$BLOCK1" == "$BLOCK3" ]] || [[ "$BLOCK2" == "$BLOCK3" ]]; then
@@ -495,7 +495,7 @@ while true; do
       TOWERLIGHT=":zzz:"
     fi
     LTPS=$(printf "%0.2f" "$(echo "scale=2; $LDIFF / 660" | bc)")
-    LTPS2=_ $LTPS[TPS]
+    LTPS2="_ $LTPS[TPS]"
     if [ -z "$prev_round" ]; then prev_round=$ROUND; fi 
     ROUNDDIFF=`expr $ROUND - $prev_round`
     if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
