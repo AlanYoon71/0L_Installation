@@ -182,7 +182,7 @@ while true; do
   diff_space=$((used_space - available_space))
   size=$(awk "BEGIN { printf \"%.0f\", 100 * $diff_space / $used_space }")
   SIZE=$(echo "$size" | sed 's/^0/0./')
-  if (( $(echo "$SIZE >= 90.00" | bc -l) )); then
+  if (( $(echo "$SIZE >= 92.00" | bc -l) )); then
       NEEDCHECK2=":thinking:"
   else
       NEEDCHECK2=""
@@ -499,7 +499,7 @@ while true; do
     if [ -z "$prev_round" ]; then prev_round=$ROUND; fi 
     ROUNDDIFF=`expr $ROUND - $prev_round`
     if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
-    if [ "$ROUNDDIFF" -gt 1000 ]; then
+    if [ "$ROUNDDIFF" -gt 1350 ]; then
       FAST=":rocket:"
     else
       FAST=""
@@ -508,7 +508,7 @@ while true; do
     VOTEDIFF=`expr $VOTE - $prev_vote`
     if [[ "$VOTEDIFF" -lt 0 ]]; then VOTEDIFF="$VOTE"; fi
     if [ -z "$VOTEDIFF" ]; then VOTEDIFF=0; fi
-    if [ "$VOTEDIFF" -gt 1000 ]; then
+    if [ "$VOTEDIFF" -gt 1350 ]; then
       VOTELIGHT=":green_circle:"
       FAST2=":rocket:"
     else
@@ -526,7 +526,7 @@ while true; do
       #PID=$(ps -ef | grep tower | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(ps -ef | grep tower | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
       TOWERLIGHT=":zzz:"
     else
-      if [ "$VOTEDIFF" -gt 1000 ]; then
+      if [ "$VOTEDIFF" -gt 1350 ]; then
         FAST2=":rocket:"
       else
         FAST2=""
