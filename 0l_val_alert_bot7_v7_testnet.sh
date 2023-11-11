@@ -499,8 +499,8 @@ while true; do
     if [ -z "$prev_round" ]; then prev_round=$ROUND; fi 
     ROUNDDIFF=`expr $ROUND - $prev_round`
     if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
-    if [ "$ROUNDDIFF" -gt 1350 ]; then
-      FAST=":rocket:"
+    if [ "$ROUNDDIFF" -gt 1300 ]; then
+      FAST=":sparkly:"
     else
       FAST=""
     fi
@@ -508,9 +508,9 @@ while true; do
     VOTEDIFF=`expr $VOTE - $prev_vote`
     if [[ "$VOTEDIFF" -lt 0 ]]; then VOTEDIFF="$VOTE"; fi
     if [ -z "$VOTEDIFF" ]; then VOTEDIFF=0; fi
-    if [ "$VOTEDIFF" -gt 1350 ]; then
+    if [ "$VOTEDIFF" -gt 1300 ]; then
       VOTELIGHT=":green_circle:"
-      FAST2=":rocket:"
+      FAST2=":sparkly:"
     else
       if [ "$VOTEDIFF" -eq 0 ]; then
         VOTELIGHT=":red_circle:"
@@ -526,8 +526,8 @@ while true; do
       #PID=$(ps -ef | grep tower | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(ps -ef | grep tower | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
       TOWERLIGHT=":zzz:"
     else
-      if [ "$VOTEDIFF" -gt 1350 ]; then
-        FAST2=":rocket:"
+      if [ "$VOTEDIFF" -gt 1300 ]; then
+        FAST2=":sparkly:"
       else
         FAST2=""
       fi
