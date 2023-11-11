@@ -142,6 +142,7 @@ while true; do
   if [[ -z "$prev_proposal_reset" ]]; then prev_proposal_reset=0; fi
   PROPOSAL=`expr $PROPOSAL - $prev_proposal_reset`
   if [[ -z "$PROPOSAL" ]]; then PROPOSAL=0; fi
+  sleep 0.3
   PROOF=`tac /home/ubuntu/.libra/logs/tower.log | grep -m1 -oE '# [0-9]+' | grep -oE '[0-9]+$'`
   if [[ "$PROOF" -eq "$prev_proof" ]]; then
     proofcheck=$((proofcheck + 1))
@@ -223,10 +224,12 @@ while true; do
   fi
   if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
   if [ -z "$VOTEDIFF" ]; then VOTEDIFF=0; fi
+  if [ -z "$PROPOSALDIFF" ]; then PROPOSALDIFF=0; fi
   if [[ $ROUNDDIFF -eq 0 ]]; then
     :
   else
     if [[ $VOTEDIFF -lt 0 ]]; then VOTEDIFF=0; fi
+    if [[ $PROPOSALDIFF -lt 0 ]]; then PROPOSALDIFF=0; fi
     VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
     sleep 0.3
     PSUCCESS=$(printf "%0.1f" "$(echo "scale=2; ($PROPOSALDIFF * 100) / $ROUNDDIFF" | bc)")
@@ -623,6 +626,9 @@ while true; do
         RANK="Power Ranking"
       fi
       VOTE=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_commit_vote\",result=\"success\" | grep -o '[0-9]*'`
+      sleep 0.3
+      PROPOSAL=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\" | grep -o '[0-9]*'`
+      sleep 0.3
       if [[ $ROUNDDIFF -eq 0 ]]; then
         :
       else
@@ -672,6 +678,7 @@ while true; do
       fi
       if [[ $scriptstart -eq 0 ]]; then
         prev_vote_reset="$VOTE"
+        prev_proposal_reset="$PROPOSAL"
       ADDRESSLIST=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep 'diem_all_validators_voting_power{peer_id=' | awk -F'"' '{print $2}' | tr ' ' '\n' | wc -l`
       #ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
       ACCOUNT2=`echo $accountinput | tr 'A-Z' 'a-z'`
