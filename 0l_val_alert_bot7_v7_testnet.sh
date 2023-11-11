@@ -217,6 +217,10 @@ while true; do
     VOTEDIFF="$VOTE"
   fi
   PROPOSALDIFF=`expr $PROPOSAL - $prev_proposal`
+  if [[ -z "$PROPOSALDIFF" ]]; then PROPOSALDIFF=0; fi
+  if [[ "$PROPOSALDIFF" -lt 0 ]]; then
+    PROPOSALDIFF="$PROPOSAL"
+  fi
   if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
   if [ -z "$VOTEDIFF" ]; then VOTEDIFF=0; fi
   if [[ $ROUNDDIFF -eq 0 ]]; then
@@ -517,7 +521,7 @@ while true; do
     ROUNDDIFF=`expr $ROUND - $prev_round`
     if [ -z "$ROUNDDIFF" ]; then ROUNDDIFF=0; fi
     if [ "$ROUNDDIFF" -gt 1300 ]; then
-      FAST=":sparkly:"
+      FAST=":high_brightness:"
     else
       FAST=""
     fi
@@ -531,7 +535,7 @@ while true; do
     if [ -z "$PROPOSALDIFF" ]; then PROPOSALDIFF=0; fi
     if [ "$VOTEDIFF" -gt 1300 ]; then
       VOTELIGHT=":green_circle:"
-      FAST2=":sparkly:"
+      FAST2=":high_brightness:"
     else
       if [ "$VOTEDIFF" -eq 0 ]; then
         VOTELIGHT=":red_circle:"
@@ -548,7 +552,7 @@ while true; do
       TOWERLIGHT=":zzz:"
     else
       if [ "$VOTEDIFF" -gt 1300 ]; then
-        FAST2=":sparkly:"
+        FAST2=":high_brightness:"
       else
         FAST2=""
       fi
