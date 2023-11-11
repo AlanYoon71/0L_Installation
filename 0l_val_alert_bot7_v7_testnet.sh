@@ -104,8 +104,8 @@ while true; do
   if [ -z "$SYNC" ]; then SYNC=$TARG; fi
   LAG=`expr $TARG - $SYNC`
   sleep 1
-  if [[ "$LAG" -le 1 ]]; then
-    if [[ "$LAG" -lt 1 ]]; then
+  if [[ "$LAG" -le 0 ]]; then
+    if [[ "$LAG" -lt 0 ]]; then
       Lag=""
       LAGK=""
     else
@@ -276,9 +276,9 @@ while true; do
         if [[ "$BLOCK2" -eq 0 ]]; then
           BLOCK2=""
         else
-          (( LAG = BLOCK2 - SYNC + 2 ))
-          if [[ "$LAG" -le 1 ]]; then
-            if [[ "$LAG" -lt 1 ]]; then
+          (( LAG = BLOCK2 - SYNC ))
+          if [[ "$LAG" -le 0 ]]; then
+            if [[ "$LAG" -lt 0 ]]; then
               Lag=""
               LAGK=""
             else
@@ -541,8 +541,8 @@ while true; do
     RTPS=$(printf "%0.1f" "$(echo "scale=2; $ROUNDDIFF / 600" | bc)")
     QQ=`ps -ef | grep tower | awk 'NR==1 {print $2}'`
     if [[ $EPOCH -gt $prev_epoch ]] && [[ $EPOCH -ne 0 ]] && [[ $prev_epoch -ne 0 ]]; then
-      if [[ "$LAG" -le 1 ]]; then
-        if [[ "$LAG" -lt 1 ]]; then
+      if [[ "$LAG" -le 0 ]]; then
+        if [[ "$LAG" -lt 0 ]]; then
           Lag=""
           LAGK=""
         else
