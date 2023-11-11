@@ -39,6 +39,7 @@ prev_vote=0
 prev_vote_reset=0
 last_vote=0
 prev_proposal=0
+prev_proposal_reset=0
 prev_proof=0
 refresh3=0
 setcheck=0
@@ -137,12 +138,26 @@ while true; do
   sleep 0.3
   PROPOSAL=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\" | grep -o '[0-9]*'`
   sleep 0.3
+  if [[ -z "$PROPOSAL" ]]; then PROPOSAL=0; fi
+  if [[ -z "$prev_proposal_reset" ]]; then prev_proposal_reset=0; fi
+  PROPOSAL=`expr $PROPOSAL - $prev_proposal_reset`
+  if [[ -z "$PROPOSAL" ]]; then PROPOSAL=0; fi
   PROOF=`tac /home/ubuntu/.libra/logs/tower.log | grep -m1 -oE '# [0-9]+' | grep -oE '[0-9]+$'`
+  if [[ "$PROOF" -eq "$prev_proof" ]]; then
+    proofcheck=$((proofcheck + 1))
+  else
+    proofcheck=0
+  fi
+  if [[ "$proofcheck" -ge 3 ]]; then
+    TOWERLIGHT2=":red_circle:"
+  else
+    TOWERLIGHT2=":green_circle:"
+  fi
   sleep 0.3
   BLOCKLIGHT=":green_circle:"
   VOTELIGHT=":green_circle:"
   SYNCLIGHT=":green_circle:"
-  TOWERLIGHT=":green_circle:"
+  TOWERLIGHT=""
   sleep 0.3
   BALANCE=$(/home/ubuntu/libra-framework/target/release/libra query balance --account 0x$accountinput | jq -r '.unlocked, .total' | paste -sd " / ")
   sleep 0.3
@@ -209,6 +224,8 @@ while true; do
   else
     if [[ $VOTEDIFF -lt 0 ]]; then VOTEDIFF=0; fi
     VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
+    sleep 0.3
+    PSUCCESS=$(printf "%0.1f" "$(echo "scale=2; ($PROPOSALDIFF * 100) / $ROUNDDIFF" | bc)")
   fi
   sleep 0.3
   if [[ $prev_round == $ROUND ]]; then
@@ -310,21 +327,21 @@ while true; do
           else
             SYNCLIGHT=":green_circle:"
             #sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
-            TOWERLIGHT=":green_circle:"
+            TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
           send_discord_message() {
             local message=$1
             curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
           }
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT\`\nSync  : $SYNC $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` \nBal.  : $BALANCE2\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT\`\nSync  : $SYNC $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` \nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           send_discord_message() {
             local message=$1
             curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
           }
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE _ Voting stopped..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE _ Voting stopped..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
           send_discord_message "$message"
           BLOCK2=""
           BLOCKCOMMENT=""
@@ -400,21 +417,21 @@ while true; do
           else
             SYNCLIGHT=":green_circle:"
             #sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
-            TOWERLIGHT=":green_circle:"
+            TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
           send_discord_message() {
             local message=$1
             curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
           }
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT\`\nSync  : $SYNC $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` \nBal.  : $BALANCE2\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT\`\nSync  : $SYNC $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` \nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           send_discord_message() {
             local message=$1
             curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
           }
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE\nProp  : $PROPOSAL\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
           message="\`\n==================================\nAlert!! Validator is not voting.\`  :astonished:\`\nPreparing to restart...\`"
           send_discord_message "$message"
           BLOCK2=""
@@ -463,7 +480,7 @@ while true; do
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $Lag $LAGK _ ETA $CATCHUP[Hr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+        message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $Lag $LAGK _ ETA $CATCHUP[Hr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
         send_discord_message "$message"
         BLOCK2=""
         BLOCKCOMMENT=""
@@ -508,6 +525,10 @@ while true; do
     VOTEDIFF=`expr $VOTE - $prev_vote`
     if [[ "$VOTEDIFF" -lt 0 ]]; then VOTEDIFF="$VOTE"; fi
     if [ -z "$VOTEDIFF" ]; then VOTEDIFF=0; fi
+    if [ -z "$prev_proposal" ]; then prev_proposal=$PROPOSAL; fi 
+    PROPOSALDIFF=`expr $PROPOSAL - $prev_proposal`
+    if [[ "$PROPOSALDIFF" -lt 0 ]]; then PROPOSALDIFF="$PROPOSAL"; fi
+    if [ -z "$PROPOSALDIFF" ]; then PROPOSALDIFF=0; fi
     if [ "$VOTEDIFF" -gt 1300 ]; then
       VOTELIGHT=":green_circle:"
       FAST2=":sparkly:"
@@ -595,6 +616,8 @@ while true; do
       else
         if [[ $VOTEDIFF -lt 0 ]]; then VOTEDIFF=0; fi
         VSUCCESS=$(printf "%0.0f" "$(echo "scale=1; ($VOTEDIFF * 100) / $ROUNDDIFF" | bc)")
+        sleep 0.3
+        PSUCCESS=$(printf "%0.1f" "$(echo "scale=2; ($PROPOSALDIFF * 100) / $ROUNDDIFF" | bc)")
       fi
       export start_time=$(date +%s)
       hourglass=":watch:"
@@ -609,11 +632,11 @@ while true; do
         if [[ "$fullnode" -eq 0 ]]; then
           sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
         fi
-        TOWERLIGHT=":green_circle:"
+        TOWERLIGHT=""
         ufw deny 9101 > /dev/null; lock=":lock:"
       fi
       restartcount=0 && restorecount=0 &&
-      message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT\`\nEpoch : $EPOCH  New epoch started!\`  :fist::high_brightness:\`\nSync  : $SYNC $Lag $LAGK\` $LAGCHECK\`\nRound : $ROUND\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+      message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH  New epoch started!\`  :fist::high_brightness:\`\nSync  : $SYNC $Lag $LAGK\` $LAGCHECK\`\nRound : $ROUND\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
       send_discord_message "$message"
     else
       if [ -z "$start_time" ]; then
@@ -668,7 +691,7 @@ while true; do
           if [[ "$fullnode" -eq 0 ]]; then
             sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
           fi
-          TOWERLIGHT=":green_circle:"
+          TOWERLIGHT=""
           ufw deny 9101 > /dev/null; lock=":lock:"
         fi
         if [[ "$fullnode" -eq 1 ]]; then
@@ -691,10 +714,10 @@ while true; do
             if [[ "$fullnode" -eq 0 ]]; then
               sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
             fi
-            TOWERLIGHT=":green_circle:"
+            TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nProp  : +$PROPOSALDIFF > $PROPOSAL _ $PSUCCESS%[δp/δr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           if [[ $SYNCDIFF -eq 0 ]]; then
@@ -707,10 +730,10 @@ while true; do
             if [[ "$fullnode" -eq 0 ]]; then
               sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
             fi
-            TOWERLIGHT=":green_circle:"
+            TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nProp  : +$PROPOSALDIFF > $PROPOSAL _ $PSUCCESS%[δp/δr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         fi
       fi
@@ -724,8 +747,8 @@ while true; do
     prev_vote="$VOTE"
     prev_vote_reset="$VOTE"
     prev_round=0
-    PROPOSAL=0
     prev_proposal="$PROPOSAL"
+    prev_proposal_reset="$PROPOSAL"
     prev_proof=`expr $PROOF - $refresh3`
     setcheck=0
   else
@@ -733,6 +756,7 @@ while true; do
       prev_vote="$VOTE"
       prev_vote_reset=0
       prev_proposal="$PROPOSAL"
+      prev_proposal_reset=0
       prev_proof=`expr $PROOF - $refresh3`
       setcheck=$((setcheck + 1))
       restart_flag=0
@@ -772,14 +796,14 @@ while true; do
             if [[ "$fullnode" -eq 0 ]]; then
               sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
             fi
-            TOWERLIGHT=":green_circle:"
+            TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
           send_discord_message() {
             local message=$1
             curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
           }
-          message="\`\nBlock\` $BLOCKLIGHT   \`Sync\` $SYNCLIGHT   \`Vote\` $VOTELIGHT\`\nEpoch : $EPOCH \nSync  : $SYNC $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT\` \nBal.  : $BALANCE2\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH \nSync  : $SYNC $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` \nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           send_discord_message() {
