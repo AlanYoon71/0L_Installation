@@ -107,7 +107,7 @@ while true; do
   sleep 1
   if [[ "$LAG" -le 0 ]]; then
     if [[ "$LAG" -lt 0 ]]; then
-      Lag=""
+      Lag="_ Leading!!"
       LAGK=""
     else
       Lag="_ Synced!"
@@ -307,7 +307,7 @@ while true; do
           (( LAG = BLOCK2 - SYNC ))
           if [[ "$LAG" -le 0 ]]; then
             if [[ "$LAG" -lt 0 ]]; then
-              Lag=""
+              Lag="_ Leading!!"
               LAGK=""
             else
               Lag="_ Synced!"
@@ -579,7 +579,7 @@ while true; do
     if [[ $EPOCH -gt $prev_epoch ]] && [[ $EPOCH -ne 0 ]] && [[ $prev_epoch -ne 0 ]]; then
       if [[ "$LAG" -le 0 ]]; then
         if [[ "$LAG" -lt 0 ]]; then
-          Lag=""
+          Lag="_ Leading!!"
           LAGK=""
         else
           Lag="_ Synced!"
