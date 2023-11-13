@@ -83,7 +83,7 @@ export VSET=`echo "$ADDRESSLIST"`
 if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
   VSET=""
 else
-  VSET="_ $VSET nodes"
+  VSET="_ $VSET active nodes"
 fi
 ufw deny 9101 > /dev/null; lock=":lock:"
 send_discord_message() {
@@ -616,7 +616,7 @@ while true; do
       if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
         VSET=""
       else
-        VSET="_ $VSET nodes"
+        VSET="_ $VSET active nodes"
       fi
       sleep 0.3
       if [[ -z $TOWERRANK ]]; then
@@ -695,7 +695,7 @@ while true; do
         if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
           VSET=""
         else
-          VSET="_ $VSET nodes"
+          VSET="_ $VSET active nodes"
         fi
         sleep 0.3
         if [[ -z $TOWERRANK ]]; then
