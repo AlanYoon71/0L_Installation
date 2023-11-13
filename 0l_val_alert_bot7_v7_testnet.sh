@@ -150,9 +150,9 @@ while true; do
     proofcheck=0
   fi
   if [[ "$proofcheck" -ge 3 ]]; then
-    TOWERLIGHT2=":red_circle:"
+    TOWERLIGHT2=":zzz:"
   else
-    TOWERLIGHT2=":green_circle:"
+    TOWERLIGHT2=":pick:"
   fi
   sleep 0.3
   BLOCKLIGHT=":green_circle:"
