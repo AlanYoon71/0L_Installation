@@ -83,7 +83,7 @@ export VSET=`echo "$ADDRESSLIST"`
 if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
   VSET=""
 else
-  VSET="_ $VSET active nodes"
+  VSET="_ Validator set $VSET"
 fi
 ufw deny 9101 > /dev/null; lock=":lock:"
 send_discord_message() {
@@ -352,7 +352,7 @@ while true; do
             local message=$1
             curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
           }
-          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE _ Voting stopped..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\n\`**[**\` Epoch $EPOCH $VSET \`**]**  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE _ Voting stopped..\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
           send_discord_message "$message"
           BLOCK2=""
           BLOCKCOMMENT=""
@@ -446,7 +446,7 @@ while true; do
             local message=$1
             curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
           }
-          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE\nProp  : $PROPOSAL\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\n\`**[**\` Epoch $EPOCH $VSET \`**]**  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $SYNC $Lag $LAGK\nRound : $VOTEDROUND _ $RLag $RLAG\` $ONROUND\`\nVote  : $VOTE\nProp  : $PROPOSAL\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
           message="\`\n==================================\nAlert!! Validator is not voting.\`  :astonished:\`\nPreparing to restart...\`"
           send_discord_message "$message"
           BLOCK2=""
@@ -495,7 +495,7 @@ while true; do
           local message=$1
           curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
         }
-        message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $Lag $LAGK _ ETA $CATCHUP[Hr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
+        message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\n\`**[**\` Epoch $EPOCH $VSET \`**]**  $hourglass\` $JUMPTIME\nVer.  : $BLOCK2$BLOCKCOMMENT\nSync  : $Lag $LAGK _ ETA $CATCHUP[Hr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\`"
         send_discord_message "$message"
         BLOCK2=""
         BLOCKCOMMENT=""
@@ -616,7 +616,7 @@ while true; do
       if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
         VSET=""
       else
-        VSET="_ $VSET active nodes"
+        VSET="_ Validator set $VSET"
       fi
       sleep 0.3
       if [[ -z $TOWERRANK ]]; then
@@ -654,7 +654,7 @@ while true; do
         ufw deny 9101 > /dev/null; lock=":lock:"
       fi
       restartcount=0 && restorecount=0 &&
-      message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH  New epoch started!\`  :fist::high_brightness:\`\nSync  : $SYNC $Lag $LAGK\` $LAGCHECK\`\nRound : $ROUND\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+      message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\n\`**[**\` Epoch $EPOCH  New epoch started!\`  :fist::high_brightness:\`\nSync  : $SYNC $Lag $LAGK\` $LAGCHECK\`\nRound : $ROUND\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
       send_discord_message "$message"
     else
       if [ -z "$start_time" ]; then
@@ -695,7 +695,7 @@ while true; do
         if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
           VSET=""
         else
-          VSET="_ $VSET active nodes"
+          VSET="_ Validator set $VSET"
         fi
         sleep 0.3
         if [[ -z $TOWERRANK ]]; then
@@ -721,7 +721,7 @@ while true; do
           message="\`\nScript started!\`  :robot:\`\nSync  : $SYNC $Lag $LAGK\nRound : You're not in validator set.\nVote  : You're not in validator set.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
-          message="\`\nScript started!\`  :robot:\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $Lag $LAGK\nRound : $ROUND\nVote  : Calculating from now on.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\nBal.  : $BALANCE2\`"
+          message="\`\nScript started!\`  :robot:\`\n\`**[**\` Epoch $EPOCH $VSET \`**]**  $hourglass\` $JUMPTIME\nSync  : $SYNC $Lag $LAGK\nRound : $ROUND\nVote  : Calculating from now on.\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         fi
         scriptstart=1
@@ -740,7 +740,7 @@ while true; do
             TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nProp  : +$PROPOSALDIFF > $PROPOSAL _ $PSUCCESS%[δp/δr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\n\`**[**\` Epoch $EPOCH $VSET \`**]**  $hourglass\` $JUMPTIME\nSync  : $SYNC $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nProp  : +$PROPOSALDIFF > $PROPOSAL _ $PSUCCESS%[δp/δr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           if [[ $SYNCDIFF -eq 0 ]]; then
@@ -756,7 +756,7 @@ while true; do
             TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
           fi
-          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH $VSET\`  $hourglass\` $JUMPTIME\nSync  : $SYNC $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nProp  : +$PROPOSALDIFF > $PROPOSAL _ $PSUCCESS%[δp/δr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\n\`**[**\` Epoch $EPOCH $VSET \`**]**  $hourglass\` $JUMPTIME\nSync  : $SYNC $LTPS2 $Lag $LAGK\nRound : +$ROUNDDIFF > $ROUND _ $RTPS[δr/s]\` $FAST\`\nVote  : +$VOTEDIFF > $VOTE _ $VSUCCESS%[δv/δr]\` $FAST2\`\nProp  : +$PROPOSALDIFF > $PROPOSAL _ $PSUCCESS%[δp/δr]\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         fi
       fi
@@ -826,7 +826,7 @@ while true; do
             local message=$1
             curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
           }
-          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\nEpoch : $EPOCH \nSync  : $SYNC $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` \nBal.  : $BALANCE2\`"
+          message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\n\`**[**\` Epoch $EPOCH \nSync  : $SYNC $Lag $LAGK\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` \nBal.  : $BALANCE2\`"
           send_discord_message "$message"
         else
           send_discord_message() {
