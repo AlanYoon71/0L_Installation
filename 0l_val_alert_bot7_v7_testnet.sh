@@ -67,7 +67,7 @@ if [[ -z $curl_output ]]; then
 else
   fullnode=0
 fi
-ADDRESSLIST=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep 'diem_all_validators_voting_power{peer_id=' | awk -F'"' '{print $2}' | tr ' ' '\n' | wc -l`
+ADDRESSLIST=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_current_epoch_validators | grep -o '[0-9]*'`
 #ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
 ACCOUNT2=`echo $accountinput | tr 'A-Z' 'a-z'`
 #export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
@@ -600,7 +600,7 @@ while true; do
           SYNCK=$(echo "scale=0; $SYNC / 10" | bc)
         fi
       fi
-      ADDRESSLIST=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep 'diem_all_validators_voting_power{peer_id=' | awk -F'"' '{print $2}' | tr ' ' '\n' | wc -l`
+      ADDRESSLIST=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_current_epoch_validators | grep -o '[0-9]*'`
       #ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
       ACCOUNT2=`echo $accountinput | tr 'A-Z' 'a-z'`
       #export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
@@ -679,7 +679,7 @@ while true; do
       if [[ $scriptstart -eq 0 ]]; then
         prev_vote_reset="$VOTE"
         prev_proposal_reset="$PROPOSAL"
-      ADDRESSLIST=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep 'diem_all_validators_voting_power{peer_id=' | awk -F'"' '{print $2}' | tr ' ' '\n' | wc -l`
+      ADDRESSLIST=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_consensus_current_epoch_validators | grep -o '[0-9]*'`
       #ACCOUNT=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections\{direction=\"inbound\",network_id=\"Validator\",peer_id= | grep -oE '([[:xdigit:]]{8})' | tr 'a-z' 'A-Z'`
       ACCOUNT2=`echo $accountinput | tr 'A-Z' 'a-z'`
       #export TOWERRANK=`echo "$ADDRESSLIST" | grep -n "$ACCOUNT" | awk -F: '{print $1}'`
