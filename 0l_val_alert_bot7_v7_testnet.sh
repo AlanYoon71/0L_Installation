@@ -654,7 +654,7 @@ while true; do
         ufw deny 9101 > /dev/null; lock=":lock:"
       fi
       restartcount=0 && restorecount=0 &&
-      message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\n\`**[**\` Epoch $EPOCH  New epoch started!\`  :fist::high_brightness:\`\nSync  : $SYNC $Lag $LAGK\` $LAGCHECK\`\nRound : $ROUND\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
+      message="\`\nChain_Health\` $BLOCKLIGHT    \`Syncing\` $SYNCLIGHT    \`Voting\` $VOTELIGHT\`\n\`**[**\` Epoch $EPOCH  New epoch started!\` **]**  :fist::high_brightness:\`\nSync  : $SYNC $Lag $LAGK\` $LAGCHECK\`\nRound : $ROUND\nStat  : CPU $CPU%  MEM $USEDMEM%\` $NEEDCHECK\` VOL $SIZE%\` $NEEDCHECK2\`\nCount : Restarted $restartcount _ Restored $restorecount\nTower : $PROOF\` $TOWERLIGHT2\` $RANK $TOWERRANK\nBal.  : $BALANCE2\`"
       send_discord_message "$message"
     else
       if [ -z "$start_time" ]; then
