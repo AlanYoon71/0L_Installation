@@ -369,7 +369,7 @@ while true; do
         send_discord_message "$message"
         PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null
         sleep 10
-        sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || ulimit -n 100000 && cat /dev/null > validator.log && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
+        sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || ulimit -n 1048576 && cat /dev/null > validator.log && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
         sleep 6
         restartcount=$((restartcount + 1))
         PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && message="\`\nValidator restarted successfully!\`  :sunglasses:\`\n==================================\`"
@@ -453,7 +453,7 @@ while true; do
           BLOCKCOMMENT=""
           PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null
           sleep 10
-          sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || ulimit -n 100000 && cat /dev/null > validator.log && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
+          sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || ulimit -n 1048576 && cat /dev/null > validator.log && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
           sleep 6
           restartcount=$((restartcount + 1))
           if [ -z "$VSUCCESS" ]; then VSUCCESS=0; fi
@@ -837,7 +837,7 @@ while true; do
           send_discord_message "$message"
           PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null && sleep 0.5 && PID=$(ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}') && kill -TERM $PID &> /dev/null
           sleep 10
-          sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || ulimit -n 100000 && cat /dev/null > validator.log && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
+          sudo -u ubuntu tmux send-keys -t validator:0 'ps -ef | grep ".libra/validator.yaml" | awk 'NR==2 {print $2}' || ulimit -n 1048576 && cat /dev/null > validator.log && /home/ubuntu/libra-framework/target/release/libra node --config-path /home/ubuntu/.libra/validator.yaml >> /home/ubuntu/.libra/logs/validator.log 2>&1' C-m
           sleep 6
           restartcount=$((restartcount + 1))
           restart_flag=1
