@@ -80,6 +80,7 @@ else
   BALANCE2=$(echo $BALANCE | awk '{printf "%'\''d %'\''d", $1, $2}')
 fi
 export VSET=`echo "$ADDRESSLIST"`
+if [[ -z "$VSET" ]]; then VSET=0; fi
 if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
   VSET=""
 else
@@ -613,6 +614,7 @@ while true; do
         BALANCE2=$(echo $BALANCE | awk '{printf "%'\''d %'\''d", $1, $2}')
       fi
       export VSET=`echo "$ADDRESSLIST"`
+      if [[ -z "$VSET" ]]; then VSET=0; fi
       if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
         VSET=""
       else
@@ -692,6 +694,7 @@ while true; do
           BALANCE2=$(echo $BALANCE | awk '{printf "%'\''d %'\''d", $1, $2}')
         fi
         export VSET=`echo "$ADDRESSLIST"`
+        if [[ -z "$VSET" ]]; then VSET=0; fi
         if [ "$VSET" -lt 3 ] || [ -z "$VSET" ]; then
           VSET=""
         else
