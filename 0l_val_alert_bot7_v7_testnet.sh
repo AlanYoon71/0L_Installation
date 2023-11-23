@@ -466,7 +466,8 @@ while true; do
             QQ=`ps -ef | grep tower | awk 'NR==1 {print $2}'`
             if [ -z "$QQ" ]; then
               if [[ "$fullnode" -eq 0 ]]; then
-                sudo -u ubuntu tmux send-keys -t tower:0 'nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+                #sudo -u ubuntu tmux send-keys -t tower:0 '/home/ubuntu/libra-framework/target/release/libra tower start > /home/ubuntu/.libra/logs/tower.log' C-m
+                :
               fi
             fi
           fi
@@ -509,7 +510,8 @@ while true; do
           QQ=`ps -ef | grep tower | awk 'NR==1 {print $2}'`
           if [ -z "$QQ" ]; then
             if [[ "$fullnode" -eq 0 ]]; then
-              sudo -u ubuntu tmux send-keys -t tower:0 'nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+              #sudo -u ubuntu tmux send-keys -t tower:0 'nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+              :
             fi
           fi
         fi
@@ -571,7 +573,8 @@ while true; do
       QQ=`ps -ef | grep tower | awk 'NR==1 {print $2}'`
       if [ -z "$QQ" ]; then
         if [[ "$fullnode" -eq 0 ]]; then
-          sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+          #sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+          :
         fi
       fi
     fi
@@ -650,7 +653,8 @@ while true; do
       else
         SYNCLIGHT=":green_circle:"
         if [[ "$fullnode" -eq 0 ]]; then
-          sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+          #sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+          :
         fi
         TOWERLIGHT=""
         ufw deny 9101 > /dev/null; lock=":lock:"
@@ -715,7 +719,8 @@ while true; do
         else
           SYNCLIGHT=":green_circle:"
           if [[ "$fullnode" -eq 0 ]]; then
-            sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+            #sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+            :
           fi
           TOWERLIGHT=""
           ufw deny 9101 > /dev/null; lock=":lock:"
@@ -738,7 +743,8 @@ while true; do
           else
             SYNCLIGHT=":green_circle:"
             if [[ "$fullnode" -eq 0 ]]; then
-              sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+              #sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+              :
             fi
             TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
@@ -754,7 +760,8 @@ while true; do
           else
             SYNCLIGHT=":green_circle:"
             if [[ "$fullnode" -eq 0 ]]; then
-              sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+              #sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+              :
             fi
             TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
@@ -820,7 +827,8 @@ while true; do
           else
             SYNCLIGHT=":green_circle:"
             if [[ "$fullnode" -eq 0 ]]; then
-              sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+              #sudo -u ubuntu tmux send-keys -t tower:0 'ps -ef | grep tower | awk 'NR==1 {print $2}' || nohup /home/ubuntu/libra-framework/target/release/libra tower start >> /home/ubuntu/.libra/logs/tower.log &' C-m
+              :
             fi
             TOWERLIGHT=""
             ufw deny 9101 > /dev/null; lock=":lock:"
