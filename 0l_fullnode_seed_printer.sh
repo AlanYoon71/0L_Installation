@@ -1,6 +1,6 @@
 #!/bin/bash
 echo ""
-if [ -f $HOME/.libra/private-keys.yaml ]
+if [ -f $HOME/.libra/operator.yaml ]
 then
     ID=$(grep -Po '(?<=full_node_network_public_key: "0x).*' $HOME/.libra/operator.yaml | sed 's/"$//')
     sleep 0.2
@@ -18,6 +18,6 @@ then
     echo "=================================================================================================================================="
     echo -en "\n"
 else
-    echo -e "\e[1m\e[32mCan't find 'private-keys.yaml' file: "$HOME/.libra"  \e[0m" 
+    echo -e "\e[1m\e[32mCan't find 'operator.yaml' file: "$HOME/.libra"  \e[0m" 
 fi
 echo ""
