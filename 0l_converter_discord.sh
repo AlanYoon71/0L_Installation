@@ -14,7 +14,7 @@ while true; do
     fi
 done
 
-webhook_url="<<<<<<<<<< Enter your webhook url here. >>>>>>>>>>"
+webhook_url=""
 send_discord_message() {
   local message=$1
   curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
@@ -45,7 +45,7 @@ while true; do
   sleep 1
   BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
   sleep 1
-  sleep 586
+  sleep 584
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
   EPOCH2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
@@ -56,8 +56,6 @@ while true; do
   sleep 0.2
   PROP2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\" | grep -o '[0-9]*'`
   sleep 0.2
-  #PROOF=`cat /home/debian/.libra/logs/tower.log | grep -oP 'already submitted in epoch: (\d+)' | tail -n 1 | grep -o '[0-9]*'`
-  #sleep 0.2
   JAIL=`libra query resource --resource-path-string 0x1::jail::Jail --account $accountinput | jq -r .is_jailed | grep -q "false" && echo "Not jailed." || echo "You are jailed."`
   sleep 0.2
   BALANCET2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 2)
@@ -104,9 +102,9 @@ while true; do
   sleep 0.2
   BALANCEUDIFF=`expr $BALANCEU2 - $BALANCEU1`
   sleep 0.2
-  if [[ $BALANCETDIFF -gt 0 ]]; then BALANCETDIFF="\`\`\`diff\n+$BALANCETDIFF\n\`\`\`"; fi
+  if [[ $BALANCETDIFF -gt 0 ]]; then BALANCETDIFF="+$BALANCETDIFF"; fi
   sleep 0.2
-  if [[ $BALANCEUDIFF -gt 0 ]]; then BALANCEUDIFF="\`\`\`diff\n+$BALANCEUDIFF\n\`\`\`"; fi
+  if [[ $BALANCEUDIFF -gt 0 ]]; then BALANCEUDIFF="+$BALANCEUDIFF"; fi
   sleep 0.2
   if [[ -z $PROPDIFF ]]; then PROPDIFF=0; fi
   sleep 0.5
@@ -161,9 +159,9 @@ while true; do
         else
           message="\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2\`"
           send_discord_message "$message"
-          message="\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : \`$BALANCETDIFF"
+          message="\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`"
           send_discord_message "$message"
-          message="\`[$TIME] Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : \`$BALANCEUDIFF"
+          message="\`[$TIME] Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`"
           send_discord_message "$message"
           PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
           PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -171,10 +169,12 @@ while true; do
           TIME=`date +%Y-%m-%dT%H:%M:%S`
           message="\`[$TIME] Checking if you are in set...\`"
           send_discord_message "$message"
-          tmux send-keys -t validator:0 'ulimit -n 1048576 && libra node --config-path ~/.libra/validator.yaml' C-m
-          sleep 10
+          PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
+          sleep 5
+          tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
+          sleep 120
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
-          sleep 0.5
+          sleep 2
           TIME=`date +%Y-%m-%dT%H:%M:%S`
           if [[ -z $SETIN ]]
           then
@@ -192,10 +192,6 @@ while true; do
             send_discord_message "$message"
             message="\`[$TIME] Validator started!\`"
             send_discord_message "$message"
-            #libra txs validator pof --bid-pct $BIDLOW --expiry 1000
-            #expect "mnemonic:"
-            #sleep 0.5
-            #send "$MNEMONIC\r"
           fi
         fi
       else
@@ -229,12 +225,12 @@ while true; do
           fi
         else
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
-          sleep 0.5
+          sleep 2
           message="\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2\`"
           send_discord_message "$message"
-          message="\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : \`$BALANCETDIFF"
+          message="\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`"
           send_discord_message "$message"
-          message="\`[$TIME] Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : \`$BALANCEUDIFF"
+          message="\`[$TIME] Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`"
           send_discord_message "$message"
           if [[ -z $SETIN ]]
           then
@@ -250,10 +246,6 @@ while true; do
             TIME=`date +%Y-%m-%dT%H:%M:%S`
             message="\`[$TIME] Fullnode started!\`"
             send_discord_message "$message"
-            #libra txs validator pof --bid-pct $BIDHIGH --expiry 1000
-            #expect "mnemonic:"
-            #sleep 0.5
-            #send "$MNEMONIC\r"
           else
             message="\`[$TIME] [[ You entered active validator set in new epoch again. ]]\nBut not proposing now. Validator needs to be restarted.\`"
             send_discord_message "$message"
@@ -275,9 +267,9 @@ while true; do
         send_discord_message "$message"
         message="\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2\`"
         send_discord_message "$message"
-        message="\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : \`$BALANCETDIFF"
+        message="\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`"
         send_discord_message "$message"
-        message="\`[$TIME] Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : \`$BALANCEUDIFF"
+        message="\`[$TIME] Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`"
         send_discord_message "$message"
       else
         if [[ $PROPDIFF -gt 0 ]]
