@@ -19,6 +19,17 @@ send_discord_message() {
   local message=$1
   curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
 }
+
+session="fullnode"
+tmux new-session -d -s $session &> /dev/null
+window=0
+tmux rename-window -t $session:$window 'fullnode' &> /dev/null
+
+session="validator"
+tmux new-session -d -s $session &> /dev/null
+window=0
+tmux rename-window -t $session:$window 'validator' &> /dev/null
+
 BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 2)
 sleep 1
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
