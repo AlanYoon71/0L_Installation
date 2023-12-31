@@ -281,7 +281,7 @@ while true; do
         then
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
           send_discord_message "$message"
-          message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing now.\`"
+          message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop :\` \`\`\`diff\n+$PROPDIFF\n\`\`\`  \`Proposing now.\`"
           send_discord_message "$message"
         fi
         if [[ $PROPDIFF -lt 0 ]]
