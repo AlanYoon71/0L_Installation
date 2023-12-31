@@ -19,6 +19,9 @@ send_discord_message() {
   local message=$1
   curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
 }
+TIME=`date +%Y-%m-%dT%H:%M:%S`
+message="\`[$TIME] Script started!\`"
+send_discord_message "$message"
 
 session="fullnode"
 tmux new-session -d -s $session &> /dev/null
@@ -30,13 +33,24 @@ tmux new-session -d -s $session &> /dev/null
 window=0
 tmux rename-window -t $session:$window 'validator' &> /dev/null
 
+PID1=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
+sleep 0.5
+PID2=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
+sleep 0.5
+if [[ -z $PID1 ]] && [[ -z $PID2 ]]
+then
+  TIME=`date +%Y-%m-%dT%H:%M:%S`
+  message="\`[$TIME] No node process now. So this script will start validator first and check if you are in set.\`"
+  send_discord_message "$message"
+  tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
+  sleep 120
+fi
+
 BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 2)
 sleep 1
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
 sleep 1
 TIME=`date +%Y-%m-%dT%H:%M:%S`
-message="\`[$TIME] Script started!\`"
-send_discord_message "$message"
 message="\`[$TIME] Total    bal. : $BALANCET1\`"
 send_discord_message "$message"
 message="\`[$TIME] Unlocked bal. : $BALANCEU1\`"
