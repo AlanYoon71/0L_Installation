@@ -281,21 +281,21 @@ while true; do
         then
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
           send_discord_message "$message"
-          message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop :\` \`\`\`diff\n+$PROPDIFF\n\`\`\`  \`Proposing now.\`"
+          message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing now.\`"
           send_discord_message "$message"
         fi
         if [[ $PROPDIFF -lt 0 ]]
         then
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
+          message="\`+ ======= [ VALIDATOR ] ======== +\`"
           send_discord_message "$message"
           message="\`[$TIME] Prop value was changed for unknown reasons. Did you restart node?\`"
           send_discord_message "$message"
         fi
         if [[ $PROPDIFF -eq 0 ]]
         then
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
+          message="\`+ ======= [ VALIDATOR ] ======== +\`"
           send_discord_message "$message"
-          message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing so slow...\`"
+          message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing too slow...\`"
           send_discord_message "$message"
         fi
       fi
