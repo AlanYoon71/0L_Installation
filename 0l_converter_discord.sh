@@ -107,16 +107,25 @@ while true; do
   if [[ $BALANCEUDIFF -gt 0 ]]; then BALANCEUDIFF="+$BALANCEUDIFF"; fi
   sleep 0.2
   if [[ -z $PROPDIFF ]]; then PROPDIFF=0; fi
+  sleep 0.2
+  PID=$(pgrep libra)
   sleep 0.5
+  if [[ -z $PID ]]; then PID=0; fi
+  sleep 0.5
+  if [[ -z "$PID" ]]
+  then
+    tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
+    sleep 10
+  fi
   TIME=`date +%Y-%m-%dT%H:%M:%S`
   NODETYPE=`ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep"`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
     PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
     PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
+    sleep 5
+    tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
     sleep 10
-    tmux send-keys -t fullnode:0 'ulimit -n 1048576 && libra node --config-path ~/.libra/fullnode.yaml' C-m
-    sleep 15
   fi
   TIME=`date +%Y-%m-%dT%H:%M:%S`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
@@ -146,8 +155,8 @@ while true; do
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
-            sleep 10
-            tmux send-keys -t fullnode:0 'ulimit -n 1048576 && libra node --config-path ~/.libra/fullnode.yaml' C-m
+            sleep 5
+            tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
             sleep 5
             TIME=`date +%Y-%m-%dT%H:%M:%S`
             message="\`[$TIME] Fullnode restarted!\`"
@@ -165,7 +174,7 @@ while true; do
           send_discord_message "$message"
           PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
           PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
-          sleep 10
+          sleep 5
           TIME=`date +%Y-%m-%dT%H:%M:%S`
           message="\`[$TIME] Checking if you are in set...\`"
           send_discord_message "$message"
@@ -180,12 +189,10 @@ while true; do
           then
             message="\`[$TIME] You failed to enter active validator set. $JAIL  Vouch : $VOUCH\`"
             send_discord_message "$message"
-            message="\`        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\`"
-            send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
-            sleep 10
-            tmux send-keys -t fullnode:0 'ulimit -n 1048576 && libra node --config-path ~/.libra/fullnode.yaml' C-m
+            sleep 5
+            tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
             sleep 5
           else
             message="\`[$TIME] [[ You are in active validator set now. ]]  Vouch : $VOUCH\nFullnode will be converted to validator.\`"
@@ -205,8 +212,8 @@ while true; do
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
-            sleep 10
-            tmux send-keys -t validator:0 'ulimit -n 1048576 && libra node --config-path ~/.libra/validator.yaml' C-m
+            sleep 5
+            tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
             sleep 5
             TIME=`date +%Y-%m-%dT%H:%M:%S`
             message="\`[$TIME] Validator restarted!\`"
@@ -216,8 +223,8 @@ while true; do
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
-            sleep 10
-            tmux send-keys -t validator:0 'ulimit -n 1048576 && libra node --config-path ~/.libra/validator.yaml' C-m
+            sleep 5
+            tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
             sleep 5
             TIME=`date +%Y-%m-%dT%H:%M:%S`
             message="\`[$TIME] Validator restarted!\`"
@@ -236,12 +243,10 @@ while true; do
           then
             message="\`[$TIME] You failed to enter active validator set. $JAIL  Vouch : $VOUCH\nValidator will be converted to fullnode for continuous syncing.\`"
             send_discord_message "$message"
-            message="\`        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\`"
-            send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
-            sleep 10
-            tmux send-keys -t fullnode:0 'ulimit -n 1048576 && libra node --config-path ~/.libra/fullnode.yaml' C-m
+            sleep 5
+            tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
             sleep 5
             TIME=`date +%Y-%m-%dT%H:%M:%S`
             message="\`[$TIME] Fullnode started!\`"
@@ -251,8 +256,8 @@ while true; do
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
-            sleep 10
-            tmux send-keys -t validator:0 'ulimit -n 1048576 && libra node --config-path ~/.libra/validator.yaml' C-m
+            sleep 5
+            tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
             sleep 5
             TIME=`date +%Y-%m-%dT%H:%M:%S`
             message="\`[$TIME] Validator restarted!\`"
