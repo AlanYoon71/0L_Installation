@@ -41,6 +41,17 @@ then
   tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
   sleep 120
 fi
+start_flag=0
+SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+sleep 0.2
+EPOCH1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
+sleep 0.5
+LEDGER1=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
+sleep 0.2
+HEIGHT1=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
+sleep 0.2
+PROP1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\" | grep -o '[0-9]*'`
+sleep 0.2
 BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 2)
 sleep 1
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
@@ -50,21 +61,17 @@ send_discord_message "$message"
 message="\`Unlocked balance : $BALANCEU1\`"
 send_discord_message "$message"
 while true; do
-  SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-  sleep 0.2
-  EPOCH1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
-  sleep 0.5
-  LEDGER1=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
-  sleep 0.2
-  HEIGHT1=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
-  sleep 0.2
-  PROP1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\" | grep -o '[0-9]*'`
-  sleep 0.2
-  BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 2)
-  sleep 1
-  BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
-  sleep 1
-  sleep 584
+  if [[ $start_flag -eq 1 ]]
+  then
+    SYNC1=$SYNC2
+    EPOCH1=$EPOCH2
+    LEDGER1=$LEDGER2
+    HEIGHT1=$HEIGHT2
+    PROP1=$PROP2
+    BALANCET1=$BALANCET2
+    BALANCEU1=$BALANCEU2
+  fi
+  sleep 600
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
   EPOCH2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
@@ -84,31 +91,18 @@ while true; do
   VOUCH=`libra query resource --resource-path-string 0x1::vouch::MyVouches --account $accountinput | jq '.my_buddies | map(select(startswith("0x"))) | length'`
   sleep 1
   if [[ -z $HEIGHT1 ]]; then HEIGHT1=0; fi
-  sleep 0.2
   if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
-  sleep 0.2
   if [[ -z $SYNC1 ]]; then SYNC1=0; fi
-  sleep 0.2
   if [[ -z $SYNC2 ]]; then SYNC2=0; fi
-  sleep 0.5
   if [[ -z $EPOCH1 ]]; then EPOCH1=0; fi
-  sleep 0.2
   if [[ -z $EPOCH2 ]]; then EPOCH2=0; fi
-  sleep 0.2
   if [[ -z $BALANCET1 ]]; then BALANCET1=0; fi
-  sleep 0.5
   if [[ -z $BALANCET2 ]]; then BALANCET2=0; fi
-  sleep 0.5
   if [[ -z $BALANCEU1 ]]; then BALANCEU1=0; fi
-  sleep 0.5
   if [[ -z $BALANCEU2 ]]; then BALANCEU2=0; fi
-  sleep 0.5
   if [[ -z $PROP1 ]]; then PROP1=0; fi
-  sleep 0.2
   if [[ -z $PROP2 ]]; then PROP2=0; fi
-  sleep 0.2
   if [[ -z $LEDGER1 ]]; then LEDGER1=0; fi
-  sleep 0.2
   if [[ -z $LEDGER2 ]]; then LEDGER2=0; fi
   sleep 0.2
   LEDGERDIFF=`expr $LEDGER2 - $LEDGER1`
@@ -122,11 +116,8 @@ while true; do
   BALANCEUDIFF=`expr $BALANCEU2 - $BALANCEU1`
   sleep 0.2
   if [[ $BALANCETDIFF -gt 0 ]]; then BALANCETDIFF="+$BALANCETDIFF"; fi
-  sleep 0.2
   if [[ $BALANCEUDIFF -gt 0 ]]; then BALANCEUDIFF="+$BALANCEUDIFF"; fi
-  sleep 0.2
   if [[ -z $PROPDIFF ]]; then PROPDIFF=0; fi
-  sleep 0.2
   PID=$(pgrep libra)
   sleep 0.5
   if [[ -z $PID ]]; then PID=0; fi
@@ -313,4 +304,5 @@ while true; do
       fi
     fi
   fi
+  start_flag=1
 done
