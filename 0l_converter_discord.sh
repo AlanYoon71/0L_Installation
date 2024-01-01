@@ -20,7 +20,7 @@ send_discord_message() {
   curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
 }
 
-message="\`Script started!\`"
+message="\`\`\`fix\nScript started!\n\`\`\`"
 send_discord_message "$message"
 session="fullnode"
 tmux new-session -d -s $session &> /dev/null
