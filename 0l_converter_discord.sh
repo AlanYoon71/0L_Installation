@@ -45,9 +45,9 @@ BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .tot
 sleep 1
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
 sleep 1
-message="\`Total    bal. : $BALANCET1\`"
+message="\`Total    balance : $BALANCET1\`"
 send_discord_message "$message"
-message="\`Unlocked bal. : $BALANCEU1\`"
+message="\`Unlocked balance : $BALANCEU1\`"
 send_discord_message "$message"
 while true; do
   SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
@@ -186,9 +186,9 @@ while true; do
         else
           message="\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`"
           send_discord_message "$message"
-          message="\`Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`"
+          message="\`Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`"
           send_discord_message "$message"
-          message="\`Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`"
+          message="\`Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`"
           send_discord_message "$message"
           PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
           PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -249,9 +249,9 @@ while true; do
           sleep 2
           message="\`\`\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
+          message="\`\`\`[$TIME] Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`[$TIME] Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
+          message="\`\`\`[$TIME] Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
           send_discord_message "$message"
           if [[ -z $SETIN ]]
           then
@@ -284,9 +284,9 @@ while true; do
         send_discord_message "$message"
         message="\`\`\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
+        message="\`\`\`[$TIME] Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`[$TIME] Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
+        message="\`\`\`[$TIME] Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
         send_discord_message "$message"
       else
         if [[ $PROPDIFF -gt 0 ]]
