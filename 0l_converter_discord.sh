@@ -19,41 +19,35 @@ send_discord_message() {
   local message=$1
   curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
 }
-TIME=`date +%Y-%m-%dT%H:%M:%S`
-message="\`[$TIME] Script started!\`"
-send_discord_message "$message"
 
+message="\`Script started!\`"
+send_discord_message "$message"
 session="fullnode"
 tmux new-session -d -s $session &> /dev/null
 window=0
 tmux rename-window -t $session:$window 'fullnode' &> /dev/null
-
 session="validator"
 tmux new-session -d -s $session &> /dev/null
 window=0
 tmux rename-window -t $session:$window 'validator' &> /dev/null
-
 PID1=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
 sleep 0.5
 PID2=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
 sleep 0.5
 if [[ -z $PID1 ]] && [[ -z $PID2 ]]
 then
-  TIME=`date +%Y-%m-%dT%H:%M:%S`
-  message="\`[$TIME] No node process now. So this script will start validator first and check if you are in set.\`"
+  message="\`\`\`No node process now. So this script will start validator first and check if you are in set.\`\`\`"
   send_discord_message "$message"
   tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
   sleep 120
 fi
-
 BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 2)
 sleep 1
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
 sleep 1
-TIME=`date +%Y-%m-%dT%H:%M:%S`
-message="\`[$TIME] Total    bal. : $BALANCET1\`"
+message="\`Total    bal. : $BALANCET1\`"
 send_discord_message "$message"
-message="\`[$TIME] Unlocked bal. : $BALANCEU1\`"
+message="\`Unlocked bal. : $BALANCEU1\`"
 send_discord_message "$message"
 while true; do
   SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
@@ -142,7 +136,6 @@ while true; do
     tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
     sleep 10
   fi
-  TIME=`date +%Y-%m-%dT%H:%M:%S`
   NODETYPE=`ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep"`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
@@ -152,17 +145,16 @@ while true; do
     tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
     sleep 10
   fi
-  TIME=`date +%Y-%m-%dT%H:%M:%S`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
-    message="\`[$TIME] = = = = = Network stopped!! = = = = =\`"
+    message="\`\`\`diff\n- = = = = = Network stopped!! = = = = = -\n\`\`\`"
     send_discord_message "$message"
     if [[ $SYNC2 -eq $LEDGER2 ]]
     then
-      message="\`[$TIME] Height : $HEIGHT2  Sync : $SYNC2  Fully synced.\`"
+      message="\`Height : $HEIGHT2  Sync : $SYNC2  Fully synced.\`"
       send_discord_message "$message"
     else
-      message="\`[$TIME] Height : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\`"
+      message="\`Height : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\`"
       send_discord_message "$message"
     fi
   else
@@ -176,32 +168,32 @@ while true; do
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Sync stopped...\`"
+            message="\`Height : +$HEIGHTDIFF  Sync : $SYNCDIFF\`"
+            send_discord_message "$message"
+            message="\`\`\`diff\n-- 0l Network is running, but your local node stopped syncing!! --\n\`\`\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             sleep 5
             tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
             sleep 5
-            TIME=`date +%Y-%m-%dT%H:%M:%S`
-            message="\`[$TIME] Fullnode restarted!\`"
+            message="\`Fullnode restarted!\`"
             send_discord_message "$message"
           else
-            message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Syncing now.\`"
+            message="\`Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Syncing now.\`"
             send_discord_message "$message"
           fi
         else
-          message="\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`"
+          message="\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`"
           send_discord_message "$message"
-          message="\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`"
+          message="\`Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`"
           send_discord_message "$message"
-          message="\`[$TIME] Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`"
+          message="\`Unlocked bal. : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`"
           send_discord_message "$message"
           PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
           PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
           sleep 5
-          TIME=`date +%Y-%m-%dT%H:%M:%S`
-          message="\`[$TIME] Checking if you are in set...\`"
+          message="\`Checking if you are in set...\`"
           send_discord_message "$message"
           PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
           sleep 5
@@ -209,10 +201,9 @@ while true; do
           sleep 120
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
           sleep 2
-          TIME=`date +%Y-%m-%dT%H:%M:%S`
           if [[ -z $SETIN ]]
           then
-            message="\`[$TIME] You failed to enter active validator set. $JAIL\`"
+            message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -220,39 +211,37 @@ while true; do
             tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
             sleep 5
           else
-            message="\`[$TIME] [[ You are in active validator set now. ]]\nFullnode will be converted to validator.\`"
+            message="\`\`\`diff\n+ You are in active validator set now. +\n\`\`\`"
             send_discord_message "$message"
-            message="\`[$TIME] Validator started!\`"
+            message="\`\`\`diff\n+ Validator started! +\n\`\`\`"
             send_discord_message "$message"
           fi
         fi
       else
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
+        message="\`+ ======= [ VALIDATOR ] ======== +\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Alert! Sync stopped. Validator needs to be restarted.\`"
+            message="\`\`\`diff\n- Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Alert! Syncing stopped. -\n\`\`\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             sleep 5
             tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
             sleep 5
-            TIME=`date +%Y-%m-%dT%H:%M:%S`
-            message="\`[$TIME] Validator restarted!\`"
+            message="\`Validator restarted!\`"
             send_discord_message "$message"
           else
-            message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Syncing now, but not proposing. Validator needs to be restarted.\`"
+            message="\`\`\`diff\n- Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Syncing now, but not proposing. -\n\`\`\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             sleep 5
             tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
             sleep 5
-            TIME=`date +%Y-%m-%dT%H:%M:%S`
-            message="\`[$TIME] Validator restarted!\`"
+            message="\`Validator restarted!\`"
             send_discord_message "$message"
           fi
         else
@@ -266,26 +255,24 @@ while true; do
           send_discord_message "$message"
           if [[ -z $SETIN ]]
           then
-            message="\`[$TIME] You failed to enter active validator set. $JAIL\nValidator will be converted to fullnode for continuous syncing.\`"
+            message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             sleep 5
             tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
             sleep 5
-            TIME=`date +%Y-%m-%dT%H:%M:%S`
-            message="\`[$TIME] Fullnode started!\`"
+            message="\`Fullnode started!\`"
             send_discord_message "$message"
           else
-            message="\`[$TIME] [[ You entered active validator set in new epoch again. ]]\nBut not proposing now. Validator needs to be restarted.\`"
+            message="\`[[ You entered active validator set in new epoch again. ]]\nBut not proposing now. Validator needs to be restarted.\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             sleep 5
             tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
             sleep 5
-            TIME=`date +%Y-%m-%dT%H:%M:%S`
-            message="\`[$TIME] Validator restarted!\`"
+            message="\`Validator restarted!\`"
             send_discord_message "$message"
           fi
         fi
@@ -313,14 +300,14 @@ while true; do
         then
           message="\`+ ======= [ VALIDATOR ] ======== +\`"
           send_discord_message "$message"
-          message="\`[$TIME] Prop value was changed for unknown reasons. Did you restart node?\`"
+          message="\`Prop value was changed for unknown reasons. Did you restart node?\`"
           send_discord_message "$message"
         fi
         if [[ $PROPDIFF -eq 0 ]]
         then
           message="\`+ ======= [ VALIDATOR ] ======== +\`"
           send_discord_message "$message"
-          message="\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing too slow...\`"
+          message="\`Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing too slow...\`"
           send_discord_message "$message"
         fi
       fi
