@@ -247,11 +247,11 @@ while true; do
         else
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
           sleep 2
-          message="\`\`\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
+          message="\`\`\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`[$TIME] Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
+          message="\`\`\`Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`[$TIME] Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
+          message="\`\`\`Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
           send_discord_message "$message"
           if [[ -z $SETIN ]]
           then
@@ -282,18 +282,18 @@ while true; do
       then
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
+        message="\`\`\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`[$TIME] Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
+        message="\`\`\`Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`[$TIME] Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
+        message="\`\`\`Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
         send_discord_message "$message"
       else
         if [[ $PROPDIFF -gt 0 ]]
         then
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`[$TIME] Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing now.\`\`\`"
+          message="\`\`\`Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing now.\`\`\`"
           send_discord_message "$message"
         fi
         if [[ $PROPDIFF -lt 0 ]]
