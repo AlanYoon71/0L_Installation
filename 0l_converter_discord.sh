@@ -56,10 +56,6 @@ BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .tot
 sleep 1
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
 sleep 1
-message="\` Total    balance : $BALANCET1\`"
-send_discord_message "$message"
-message="\` Unlocked balance : $BALANCEU1\`"
-send_discord_message "$message"
 while true; do
   if [[ $start_flag -eq 1 ]]
   then
