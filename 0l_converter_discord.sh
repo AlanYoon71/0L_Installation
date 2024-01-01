@@ -168,7 +168,7 @@ while true; do
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`Height : +$HEIGHTDIFF  Sync : $SYNCDIFF\`"
+            message="\`Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2\`"
             send_discord_message "$message"
             message="\`\`\`diff\n-- 0l Network is running, but your local node stopped syncing!! --\n\`\`\`"
             send_discord_message "$message"
@@ -180,15 +180,15 @@ while true; do
             message="\`Fullnode restarted!\`"
             send_discord_message "$message"
           else
-            message="\`Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Syncing now.\`"
+            message="\`Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Syncing now.\`"
             send_discord_message "$message"
           fi
         else
-          message="\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`"
+          message="\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\`"
           send_discord_message "$message"
-          message="\`Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`"
+          message="\`Total    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\`"
           send_discord_message "$message"
-          message="\`Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`"
+          message="\`Unlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\`"
           send_discord_message "$message"
           PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
           PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -224,7 +224,7 @@ while true; do
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`\`\`diff\n- Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Alert! Syncing stopped. -\n\`\`\`"
+            message="\`\`\`diff\n- Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Alert! Syncing stopped. -\n\`\`\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -234,7 +234,7 @@ while true; do
             message="\`Validator restarted!\`"
             send_discord_message "$message"
           else
-            message="\`\`\`diff\n- Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Syncing now, but not proposing. -\n\`\`\`"
+            message="\`\`\`diff\n- Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Syncing now, but not proposing. -\n\`\`\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -247,11 +247,11 @@ while true; do
         else
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
           sleep 2
-          message="\`\`\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
+          message="\`\`\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
+          message="\`\`\`Total    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
+          message="\`\`\`Unlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\`\`\`"
           send_discord_message "$message"
           if [[ -z $SETIN ]]
           then
@@ -282,18 +282,18 @@ while true; do
       then
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
+        message="\`\`\`Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`Total    balance : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
+        message="\`\`\`Total    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`Unlocked balance : $BALANCEU1 ---> $BALANCEU2  Diff. : $BALANCEUDIFF\`\`\`"
+        message="\`\`\`Unlocked balance : $BALANCEU1 ---> $BALANCEU2  $BALANCEUDIFF\`\`\`"
         send_discord_message "$message"
       else
         if [[ $PROPDIFF -gt 0 ]]
         then
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing now.\`\`\`"
+          message="\`\`\`Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Proposing now.\`\`\`"
           send_discord_message "$message"
         fi
         if [[ $PROPDIFF -lt 0 ]]
@@ -307,7 +307,7 @@ while true; do
         then
           message="\`+ ======= [ VALIDATOR ] ======== +\`"
           send_discord_message "$message"
-          message="\`Height : +$HEIGHTDIFF  Sync : +$SYNCDIFF  Prop : +$PROPDIFF  Proposing too slow...\`"
+          message="\`Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Proposing too slow...\`"
           send_discord_message "$message"
         fi
       fi
