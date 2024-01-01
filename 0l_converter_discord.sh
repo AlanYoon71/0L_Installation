@@ -36,7 +36,7 @@ PID2=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {p
 sleep 0.5
 if [[ -z $PID1 ]] && [[ -z $PID2 ]]
 then
-  message="\`\`\`No node process now. So this script will start validator first and check if you are in set.\`\`\`"
+  message="\`\`\`No running node process now. So this script will start validator first and check if you are in set.\`\`\`"
   send_discord_message "$message"
   tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
   sleep 120
