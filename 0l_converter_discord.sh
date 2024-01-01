@@ -159,7 +159,7 @@ while true; do
     send_discord_message "$message"
     if [[ $SYNC2 -eq $LEDGER2 ]]
     then
-      message="\`[$TIME] Height : $HEIGHT2  Sync : $SYNC2  Vouch : $VOUCH  Fully synced.\`"
+      message="\`[$TIME] Height : $HEIGHT2  Sync : $SYNC2  Fully synced.\`"
       send_discord_message "$message"
     else
       message="\`[$TIME] Height : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\`"
@@ -191,7 +191,7 @@ while true; do
             send_discord_message "$message"
           fi
         else
-          message="\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2\`"
+          message="\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`"
           send_discord_message "$message"
           message="\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`"
           send_discord_message "$message"
@@ -212,7 +212,7 @@ while true; do
           TIME=`date +%Y-%m-%dT%H:%M:%S`
           if [[ -z $SETIN ]]
           then
-            message="\`[$TIME] You failed to enter active validator set. $JAIL  Vouch : $VOUCH\`"
+            message="\`[$TIME] You failed to enter active validator set. $JAIL\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -220,7 +220,7 @@ while true; do
             tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
             sleep 5
           else
-            message="\`[$TIME] [[ You are in active validator set now. ]]  Vouch : $VOUCH\nFullnode will be converted to validator.\`"
+            message="\`[$TIME] [[ You are in active validator set now. ]]\nFullnode will be converted to validator.\`"
             send_discord_message "$message"
             message="\`[$TIME] Validator started!\`"
             send_discord_message "$message"
@@ -258,7 +258,7 @@ while true; do
         else
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
           sleep 2
-          message="\`\`\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2\`\`\`"
+          message="\`\`\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
           send_discord_message "$message"
           message="\`\`\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
           send_discord_message "$message"
@@ -266,7 +266,7 @@ while true; do
           send_discord_message "$message"
           if [[ -z $SETIN ]]
           then
-            message="\`[$TIME] You failed to enter active validator set. $JAIL  Vouch : $VOUCH\nValidator will be converted to fullnode for continuous syncing.\`"
+            message="\`[$TIME] You failed to enter active validator set. $JAIL\nValidator will be converted to fullnode for continuous syncing.\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -295,7 +295,7 @@ while true; do
       then
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2\`\`\`"
+        message="\`\`\`[$TIME] Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouched : $VOUCH\`\`\`"
         send_discord_message "$message"
         message="\`\`\`[$TIME] Total    bal. : $BALANCET1 ---> $BALANCET2  Diff. : $BALANCETDIFF\`\`\`"
         send_discord_message "$message"
