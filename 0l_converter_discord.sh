@@ -201,14 +201,18 @@ while true; do
             INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
             OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
             SET=`expr $INBOUND + $OUTBOUND +1`
-            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
+            PIDCHECK=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
+            RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
+            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You entered the set successfully. Total $SET validators are active.+\n\`\`\`"
             send_discord_message "$message"
           fi
         fi
       else
-        message="\`+ ======= [ VALIDATOR ] ======== +\`"
+        PIDCHECK=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
+        RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
+        message="\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -273,7 +277,9 @@ while true; do
         INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
         OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
         SET=`expr $INBOUND + $OUTBOUND +1`
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
+        PIDCHECK=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
+        RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You are in set. Total $SET validators are active.+\n\`\`\`"
         send_discord_message "$message"
@@ -284,21 +290,27 @@ while true; do
       else
         if [[ $PROPDIFF -gt 0 ]]
         then
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
+          PIDCHECK=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
+          RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
+          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Proposing now.\`\`\`"
           send_discord_message "$message"
         fi
         if [[ $PROPDIFF -lt 0 ]]
         then
-          message="\`+ ======= [ VALIDATOR ] ======== +\`"
+          PIDCHECK=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
+          RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
+          message="\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME\`"
           send_discord_message "$message"
           message="\` Prop value was changed for unknown reasons. Did you restart node?\`"
           send_discord_message "$message"
         fi
         if [[ $PROPDIFF -eq 0 ]]
         then
-          message="\`+ ======= [ VALIDATOR ] ======== +\`"
+          PIDCHECK=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
+          RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
+          message="\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME\`"
           send_discord_message "$message"
           message="\` Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Proposing too slow...\`"
           send_discord_message "$message"
