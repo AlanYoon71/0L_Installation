@@ -134,15 +134,33 @@ while true; do
   NODETYPE=`ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep"`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
-    message="\`\`\`diff\n- = = = = = Network stopped!! = = = = = -\n\`\`\`"
-    send_discord_message "$message"
-    if [[ $SYNC2 -eq $LEDGER2 ]]
+    SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
+    INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+    OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+    if [[ -z $INBOUND ]]; then INBOUND=0; fi
+    if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+    SET=`expr $INBOUND + $OUTBOUND +1`
+    SETCHECK=`expr $INBOUND + $OUTBOUND`
+    if [[ $SETCHECK -eq 0 ]]
     then
-      message="\` Height : $HEIGHT2  Sync : $SYNC2  Fully synced.\`"
+      message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
       send_discord_message "$message"
+      PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
+      PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
+      sleep 5
+      tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
+      sleep 5
     else
-      message="\` Height : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\`"
+      message="\`\`\`diff\n- = = = = = Network stopped!! = = = = = -\n\`\`\`"
       send_discord_message "$message"
+      if [[ $SYNC2 -eq $LEDGER2 ]]
+      then
+        message="\` Height : $HEIGHT2  Sync : $SYNC2  Fully synced.\`"
+        send_discord_message "$message"
+      else
+        message="\` Height : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\`"
+        send_discord_message "$message"
+      fi
     fi
   else
     if [[ $PROPDIFF -eq 0 ]]
@@ -187,8 +205,13 @@ while true; do
           tmux send-keys -t validator:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/validator.yaml' C-m
           sleep 120
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
-          sleep 2
-          if [[ -z $SETIN ]]
+          INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+          OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+          if [[ -z $INBOUND ]]; then INBOUND=0; fi
+          if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+          SET=`expr $INBOUND + $OUTBOUND +1`
+          SETCHECK=`expr $INBOUND + $OUTBOUND`
+          if [[ $SETCHECK -eq 0 ]]
           then
             message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
@@ -205,7 +228,7 @@ while true; do
             RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
             message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You entered the set successfully. Total $SET validators are active.+\n\`\`\`"
+            message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You entered the set successfully. Total $SET validators are active. +\n\`\`\`"
             send_discord_message "$message"
           fi
         fi
@@ -240,14 +263,17 @@ while true; do
           fi
         else
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
-          sleep 2
-          message="\`\`\` Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\`\`\`"
-          send_discord_message "$message"
+          INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+          OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+          if [[ -z $INBOUND ]]; then INBOUND=0; fi
+          if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+          SET=`expr $INBOUND + $OUTBOUND +1`
+          SETCHECK=`expr $INBOUND + $OUTBOUND`
           message="\`\`\`arm\n Total    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\n Unlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
           send_discord_message "$message"
-          if [[ -z $SETIN ]]
+          if [[ $SETCHECK -eq 0 ]]
           then
             message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
@@ -259,7 +285,9 @@ while true; do
             message="\` Fullnode started!\`"
             send_discord_message "$message"
           else
-            message="\` [[ You entered active validator set in new epoch again. ]]\nBut not proposing now. Validator needs to be restarted.\`"
+            message="\`\`\` Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\`\`\`"
+            send_discord_message "$message"
+            message="\`\`\` [[ You entered active validator set in new epoch again. ]]\nBut not proposing now. Validator needs to be restarted.\`\`\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
             PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -274,19 +302,36 @@ while true; do
     else
       if [[ $EPOCHDIFF -gt 0 ]]
       then
+        SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
         INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
         OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+        if [[ -z $INBOUND ]]; then INBOUND=0; fi
+        if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
         SET=`expr $INBOUND + $OUTBOUND +1`
+        SETCHECK=`expr $INBOUND + $OUTBOUND`
         PIDCHECK=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
-        send_discord_message "$message"
-        message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You are in set. Total $SET validators are active.+\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\n Total    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\n Unlocked balance : $BALANCEU1 ---> $BALANCEU2  $BALANCEUDIFF\n\`\`\`"
         send_discord_message "$message"
+        if [[ $SETCHECK -eq 0 ]]
+        then
+          message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
+          send_discord_message "$message"
+          PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
+          PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
+          sleep 5
+          tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
+          sleep 5
+          message="\` Fullnode started!\`"
+          send_discord_message "$message"
+        else
+          message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You are in set. Total $SET validators are active. +\n\`\`\`"
+          send_discord_message "$message"
+        fi
       else
         if [[ $PROPDIFF -gt 0 ]]
         then
@@ -299,12 +344,28 @@ while true; do
         fi
         if [[ $PROPDIFF -lt 0 ]]
         then
-          PIDCHECK=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}')
-          RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-          message="\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME\`"
-          send_discord_message "$message"
-          message="\` Prop value was changed for unknown reasons. Did you restart node?\`"
-          send_discord_message "$message"
+          SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
+          INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+          OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+          if [[ -z $INBOUND ]]; then INBOUND=0; fi
+          if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+          SET=`expr $INBOUND + $OUTBOUND +1`
+          SETCHECK=`expr $INBOUND + $OUTBOUND`
+          if [[ $SETCHECK -eq 0 ]]
+          then
+            message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
+            send_discord_message "$message"
+            PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
+            PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/fullnode.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
+            sleep 5
+            tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
+            sleep 5
+            message="\` Fullnode started!\`"
+            send_discord_message "$message"
+          else
+            message="\`\`\`diff\n- Alert! Prop value was decreased for unknown reasons. Did you restart node? -\n\`\`\`"
+            send_discord_message "$message"
+          fi
         fi
         if [[ $PROPDIFF -eq 0 ]]
         then
