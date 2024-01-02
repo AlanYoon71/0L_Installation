@@ -198,9 +198,12 @@ while true; do
             tmux send-keys -t fullnode:0 'ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml' C-m
             sleep 5
           else
-            message="\`\`\`diff\n+ You are in active validator set now. +\n\`\`\`"
+            INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+            OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+            SET=`expr $INBOUND + $OUTBOUND +1`
+            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`diff\n+ Validator started! +\n\`\`\`"
+            message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You entered the set successfully. Total $SET validators are active.+\n\`\`\`"
             send_discord_message "$message"
           fi
         fi
@@ -267,9 +270,12 @@ while true; do
     else
       if [[ $EPOCHDIFF -gt 0 ]]
       then
+        INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+        OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
+        SET=`expr $INBOUND + $OUTBOUND +1`
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You are in active set. +\n\`\`\`"
+        message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You are in set. Total $SET validators are active.+\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\n Total    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\n\`\`\`"
         send_discord_message "$message"
