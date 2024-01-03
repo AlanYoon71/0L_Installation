@@ -374,7 +374,7 @@ while true; do
             send "$MNEMONIC\r"
             sleep 10
             bid2=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
-            message="\`\`\`elm\n Bidding_value updated!  $bid1 -----> $bid2\n\`\`\`"
+            message="\`\`\`arm\n Bidding value updated! $bid1 ----> $bid2\n\`\`\`"
             send_discord_message "$message"
             timer=0
           fi
