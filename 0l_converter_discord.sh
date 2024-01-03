@@ -14,6 +14,14 @@ while true; do
     fi
 done
 
+while true; do
+    echo ""
+    echo "Input mnemonic for your validator account "
+    read -p "Mnemonic : " MNEMONIC
+    echo ""
+    break
+done
+
 webhook_url=""
 send_discord_message() {
   local message=$1
@@ -191,6 +199,7 @@ while true; do
         else
           message="\` Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\`"
           send_discord_message "$message"
+          timer=0
           message="\` Total    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\`"
           send_discord_message "$message"
           message="\` Unlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\`"
@@ -230,6 +239,7 @@ while true; do
             send_discord_message "$message"
             message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You entered the set successfully. Total $SET validators are active. +\n\`\`\`"
             send_discord_message "$message"
+            timer=0
           fi
         fi
       else
@@ -287,6 +297,7 @@ while true; do
           else
             message="\`\`\` Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\`\`\`"
             send_discord_message "$message"
+            timer=0
             message="\`\`\` [[ You entered active validator set in new epoch again. ]]\nBut not proposing now. Validator needs to be restarted.\`\`\`"
             send_discord_message "$message"
             PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(ps -ef | grep -e ".libra/validator.yaml" | grep -v "grep" | awk 'NR==1 {print $2}') && kill -TERM $PID &> /dev/null
@@ -331,6 +342,8 @@ while true; do
         else
           message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You are in set. Total $SET validators are active. +\n\`\`\`"
           send_discord_message "$message"
+          timer=0
+
         fi
       else
         if [[ $PROPDIFF -gt 0 ]]
@@ -341,6 +354,30 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Proposing now.\`\`\`"
           send_discord_message "$message"
+          if [[ $timer -gt 140 ]]
+          then
+            rm -f ./bid_list.txt &> /dev/null
+            curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | awk -F'"' '{print $2}' > val_address.txt
+            readarray -t addresses < val_address.txt
+            for address in "${addresses[@]}"; do
+                libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $address | jq -r '.bid' | tr -d '\"' >> bid_list.txt
+                sleep 3
+            done
+            min_bid=$(cat bid_list.txt | awk '$1 > 0 {print}' bid_list.txt | sort -n | head -n 1)
+            recommended_bidding_value=$(echo "scale=4; $min_bid / 1000 + 0.0001" | bc)
+            message="\`\`\`arm\n Recommended biddng value : $recommended_bidding_value\n\`\`\`"
+            send_discord_message "$message"
+            bid1=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
+            libra txs validator pof --bid-pct $recommended_pof_value --expiry 1000
+            expect "mnemonic:"
+            sleep 0.5
+            send "$MNEMONIC\r"
+            sleep 10
+            bid2=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
+            message="\`\`\`elm\n Bidding_value updated!  $bid1 -----> $bid2\n\`\`\`"
+            send_discord_message "$message"
+            timer=0
+          fi
         fi
         if [[ $PROPDIFF -lt 0 ]]
         then
@@ -380,4 +417,5 @@ while true; do
     fi
   fi
   start_flag=1
+  timer=$((timer + 1))
 done
