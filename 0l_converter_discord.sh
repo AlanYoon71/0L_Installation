@@ -130,7 +130,7 @@ while true; do
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-  SET=`expr $INBOUND + $OUTBOUND +1`
+  SET=`expr $INBOUND + $OUTBOUND + 1`
   SETCHECK=`expr $INBOUND + $OUTBOUND`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
@@ -246,7 +246,7 @@ while true; do
           OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
           if [[ -z $INBOUND ]]; then INBOUND=0; fi
           if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-          SET=`expr $INBOUND + $OUTBOUND +1`
+          SET=`expr $INBOUND + $OUTBOUND + 1`
           SETCHECK=`expr $INBOUND + $OUTBOUND`
           message="\`\`\`arm\n Total    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
           send_discord_message "$message"
@@ -279,7 +279,7 @@ while true; do
         OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
         if [[ -z $INBOUND ]]; then INBOUND=0; fi
         if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-        SET=`expr $INBOUND + $OUTBOUND +1`
+        SET=`expr $INBOUND + $OUTBOUND + 1`
         SETCHECK=`expr $INBOUND + $OUTBOUND`
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
@@ -340,7 +340,7 @@ while true; do
           OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
           if [[ -z $INBOUND ]]; then INBOUND=0; fi
           if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-          SET=`expr $INBOUND + $OUTBOUND +1`
+          SET=`expr $INBOUND + $OUTBOUND + 1`
           SETCHECK=`expr $INBOUND + $OUTBOUND`
           if [[ $SETCHECK -eq 0 ]]
           then
