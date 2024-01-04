@@ -134,6 +134,8 @@ while true; do
   SETCHECK=`expr $INBOUND + $OUTBOUND`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
+    message="\`\`\`diff\n- Your node can't sync and access network now. $JAIL  Script will restart node and check it again. -\n\`\`\`"
+    send_discord_message "$message"
     PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
     sleep 5
     tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
