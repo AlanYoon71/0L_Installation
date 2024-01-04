@@ -28,7 +28,7 @@ send_discord_message() {
   curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" "$webhook_url"
 }
 
-message="\`\`\`fix\n Script started!\n\`\`\`"
+message="\`\`\` Script started!\`\`\`"
 send_discord_message "$message"
 session="node"
 tmux new-session -d -s $session &> /dev/null
@@ -154,14 +154,14 @@ while true; do
     else
       if [[ $HEIGHT1 -eq $HEIGHT2 ]]
       then
-        message="\`\`\`diff\n- = = = = = Network stopped!! = = = = = -\n\`\`\`"
+        message="\`\`\` = = = = = Network stopped!! = = = = =\`\`\`"
         send_discord_message "$message"
         if [[ $SYNC2 -eq $LEDGER2 ]]
         then
-          message="\` Height : $HEIGHT2  Sync : $SYNC2  Fully synced.\`"
+          message="\`\`\`arm\n Height : $HEIGHT2  Sync : $SYNC2  Fully synced.\n\`\`\`"
           send_discord_message "$message"
         else
-          message="\` Height : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\`"
+          message="\`\`\`arm\n Height : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\n\`\`\`"
           send_discord_message "$message"
         fi
       fi
@@ -171,13 +171,13 @@ while true; do
     then
       if [[ -z "$SETCHECK" ]]
       then
-        message="\`========== Fullnode ==========\`"
+        message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\` Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2\`"
+            message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`diff\n- 0l Network is running, but your local node stopped syncing!! -\n\`\`\`"
             send_discord_message "$message"
@@ -185,19 +185,19 @@ while true; do
             sleep 5
             tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
             sleep 5
-            message="\` Node restarted!\`"
+            message="\`\`\`fix\n Node restarted!\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\` Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Syncing now.\`"
+            message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2\n\`\`\`"
             send_discord_message "$message"
           fi
         else
-          message="\` Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\`"
+          message="\`\`\`arm\n Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
           timer=0
-          message="\` Total    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\`"
+          message="\`\`\`arm\n Total    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
           send_discord_message "$message"
-          message="\` Unlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\`"
+          message="\`\`\`arm\n Unlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
           send_discord_message "$message"
           if [[ $SETCHECK -eq 0 ]]
           then
@@ -208,7 +208,9 @@ while true; do
             RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
             message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You entered the set successfully. Total $SET validators are active. +\n\`\`\`"
+            message="\`\`\`arm\n Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
+            send_discord_message "$message"
+            message="\`\`\` You entered the set successfully. Total $SET validators are active.\`\`\`"
             send_discord_message "$message"
             timer=0
           fi
@@ -216,28 +218,28 @@ while true; do
       else
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`\`\`diff\n- Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Alert! Syncing stopped. -\n\`\`\`"
+            message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Alert! Syncing stopped.\n\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
             sleep 5
-            message="\` Node restarted!\`"
+            message="\`\`\`fix\n Node restarted!\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\`diff\n- Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Syncing now, but not proposing. -\n\`\`\`"
+            message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Syncing, but not proposing now.\n\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
             sleep 5
-            message="\` Node restarted!\`"
+            message="\`\`\`fix\n Node restarted!\n\`\`\`"
             send_discord_message "$message"
           fi
         else
@@ -257,16 +259,16 @@ while true; do
             message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\` Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\`\`\`"
+            message="\`\`\`arm\n Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
             timer=0
-            message="\`\`\` [[ You entered active validator set in new epoch again. ]]\nBut not proposing now. Validator needs to be restarted.\`\`\`"
+            message="\`\`\` You entered active validator set in new epoch again. But not proposing now. Validator needs to be restarted.\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
             sleep 5
-            message="\` Node restarted!\`"
+            message="\`\`\`fix\n Node restarted!\n\`\`\`"
             send_discord_message "$message"
           fi
         fi
@@ -294,7 +296,9 @@ while true; do
           message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
           send_discord_message "$message"
         else
-          message="\`\`\`diff\n+ Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH  You are in set. Total $SET validators are active. +\n\`\`\`"
+          message="\`\`\`arm\n Epoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
+          send_discord_message "$message"
+          message="\`\`\` You are in set. Total $SET validators are active.\`\`\`"
           send_discord_message "$message"
           timer=0
 
@@ -306,7 +310,7 @@ while true; do
           RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Proposing now.\`\`\`"
+          message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2\n\`\`\`"
           send_discord_message "$message"
           if [[ $timer -gt 140 ]]
           then
@@ -347,7 +351,7 @@ while true; do
             message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\`diff\n- Alert! Prop value was decreased for unknown reasons. Did you restart node? -\n\`\`\`"
+            message="\`\`\` Alert! Prop value was decreased for unknown reasons. Did you restart node?\`\`\`"
             send_discord_message "$message"
           fi
         fi
@@ -355,9 +359,9 @@ while true; do
         then
           PIDCHECK=$(pgrep libra)
           RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-          message="\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME\`"
+          message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
           send_discord_message "$message"
-          message="\` Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Proposing too slow...\`"
+          message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Proposing too slow.\n\`\`\`"
           send_discord_message "$message"
         fi
       fi
