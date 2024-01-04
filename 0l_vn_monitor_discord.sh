@@ -206,7 +206,7 @@ while true; do
           else
             PIDCHECK=$(pgrep libra)
             RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
+            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
@@ -218,7 +218,7 @@ while true; do
       else
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -285,7 +285,7 @@ while true; do
         SETCHECK=`expr $INBOUND + $OUTBOUND`
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\n\`\`\`"
         send_discord_message "$message"
@@ -308,7 +308,7 @@ while true; do
         then
           PIDCHECK=$(pgrep libra)
           RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
+          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nBlock height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2  Proposal : +$PROPDIFF > $PROP2\n\`\`\`"
           send_discord_message "$message"
@@ -359,7 +359,7 @@ while true; do
         then
           PIDCHECK=$(pgrep libra)
           RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-          message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
+          message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nBlock height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2  Proposal : +$PROPDIFF > $PROP2  Proposing too slow.\n\`\`\`"
           send_discord_message "$message"
