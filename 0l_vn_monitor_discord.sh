@@ -177,7 +177,7 @@ while true; do
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2\n\`\`\`"
+            message="\`\`\`arm\n Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`diff\n- 0l Network is running, but your local node stopped syncing!! -\n\`\`\`"
             send_discord_message "$message"
@@ -188,7 +188,7 @@ while true; do
             message="\`\`\`fix\n Node restarted!\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2\n\`\`\`"
+            message="\`\`\`arm\n Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2\n\`\`\`"
             send_discord_message "$message"
           fi
         else
@@ -224,7 +224,7 @@ while true; do
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Alert! Syncing stopped.\n\`\`\`"
+            message="\`\`\`arm\n Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2  Proposal : +$PROPDIFF > $PROP2  Alert! Syncing stopped.\n\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
@@ -233,7 +233,7 @@ while true; do
             message="\`\`\`fix\n Node restarted!\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Syncing, but not proposing now.\n\`\`\`"
+            message="\`\`\`arm\n Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2  Proposal : +$PROPDIFF > $PROP2  Syncing, but not proposing now.\n\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
@@ -310,7 +310,7 @@ while true; do
           RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2\n\`\`\`"
+          message="\`\`\`arm\n Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2  Proposal : +$PROPDIFF > $PROP2\n\`\`\`"
           send_discord_message "$message"
           if [[ $timer -gt 140 ]]
           then
@@ -361,7 +361,7 @@ while true; do
           RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
           message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\n Height : +$HEIGHTDIFF > $HEIGHT2  Sync : +$SYNCDIFF > $SYNC2  Prop : +$PROPDIFF > $PROP2  Proposing too slow.\n\`\`\`"
+          message="\`\`\`arm\n Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2  Proposal : +$PROPDIFF > $PROP2  Proposing too slow.\n\`\`\`"
           send_discord_message "$message"
         fi
       fi
