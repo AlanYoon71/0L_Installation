@@ -177,7 +177,7 @@ while true; do
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`\`\`arm\nBlock height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2\n\`\`\`"
+            message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2. Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`diff\n- 0l Network is running, but your local node stopped syncing!! -\n\`\`\`"
             send_discord_message "$message"
@@ -188,7 +188,7 @@ while true; do
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\`arm\nBlock height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2\n\`\`\`"
+            message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2. Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
           fi
         else
