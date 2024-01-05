@@ -40,7 +40,7 @@ if [[ -z $PIDCHECK ]]
 then
   message="\`\`\`No running node process now. So this script will start node and check if you are in set.\`\`\`"
   send_discord_message "$message"
-  tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
+  tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
   sleep 60
 fi
 start_flag=0
@@ -122,7 +122,7 @@ while true; do
   sleep 0.5
   if [[ -z "$PID" ]]
   then
-    tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
+    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
     sleep 10
   fi
   SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
@@ -138,7 +138,7 @@ while true; do
     send_discord_message "$message"
     PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
     sleep 5
-    tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
+    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
     sleep 10
   fi
   if [[ $LEDGER1 -eq $LEDGER2 ]]
@@ -149,7 +149,7 @@ while true; do
       send_discord_message "$message"
       PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
       sleep 5
-      tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
+      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
       sleep 5
     else
       if [[ $HEIGHT1 -eq $HEIGHT2 ]]
@@ -183,7 +183,7 @@ while true; do
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
-            tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -228,7 +228,7 @@ while true; do
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
-            tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -237,7 +237,7 @@ while true; do
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
-            tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -266,7 +266,7 @@ while true; do
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
-            tmux send-keys -t node:0 'ulimit -n 1048576 && RUST_LOG=info libra node' C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -312,7 +312,7 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
-          if [[ $timer -gt 140 ]]
+          if [[ $timer -eq 140 ]]
           then
             rm -f ./bid_list.txt &> /dev/null
             curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | awk -F'"' '{print $2}' > val_address.txt
@@ -328,7 +328,7 @@ while true; do
             bid1=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
             libra txs validator pof --bid-pct $recommended_bidding_value --expiry 1000
             sleep 1
-            tmux send-keys -t node:0 '$MNEMONIC\r' C-m
+            tmux send-keys -t bot:0 "$MNEMONIC" C-m
             bid2=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
             message="\`\`\`arm\nBidding value updated! $bid1 ----> $bid2\n\`\`\`"
             send_discord_message "$message"
