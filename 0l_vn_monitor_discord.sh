@@ -210,7 +210,7 @@ while true; do
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`You entered the set successfully. Total $SET validators are active.\`\`\`"
+            message="\`\`\`arm\n$SET active validators are connected. You entered the set successfully.\n\`\`\`"
             send_discord_message "$message"
             timer=0
           fi
@@ -298,7 +298,7 @@ while true; do
         else
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`You are in set. Total $SET validators are active.\`\`\`"
+          message="\`\`\`arm\n$SET active validators are connected. You entered the set successfully.\n\`\`\`"
           send_discord_message "$message"
           timer=0
 
