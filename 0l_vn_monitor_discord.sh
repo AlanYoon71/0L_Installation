@@ -321,8 +321,8 @@ while true; do
                 libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $address | jq -r '.bid' | tr -d '\"' >> bid_list.txt
                 sleep 3
             done
-            min_bid=$(cat bid_list.txt | awk '$1 > 0 {print}' bid_list.txt | sort -n | head -n 1)
-            recommended_bidding_value=$(echo "scale=4; $min_bid / 1000 + 0.0001" | bc)
+            average_bid=$(awk '{if($1!=0) {sum+=$1; count++}} END{if(count>0) printf "%.0f\n", sum/count; else print "No non-zero numbers found."}' bid_list.txt)
+            recommended_bidding_value=$(echo "scale=3; $average_bid / 1000" | bc)
             message="\`\`\`arm\nRecommended biddng value : $recommended_bidding_value\n\`\`\`"
             send_discord_message "$message"
             bid1=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
