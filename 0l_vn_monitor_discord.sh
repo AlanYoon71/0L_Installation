@@ -312,7 +312,7 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
-          if [[ $timer -eq 140 ]]
+          if [[ $timer -eq 139 ]]
           then
             rm -f ./bid_list.txt &> /dev/null
             curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | awk -F'"' '{print $2}' > val_address.txt
@@ -326,7 +326,8 @@ while true; do
             message="\`\`\`arm\nRecommended biddng value : $recommended_bidding_value\n\`\`\`"
             send_discord_message "$message"
             bid1=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
-            libra txs validator pof --bid-pct $recommended_bidding_value --expiry 1000 && sleep 0.5 && tmux send-keys -t bot:0 "$MNEMONIC" C-m
+            libra txs validator pof --bid-pct $recommended_bidding_value --expiry 1000; sleep 0.5; tmux send-keys -t bot:0 "$MNEMONIC" C-m
+            sleep 5
             bid2=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
             message="\`\`\`arm\nBidding value updated! $bid1 ----> $bid2\n\`\`\`"
             send_discord_message "$message"
