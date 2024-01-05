@@ -310,7 +310,7 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
-          if [[ $timer -eq 138 ]]
+          if [[ $timer -eq 132 ]]
           then
             rm -f ./bid_list.txt &> /dev/null
             curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | awk -F'"' '{print $2}' > val_address.txt
@@ -336,7 +336,9 @@ while true; do
 EOF
               sleep 5
               bid2=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
-              message="\`\`\`arm\nBidding value updated! $bid1 ----> $bid2\n\`\`\`"
+              bid1=$(awk "BEGIN { printf \"%.1f\", $bid1 / 10 }") && bid1="$bid1%"
+              bid2=$(awk "BEGIN { printf \"%.1f\", $bid2 / 10 }") && bid2="$bid2%"
+              message="\`\`\`arm\nEntry fee updated! $bid1 ----> $bid2\n\`\`\`"
               send_discord_message "$message"
             fi
           fi
