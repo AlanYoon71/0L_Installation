@@ -310,7 +310,7 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
-          if [[ $timer -eq 139 ]]
+          if [[ $timer -eq 138 ]]
           then
             rm -f ./bid_list.txt &> /dev/null
             curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | awk -F'"' '{print $2}' > val_address.txt
