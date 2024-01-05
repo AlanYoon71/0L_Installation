@@ -6,7 +6,7 @@
    
    ```chmod +x 0l_vn_monitor_discord.sh```
 5. Copy your webhook url of bot and paste url into line 25 of script
-6. Run the script from validator and check if your discord channel receives message
+6. Open tmux and run the script from validator and check if your discord channel receives message
    
    ```./0l_vn_monitor_discord.sh```
 8. If script works well, you can see the messages like below
