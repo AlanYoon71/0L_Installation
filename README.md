@@ -9,6 +9,7 @@
 6. Open tmux and run node.
 
    ```tmux new -s node```
+   
    ```libra node```
 8. Open tmux and run the script from validator and check if your discord channel receives messages.
    
