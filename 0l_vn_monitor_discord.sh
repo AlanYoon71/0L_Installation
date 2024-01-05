@@ -224,7 +224,7 @@ while true; do
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2  Alert! Syncing stopped.\n\`\`\`"
+            message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Alert! Syncing stopped.\n\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
@@ -233,7 +233,7 @@ while true; do
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2  Syncing, but not proposing now.\n\`\`\`"
+            message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Syncing, but not proposing now.\n\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
@@ -310,7 +310,7 @@ while true; do
           RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2\n\`\`\`"
+          message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
           if [[ $timer -gt 140 ]]
           then
@@ -361,7 +361,7 @@ while true; do
           RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
           message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Block height : +$HEIGHTDIFF > $HEIGHT2  Synced version : +$SYNCDIFF > $SYNC2  Proposing too slow.\n\`\`\`"
+          message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Proposing too slow.\n\`\`\`"
           send_discord_message "$message"
         fi
       fi
