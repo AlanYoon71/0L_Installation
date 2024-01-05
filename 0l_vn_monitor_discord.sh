@@ -212,7 +212,6 @@ while true; do
             send_discord_message "$message"
             message="\`\`\`arm\n$SET active validators are connected. You entered the set successfully.\n\`\`\`"
             send_discord_message "$message"
-            timer=0
           fi
         fi
       else
@@ -243,6 +242,7 @@ while true; do
             send_discord_message "$message"
           fi
         else
+          timer=0
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
           INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
           OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
@@ -261,7 +261,6 @@ while true; do
           else
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
-            timer=0
             message="\`\`\`You entered active validator set in new epoch again. But not proposing now. Validator needs to be restarted.\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
@@ -276,6 +275,7 @@ while true; do
     else
       if [[ $EPOCHDIFF -gt 0 ]]
       then
+        timer=0
         SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
         INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
         OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -o "[0-9]*" | sort -r | head -1`
@@ -300,8 +300,6 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\n$SET active validators are connected. You entered the set successfully.\n\`\`\`"
           send_discord_message "$message"
-          timer=0
-
         fi
       else
         if [[ $PROPDIFF -gt 0 ]]
@@ -322,21 +320,25 @@ while true; do
                 sleep 3
             done
             average_bid=$(awk '{if($1!=0) {sum+=$1; count++}} END{if(count>0) printf "%.0f\n", sum/count; else print "No non-zero numbers found."}' bid_list.txt)
-            recommended_bidding_value=$(echo "scale=3; $average_bid / 1000" | bc)
-            message="\`\`\`arm\nRecommended biddng value : $recommended_bidding_value\n\`\`\`"
-            send_discord_message "$message"
             bid1=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
-            expect <<EOF
-            spawn libra txs validator pof --bid-pct $recommended_bidding_value --expiry 1000
-            expect "🔑"
-            send "$MNEMONIC\r"
-            expect eof
+            if [[ $bid1 -eq $average_bid ]]
+            then
+              :
+            else
+              recommended_bidding_value=$(echo "scale=3; $average_bid / 1000" | bc)
+              message="\`\`\`arm\nRecommended biddng value : $recommended_bidding_value\n\`\`\`"
+              send_discord_message "$message"
+              expect <<EOF
+              spawn libra txs validator pof --bid-pct $recommended_bidding_value --expiry 1000
+              expect "🔑"
+              send "$MNEMONIC\r"
+              expect eof
 EOF
-            sleep 5
-            bid2=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
-            message="\`\`\`arm\nBidding value updated! $bid1 ----> $bid2\n\`\`\`"
-            send_discord_message "$message"
-            timer=0
+              sleep 5
+              bid2=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
+              message="\`\`\`arm\nBidding value updated! $bid1 ----> $bid2\n\`\`\`"
+              send_discord_message "$message"
+            fi
           fi
         fi
         if [[ $PROPDIFF -lt 0 ]]
