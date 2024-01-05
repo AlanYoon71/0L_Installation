@@ -326,8 +326,6 @@ while true; do
             message="\`\`\`arm\nRecommended biddng value : $recommended_bidding_value\n\`\`\`"
             send_discord_message "$message"
             bid1=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
-            #libra txs validator pof --bid-pct $recommended_bidding_value --expiry 1000
-            #echo "$MNEMONIC"
             expect <<EOF
             spawn libra txs validator pof --bid-pct $recommended_bidding_value --expiry 1000
             expect "🔑"
