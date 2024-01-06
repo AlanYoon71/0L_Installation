@@ -14,13 +14,22 @@ while true; do
     fi
 done
 
-while true; do
+echo "Do you want to adjust your bidding value to average level in set? (y/n)"
+echo "If y is entered, this function will be activated once every time epoch is changed."
+read -p "y/n : " user_input
+if [[ $user_input == "y" ]]; then
+    echo "You chosed to proceed. This function needs your mnimonic."
     echo ""
     echo "Input mnemonic for your validator account "
     read -p "Mnemonic : " MNEMONIC
     echo ""
-    break
-done
+    echo "Script starts."
+elif [[ $user_input == "n" ]]; then
+    echo "You chosed not to proceed. Script starts."
+else
+    echo "Invalid input. Please enter 'y' or 'n'."
+    exit
+fi
 
 webhook_url=""
 send_discord_message() {
