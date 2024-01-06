@@ -379,9 +379,6 @@ EOF
             then
               message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
               send_discord_message "$message"
-            else
-              message="\`\`\`Alert! Prop value was decreased for unknown reasons. Did you restart node?\`\`\`"
-              send_discord_message "$message"
             fi
           else
             if [[ $PROPDIFF -eq 0 ]]
