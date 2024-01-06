@@ -355,34 +355,36 @@ EOF
               send_discord_message "$message"
             fi
           fi
-        fi
-        if [[ $PROPDIFF -lt 0 ]] && [[ $PROP2 -ne 0 ]]
-        then
-          start_time=$(date +%s)
-          SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
-          INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
-          OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
-          if [[ -z $INBOUND ]]; then INBOUND=0; fi
-          if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-          SET=`expr $INBOUND + $OUTBOUND + 1`
-          SETCHECK=`expr $INBOUND + $OUTBOUND`
-          if [[ $SETCHECK -eq 0 ]]
+        else
+          if [[ $PROPDIFF -lt 0 ]] && [[ $PROP2 -ne 0 ]]
           then
-            message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
-            send_discord_message "$message"
+            start_time=$(date +%s)
+            SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
+            INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
+            OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
+            if [[ -z $INBOUND ]]; then INBOUND=0; fi
+            if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+            SET=`expr $INBOUND + $OUTBOUND + 1`
+            SETCHECK=`expr $INBOUND + $OUTBOUND`
+            if [[ $SETCHECK -eq 0 ]]
+            then
+              message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
+              send_discord_message "$message"
+            else
+              message="\`\`\`Alert! Prop value was decreased for unknown reasons. Did you restart node?\`\`\`"
+              send_discord_message "$message"
+            fi
           else
-            message="\`\`\`Alert! Prop value was decreased for unknown reasons. Did you restart node?\`\`\`"
-            send_discord_message "$message"
+            if [[ $PROPDIFF -eq 0 ]]
+            then
+              PIDCHECK=$(pgrep libra)
+              RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
+              message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
+              send_discord_message "$message"
+              message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Proposing too slow.\n\`\`\`"
+              send_discord_message "$message"
+            fi
           fi
-        fi
-        if [[ $PROPDIFF -eq 0 ]]
-        then
-          PIDCHECK=$(pgrep libra)
-          RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-          message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
-          send_discord_message "$message"
-          message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Proposing too slow.\n\`\`\`"
-          send_discord_message "$message"
         fi
       fi
     fi
