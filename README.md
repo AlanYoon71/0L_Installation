@@ -5,7 +5,7 @@
 3. Download script from your validator and edit permission script file.
    
    ```chmod +x 0l_vn_monitor_discord.sh```
-5. Copy your webhook url of bot and paste url into line 25 of script.
+5. Copy your webhook url of bot and paste url into line 34 of script.
 6. Open tmux and run node.
 
    ```tmux new -s node```
