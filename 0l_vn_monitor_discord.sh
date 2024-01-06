@@ -171,7 +171,7 @@ while true; do
     then
       if [[ -z "$SETCHECK" ]]
       then
-        message="\`\`\`fix\n+ ------ Fullnode ------ +   --- [$RUNTIME]\n\`\`\`"
+        message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -206,7 +206,7 @@ while true; do
           else
             PIDCHECK=$(pgrep libra)
             RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.   --- [$RUNTIME]\n\`\`\`"
+            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
@@ -217,7 +217,7 @@ while true; do
       else
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.   --- [$RUNTIME]\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -285,7 +285,7 @@ while true; do
         SETCHECK=`expr $INBOUND + $OUTBOUND`
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.   --- [$RUNTIME]\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\n\`\`\`"
         send_discord_message "$message"
@@ -305,8 +305,21 @@ while true; do
         if [[ $PROPDIFF -gt 0 ]]
         then
           PIDCHECK=$(pgrep libra)
-          RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.   --- [$RUNTIME]\n\`\`\`"
+          if [[ -z $start_time ]]
+          then
+            :
+          else
+            current_time=$(date +%s)
+            time_difference=$((current_time - start_time))
+            days=$((time_difference / 86400))
+            hours=$(( (time_difference % 86400) / 3600 ))
+            minutes=$(( (time_difference % 3600) / 60 ))
+            days=$(printf "%02d" $days)
+            hours=$(printf "%02d" $hours)
+            minutes=$(printf "%02d" $minutes)
+            vn_runtime=`echo "  VN uptime : ${days}d ${hours}h ${minutes}m"`
+          fi
+          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
@@ -343,8 +356,9 @@ EOF
             fi
           fi
         fi
-        if [[ $PROPDIFF -lt 0 ]]
+        if [[ $PROPDIFF -lt 0 ]] && [[ $PROP2 -ne 0 ]]
         then
+          start_time=$(date +%s)
           SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
           INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
           OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
