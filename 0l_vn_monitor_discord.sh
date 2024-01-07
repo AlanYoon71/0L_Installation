@@ -67,6 +67,11 @@ BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .tot
 sleep 1
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
 sleep 1
+INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
+OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
+if [[ -z $INBOUND ]]; then INBOUND=0; fi
+if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+SETCHECK1=`expr $INBOUND + $OUTBOUND`
 while true; do
   if [[ $start_flag -eq 1 ]]
   then
@@ -77,6 +82,7 @@ while true; do
     PROP1=$PROP2
     BALANCET1=$BALANCET2
     BALANCEU1=$BALANCEU2
+    SETCHECK1=$SETCHECK2
   fi
   sleep 600
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
@@ -97,6 +103,11 @@ while true; do
   sleep 1
   VOUCH=`libra query resource --resource-path-string 0x1::vouch::MyVouches --account $accountinput | jq '.my_buddies | map(select(startswith("0x"))) | length'`
   sleep 1
+  INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
+  OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
+  if [[ -z $INBOUND ]]; then INBOUND=0; fi
+  if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+  SETCHECK2=`expr $INBOUND + $OUTBOUND`
   if [[ -z $HEIGHT1 ]]; then HEIGHT1=0; fi
   if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
   if [[ -z $SYNC1 ]]; then SYNC1=0; fi
@@ -124,6 +135,10 @@ while true; do
   sleep 0.2
   if [[ $BALANCETDIFF -gt 0 ]]; then BALANCETDIFF="+$BALANCETDIFF"; fi
   if [[ $BALANCEUDIFF -gt 0 ]]; then BALANCEUDIFF="+$BALANCEUDIFF"; fi
+  if [[ $SETCHECK2 -gt 0 ]] && [[ $SETCHECK1 -eq 0 ]]
+  then
+    start_time=$(date +%s)
+  fi
   if [[ -z $PROPDIFF ]]; then PROPDIFF=0; fi
   PID=$(pgrep libra)
   sleep 0.5
@@ -139,8 +154,8 @@ while true; do
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-  SET=`expr $INBOUND + $OUTBOUND + 1`
   SETCHECK=`expr $INBOUND + $OUTBOUND`
+  SET=`expr $INBOUND + $OUTBOUND + 1`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
     message="\`\`\`diff\n- Your node can't sync and access network now. $JAIL  Script will restart node and check it again. -\n\`\`\`"
@@ -257,8 +272,8 @@ while true; do
           OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
           if [[ -z $INBOUND ]]; then INBOUND=0; fi
           if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-          SET=`expr $INBOUND + $OUTBOUND + 1`
           SETCHECK=`expr $INBOUND + $OUTBOUND`
+          SET=`expr $INBOUND + $OUTBOUND + 1`
           message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
@@ -290,8 +305,8 @@ while true; do
         OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
         if [[ -z $INBOUND ]]; then INBOUND=0; fi
         if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-        SET=`expr $INBOUND + $OUTBOUND + 1`
         SETCHECK=`expr $INBOUND + $OUTBOUND`
+        SET=`expr $INBOUND + $OUTBOUND + 1`
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
@@ -326,7 +341,7 @@ while true; do
             days=$(printf "%02d" $days)
             hours=$(printf "%02d" $hours)
             minutes=$(printf "%02d" $minutes)
-            vn_runtime=`echo "  VN uptime : ${days}d ${hours}h ${minutes}m"`
+            vn_runtime="  VN uptime : ${days}d ${hours}h ${minutes}m"
           fi
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
@@ -373,8 +388,8 @@ EOF
             OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
             if [[ -z $INBOUND ]]; then INBOUND=0; fi
             if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-            SET=`expr $INBOUND + $OUTBOUND + 1`
             SETCHECK=`expr $INBOUND + $OUTBOUND`
+            SET=`expr $INBOUND + $OUTBOUND + 1`
             if [[ $SETCHECK -eq 0 ]]
             then
               message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
