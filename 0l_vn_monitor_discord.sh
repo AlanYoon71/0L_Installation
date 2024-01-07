@@ -18,7 +18,7 @@ echo "Do you want to adjust your bidding value to average level in set? (y/n)"
 echo "After two epochs, this function will be activated once every time epoch is changed."
 read -p "y/n : " user_input
 if [[ $user_input == "y" ]]; then
-    echo "You chosed to proceed. This function needs your mnimonic."
+    echo "You chosed to proceed. This function needs your mnemonic."
     echo ""
     echo "Input mnemonic for your validator account "
     read -p "Mnemonic : " MNEMONIC
