@@ -108,6 +108,7 @@ while true; do
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
   SETCHECK2=`expr $INBOUND + $OUTBOUND`
+  SET=`expr $SETCHECK2 + 1`
   if [[ -z $HEIGHT1 ]]; then HEIGHT1=0; fi
   if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
   if [[ -z $SYNC1 ]]; then SYNC1=0; fi
@@ -154,7 +155,7 @@ while true; do
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-  SETCHECK=`expr $INBOUND + $OUTBOUND`
+  SETCHECK2=`expr $INBOUND + $OUTBOUND`
   SET=`expr $INBOUND + $OUTBOUND + 1`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
@@ -272,7 +273,7 @@ while true; do
           OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
           if [[ -z $INBOUND ]]; then INBOUND=0; fi
           if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-          SETCHECK=`expr $INBOUND + $OUTBOUND`
+          SETCHECK2=`expr $INBOUND + $OUTBOUND`
           SET=`expr $INBOUND + $OUTBOUND + 1`
           message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
           send_discord_message "$message"
@@ -305,7 +306,7 @@ while true; do
         OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
         if [[ -z $INBOUND ]]; then INBOUND=0; fi
         if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-        SETCHECK=`expr $INBOUND + $OUTBOUND`
+        SETCHECK2=`expr $INBOUND + $OUTBOUND`
         SET=`expr $INBOUND + $OUTBOUND + 1`
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
@@ -322,7 +323,7 @@ while true; do
         else
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\n$SETCHECK validators are connected. You entered the set successfully.\n\`\`\`"
+          message="\`\`\`arm\n$SETCHECK2 validators are connected. You entered the set successfully.\n\`\`\`"
           send_discord_message "$message"
         fi
       else
