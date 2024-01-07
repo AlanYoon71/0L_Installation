@@ -15,7 +15,7 @@ while true; do
 done
 
 echo "Do you want to adjust your bidding value to average level in set? (y/n)"
-echo "If y is entered, this function will be activated once every time epoch is changed."
+echo "After two epochs, this function will be activated once every time epoch is changed."
 read -p "y/n : " user_input
 if [[ $user_input == "y" ]]; then
     echo "You chosed to proceed. This function needs your mnimonic."
@@ -25,7 +25,7 @@ if [[ $user_input == "y" ]]; then
     echo ""
     echo "Script starts."
 elif [[ $user_input == "n" ]]; then
-    echo "You chosed not to proceed. Script starts."
+    echo "You chosed to disable this function. Script starts."
 else
     echo "Invalid input. Please enter 'y' or 'n'."
     exit
@@ -219,7 +219,7 @@ while true; do
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\n$SET active validators are connected. You entered the set successfully.\n\`\`\`"
+            message="\`\`\`arm\n$SETCHECK validators are connected. You entered the set successfully.\n\`\`\`"
             send_discord_message "$message"
           fi
         fi
@@ -307,7 +307,7 @@ while true; do
         else
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\n$SET active validators are connected. You entered the set successfully.\n\`\`\`"
+          message="\`\`\`arm\n$SETCHECK validators are connected. You entered the set successfully.\n\`\`\`"
           send_discord_message "$message"
         fi
       else
