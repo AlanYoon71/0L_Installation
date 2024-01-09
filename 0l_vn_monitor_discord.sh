@@ -108,6 +108,7 @@ while true; do
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
   SETCHECK2=`expr $INBOUND + $OUTBOUND`
+  ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
   SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
   if [[ -z $HEIGHT1 ]]; then HEIGHT1=0; fi
   if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
@@ -156,6 +157,7 @@ while true; do
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
   SETCHECK2=`expr $INBOUND + $OUTBOUND`
+  ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
   SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
@@ -231,7 +233,7 @@ while true; do
           else
             PIDCHECK=$(pgrep libra)
             RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $SETCHECK2 nodes are active.$vn_runtime\n\`\`\`"
+            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $ACTIVE nodes are active.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
@@ -242,7 +244,7 @@ while true; do
       else
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $SETCHECK2 nodes are active.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $ACTIVE nodes are active.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -274,6 +276,7 @@ while true; do
           if [[ -z $INBOUND ]]; then INBOUND=0; fi
           if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
           SETCHECK2=`expr $INBOUND + $OUTBOUND`
+          ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
           SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
           message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
           send_discord_message "$message"
@@ -307,10 +310,11 @@ while true; do
         if [[ -z $INBOUND ]]; then INBOUND=0; fi
         if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
         SETCHECK2=`expr $INBOUND + $OUTBOUND`
+        ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
         SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $SETCHECK2 nodes are active.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $ACTIVE nodes are active.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\n\`\`\`"
         send_discord_message "$message"
@@ -344,7 +348,7 @@ while true; do
             minutes=$(printf "%02d" $minutes)
             vn_runtime="  VN uptime : ${days}d ${hours}h ${minutes}m"
           fi
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $SETCHECK2 nodes are active.$vn_runtime\n\`\`\`"
+          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $ACTIVE nodes are active.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
