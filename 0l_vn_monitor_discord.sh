@@ -168,7 +168,7 @@ while true; do
   fi
   if [[ $LEDGER1 -eq $LEDGER2 ]]
   then
-    if [[ $SETCHECK -eq 0 ]]
+    if [[ $SETCHECK2 -eq 0 ]]
     then
       message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
       send_discord_message "$message"
@@ -224,7 +224,7 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
           send_discord_message "$message"
-          if [[ $SETCHECK -eq 0 ]]
+          if [[ $SETCHECK2 -eq 0 ]]
           then
             message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
@@ -279,7 +279,7 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
           send_discord_message "$message"
-          if [[ $SETCHECK -eq 0 ]]
+          if [[ $SETCHECK2 -eq 0 ]]
           then
             message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
@@ -316,7 +316,7 @@ while true; do
         send_discord_message "$message"
         message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2  $BALANCEUDIFF\n\`\`\`"
         send_discord_message "$message"
-        if [[ $SETCHECK -eq 0 ]]
+        if [[ $SETCHECK2 -eq 0 ]]
         then
           message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
           send_discord_message "$message"
@@ -391,7 +391,7 @@ EOF
             if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
             SETCHECK=`expr $INBOUND + $OUTBOUND`
             SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
-            if [[ $SETCHECK -eq 0 ]]
+            if [[ $SETCHECK2 -eq 0 ]]
             then
               message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
               send_discord_message "$message"
