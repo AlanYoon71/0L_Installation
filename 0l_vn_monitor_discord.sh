@@ -231,18 +231,18 @@ while true; do
           else
             PIDCHECK=$(pgrep libra)
             RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
+            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $SETCHECK2 nodes are active.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\n$SETCHECK2 active validators are connected. You entered the set successfully.\n\`\`\`"
+            message="\`\`\`diff\n+ You entered the set successfully. +\n\`\`\`"
             send_discord_message "$message"
           fi
         fi
       else
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $SETCHECK2 nodes are active.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -310,7 +310,7 @@ while true; do
         SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $SETCHECK2 nodes are active.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\n\`\`\`"
         send_discord_message "$message"
@@ -323,7 +323,7 @@ while true; do
         else
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\n$SETCHECK2 active validators are connected. You entered the set successfully.\n\`\`\`"
+          message="\`\`\`diff\n+ You entered the set successfully. +\n\`\`\`"
           send_discord_message "$message"
         fi
       else
@@ -344,7 +344,7 @@ while true; do
             minutes=$(printf "%02d" $minutes)
             vn_runtime="  VN uptime : ${days}d ${hours}h ${minutes}m"
           fi
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET validators in set.$vn_runtime\n\`\`\`"
+          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in set and $SETCHECK2 nodes are active.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
