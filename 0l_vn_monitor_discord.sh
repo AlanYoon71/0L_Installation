@@ -227,6 +227,8 @@ while true; do
             send_discord_message "$message"
           fi
         else
+          message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2. Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+          send_discord_message "$message"
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
           timer=0
@@ -328,6 +330,8 @@ while true; do
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
+        send_discord_message "$message"
+        message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\n\`\`\`"
         send_discord_message "$message"
