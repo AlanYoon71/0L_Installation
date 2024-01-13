@@ -244,7 +244,7 @@ while true; do
           else
             PIDCHECK=$(pgrep libra)
             RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
+            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
@@ -255,7 +255,7 @@ while true; do
       else
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -329,7 +329,7 @@ while true; do
         SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
         send_discord_message "$message"
@@ -364,9 +364,9 @@ while true; do
             days=$(printf "%02d" $days)
             hours=$(printf "%02d" $hours)
             minutes=$(printf "%02d" $minutes)
-            vn_runtime="  Set entry hold time : ${days}d ${hours}h ${minutes}m"
+            vn_runtime=" Set entry hold time : ${days}d ${hours}h ${minutes}m"
           fi
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
+          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
