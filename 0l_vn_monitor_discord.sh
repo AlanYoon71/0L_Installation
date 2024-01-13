@@ -364,7 +364,7 @@ while true; do
             days=$(printf "%02d" $days)
             hours=$(printf "%02d" $hours)
             minutes=$(printf "%02d" $minutes)
-            vn_runtime="  VN uptime : ${days}d ${hours}h ${minutes}m"
+            vn_runtime="  Set entry hold time : ${days}d ${hours}h ${minutes}m"
           fi
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
