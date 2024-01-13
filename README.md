@@ -12,9 +12,11 @@
    
    ```libra node```
 8. Open tmux and run the script from validator and check if your discord channel receives messages.
+
+   ```tmux new -s bot```
    
    ```./0l_vn_monitor_discord.sh```
-9. If script works well, you can see the messages like below.
+10. If script works well, you can see the messages like below.
    
    ```+ ======= [ VALIDATOR ] ======== +  11 nodes in set are active now.```
    
