@@ -137,9 +137,13 @@ while true; do
   sleep 0.2
   if [[ $BALANCETDIFF -gt 0 ]]; then BALANCETDIFF="+$BALANCETDIFF"; fi
   if [[ $BALANCEUDIFF -gt 0 ]]; then BALANCEUDIFF="+$BALANCEUDIFF"; fi
+  if [ -e "vn_start_time.txt" ]; then
+    start_time=$(< "vn_start_time.txt")
+  fi
   if [[ $SETCHECK2 -gt 0 ]] && [[ $SETCHECK1 -eq 0 ]]
   then
     start_time=$(date +%s)
+    echo "$start_time" > "vn_start_time.txt"
   fi
   if [[ -z $PROPDIFF ]]; then PROPDIFF=0; fi
   PID=$(pgrep libra)
@@ -165,6 +169,7 @@ while true; do
     send_discord_message "$message"
     PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
     sleep 5
+    rm -f vn_start_time.txt
     tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
     sleep 10
   fi
@@ -174,8 +179,10 @@ while true; do
     then
       message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
       send_discord_message "$message"
+      rm -f vn_start_time.txt
       PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
       sleep 5
+      rm -f vn_start_time.txt
       tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
       sleep 5
     else
@@ -210,6 +217,7 @@ while true; do
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
+            rm -f vn_start_time.txt
             tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
@@ -230,10 +238,11 @@ while true; do
           then
             message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
+            rm -f vn_start_time.txt
           else
             PIDCHECK=$(pgrep libra)
             RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in the set, $ACTIVE active.$vn_runtime\n\`\`\`"
+            message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
@@ -244,7 +253,7 @@ while true; do
       else
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in the set, $ACTIVE active.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -254,6 +263,7 @@ while true; do
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
+            rm -f vn_start_time.txt
             tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
@@ -263,6 +273,7 @@ while true; do
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
+            rm -f vn_start_time.txt
             tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
@@ -286,6 +297,7 @@ while true; do
           then
             message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
+            rm -f vn_start_time.txt
           else
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
@@ -293,6 +305,7 @@ while true; do
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
+            rm -f vn_start_time.txt
             tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
@@ -314,7 +327,7 @@ while true; do
         SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
         PIDCHECK=$(pgrep libra)
         RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in the set, $ACTIVE active.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\n\`\`\`"
         send_discord_message "$message"
@@ -324,6 +337,7 @@ while true; do
         then
           message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
           send_discord_message "$message"
+          rm -f vn_start_time.txt
         else
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
@@ -348,7 +362,7 @@ while true; do
             minutes=$(printf "%02d" $minutes)
             vn_runtime="  VN uptime : ${days}d ${hours}h ${minutes}m"
           fi
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $SET nodes in the set, $ACTIVE active.$vn_runtime\n\`\`\`"
+          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +   $ACTIVE nodes in the set are currently active.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
@@ -388,6 +402,7 @@ EOF
           if [[ $PROPDIFF -lt 0 ]] && [[ $PROP2 -ne 0 ]]
           then
             start_time=$(date +%s)
+            echo "$start_time" > "vn_start_time.txt"
             SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
             INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
             OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
@@ -399,6 +414,7 @@ EOF
             then
               message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
               send_discord_message "$message"
+              rm -f vn_start_time.txt
             fi
           else
             if [[ $PROPDIFF -eq 0 ]]
