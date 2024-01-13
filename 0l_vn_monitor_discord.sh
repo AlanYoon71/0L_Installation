@@ -183,7 +183,7 @@ while true; do
       PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
       sleep 5
       rm -f vn_start_time.txt
-      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
       sleep 5
     else
       if [[ $HEIGHT1 -eq $HEIGHT2 ]]
@@ -300,6 +300,10 @@ while true; do
             message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
             rm -f vn_start_time.txt
+            PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
+            sleep 5
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+            sleep 5
           else
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
@@ -342,6 +346,10 @@ while true; do
           message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
           send_discord_message "$message"
           rm -f vn_start_time.txt
+          PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
+          sleep 5
+          tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+          sleep 5
         else
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
@@ -419,13 +427,17 @@ EOF
               message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
               send_discord_message "$message"
               rm -f vn_start_time.txt
+              PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
+              sleep 5
+              tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+              sleep 5
             fi
           else
             if [[ $PROPDIFF -eq 0 ]]
             then
               PIDCHECK=$(pgrep libra)
               RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
-              message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $RUNTIME elapsed\n\`\`\`"
+              message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
               send_discord_message "$message"
               message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Proposing too slow.\n\`\`\`"
               send_discord_message "$message"
