@@ -6,7 +6,7 @@
    
    ```chmod +x 0l_vn_monitor_discord.sh```
 5. Copy your webhook url of bot and paste url into line 34 of script.
-6. Open tmux and run node.
+6. Open tmux and run node. Don't change the tmux session name `node`.
 
    ```tmux new -s node```
    
