@@ -170,7 +170,7 @@ while true; do
     PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
     sleep 5
     rm -f vn_start_time.txt
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
     sleep 10
   fi
   if [[ $LEDGER1 -eq $LEDGER2 ]]
