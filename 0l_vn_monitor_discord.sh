@@ -231,7 +231,7 @@ while true; do
           send_discord_message "$message"
           if [[ $SETCHECK2 -eq 0 ]]
           then
-            message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
+            message="\`\`\`diff\n- You are not in validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
             rm -f vn_start_time.txt
           else
@@ -290,7 +290,7 @@ while true; do
           send_discord_message "$message"
           if [[ $SETCHECK2 -eq 0 ]]
           then
-            message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
+            message="\`\`\`diff\n- You are not in validator set. $JAIL -\n\`\`\`"
             send_discord_message "$message"
             rm -f vn_start_time.txt
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
@@ -336,7 +336,7 @@ while true; do
         send_discord_message "$message"
         if [[ $SETCHECK2 -eq 0 ]]
         then
-          message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
+          message="\`\`\`diff\n- You are not in validator set. $JAIL -\n\`\`\`"
           send_discord_message "$message"
           rm -f vn_start_time.txt
           PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
@@ -417,7 +417,7 @@ EOF
             SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
             if [[ $SETCHECK2 -eq 0 ]]
             then
-              message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
+              message="\`\`\`diff\n- You are not in validator set. $JAIL -\n\`\`\`"
               send_discord_message "$message"
               rm -f vn_start_time.txt
               PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
