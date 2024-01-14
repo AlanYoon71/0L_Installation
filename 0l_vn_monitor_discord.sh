@@ -52,6 +52,7 @@ then
   tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
   sleep 60
 fi
+restart_count=0
 start_flag=0
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 sleep 0.2
@@ -165,39 +166,31 @@ while true; do
   SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
-    message="\`\`\`diff\n- Your node can't sync and access network now. $JAIL  Script will restart node and check it again. -\n\`\`\`"
-    send_discord_message "$message"
-    PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
-    sleep 5
-    rm -f vn_start_time.txt
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
-    sleep 10
+    if [[ $restart_count -eq 0 ]]
+    then
+      message="\`\`\`diff\n- Your node can't sync and access network now. $JAIL  Script will restart node and check it again. -\n\`\`\`"
+      send_discord_message "$message"
+      PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
+      sleep 5
+      restart_count=1
+      rm -f vn_start_time.txt
+      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+      sleep 10
+    fi
   fi
   if [[ $LEDGER1 -eq $LEDGER2 ]]
   then
-    if [[ $SETCHECK2 -eq 0 ]]
+    if [[ $HEIGHT1 -eq $HEIGHT2 ]]
     then
-      message="\`\`\`diff\n- You failed to enter active validator set. $JAIL -\n\`\`\`"
+      message="\`\`\`= = = = = Network stopped!! = = = = =\`\`\`"
       send_discord_message "$message"
-      rm -f vn_start_time.txt
-      PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
-      sleep 5
-      rm -f vn_start_time.txt
-      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
-      sleep 5
-    else
-      if [[ $HEIGHT1 -eq $HEIGHT2 ]]
+      if [[ $SYNC2 -eq $LEDGER2 ]]
       then
-        message="\`\`\`= = = = = Network stopped!! = = = = =\`\`\`"
+        message="\`\`\`arm\nHeight : $HEIGHT2  Sync : $SYNC2  Fully synced.\n\`\`\`"
         send_discord_message "$message"
-        if [[ $SYNC2 -eq $LEDGER2 ]]
-        then
-          message="\`\`\`arm\nHeight : $HEIGHT2  Sync : $SYNC2  Fully synced.\n\`\`\`"
-          send_discord_message "$message"
-        else
-          message="\`\`\`arm\nHeight : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\n\`\`\`"
-          send_discord_message "$message"
-        fi
+      else
+        message="\`\`\`arm\nHeight : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\n\`\`\`"
+        send_discord_message "$message"
       fi
     fi
   else
