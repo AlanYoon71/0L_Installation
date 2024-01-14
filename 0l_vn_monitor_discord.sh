@@ -25,7 +25,9 @@ if [[ $user_input == "y" ]]; then
     echo ""
     echo "Script starts."
 elif [[ $user_input == "n" ]]; then
-    echo "You chosed to disable this function. Script starts."
+    echo "You chosed to disable this function."
+    echo ""
+    echo "Script starts."
 else
     echo "Invalid input. Please enter 'y' or 'n'."
     exit
@@ -330,9 +332,9 @@ while true; do
         send_discord_message "$message"
         message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2  $BALANCETDIFF\n\`\`\`"
+        message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2  $BALANCEUDIFF\n\`\`\`"
+        message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
         send_discord_message "$message"
         if [[ $SETCHECK2 -eq 0 ]]
         then
