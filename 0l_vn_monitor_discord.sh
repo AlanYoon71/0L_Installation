@@ -233,9 +233,9 @@ while true; do
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
           timer=0
-          message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
+          message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
           send_discord_message "$message"
           if [[ $SETCHECK2 -eq 0 ]]
           then
@@ -292,9 +292,9 @@ while true; do
           SETCHECK2=`expr $INBOUND + $OUTBOUND`
           ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
           SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
-          message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
+          message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
           send_discord_message "$message"
           if [[ $SETCHECK2 -eq 0 ]]
           then
@@ -338,9 +338,9 @@ while true; do
         send_discord_message "$message"
         message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCETDIFF > $BALANCET2\n\`\`\`"
+        message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+        message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
         send_discord_message "$message"
         if [[ $SETCHECK2 -eq 0 ]]
         then
