@@ -168,14 +168,7 @@ while true; do
           then
             message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`diff\n- 0l Network is running, but your local node stopped syncing!! -\n\`\`\`"
-            send_discord_message "$message"
-            PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
-            sleep 5
-            rm -f vfn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
-            sleep 5
-            message="\`\`\`fix\nNode restarted!\n\`\`\`"
+            message="\`\`\`diff\n- 0l Network is running, but node stopped syncing!! Check your seeds. -\n\`\`\`"
             send_discord_message "$message"
           else
             message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
@@ -212,13 +205,6 @@ while true; do
           then
             message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Alert! Syncing stopped.\n\`\`\`"
             send_discord_message "$message"
-            PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
-            sleep 5
-            rm -f vfn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
-            sleep 5
-            message="\`\`\`fix\nNode restarted!\n\`\`\`"
-            send_discord_message "$message"
           fi
         else
           timer=0
@@ -232,21 +218,10 @@ while true; do
             message="\`\`\`Lost connection with Validator.\`\`\`"
             send_discord_message "$message"
             rm -f vfn_start_time.txt
-            PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
-            sleep 5
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
-            sleep 5
           else
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`You are connected to Validator in new epoch again. But not syncing now. Node needs to be restarted.\`\`\`"
-            send_discord_message "$message"
-            PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
-            sleep 5
-            rm -f vfn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
-            sleep 5
-            message="\`\`\`fix\nNode restarted!\n\`\`\`"
+            message="\`\`\`You are connected to Validator in new epoch again. But not syncing now. Check your validator status.\`\`\`"
             send_discord_message "$message"
           fi
         fi
@@ -261,20 +236,22 @@ while true; do
         if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
         SETCHECK2=`expr $INBOUND + $OUTBOUND`
         PIDCHECK=$(pgrep libra)
-        message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
-        send_discord_message "$message"
-        message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
-        send_discord_message "$message"
         if [[ $SETCHECK2 -eq 0 ]]
         then
+          message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
+          send_discord_message "$message"
+          message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+          send_discord_message "$message"
+          message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2\`\`\`"
+          send_discord_message "$message"
           message="\`\`\`Lost connection with Validator.\`\`\`"
           send_discord_message "$message"
           rm -f vfn_start_time.txt
-          PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
-          sleep 5
-          tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
-          sleep 5
         else
+          message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
+          send_discord_message "$message"
+          message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+          send_discord_message "$message"
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2\`\`\`"
           send_discord_message "$message"
           message="\`\`\`diff\n+ Connected to Validator successfully. +\n\`\`\`"
@@ -298,10 +275,18 @@ while true; do
             minutes=$(printf "%02d" $minutes)
             vn_runtime=" Connected Time : ${days}d ${hours}h ${minutes}m"
           fi
-          message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
-          send_discord_message "$message"
-          message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
-          send_discord_message "$message"
+          if [[ $SETCHECK2 -eq 0 ]]
+          then
+            message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
+            send_discord_message "$message"
+            message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+            send_discord_message "$message"
+          else
+            message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
+            send_discord_message "$message"
+            message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+            send_discord_message "$message"
+          fi
         else
           if [[ $SYNCDIFF -lt 0 ]] && [[ $SYNC2 -ne 0 ]]
           then
@@ -317,10 +302,6 @@ while true; do
               message="\`\`\`Lost connection with Validator.\`\`\`"
               send_discord_message "$message"
               rm -f vfn_start_time.txt
-              PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
-              sleep 5
-              tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
-              sleep 5
             fi
           fi
         fi
