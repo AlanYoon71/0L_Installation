@@ -87,6 +87,19 @@ while true; do
     BALANCEU1=$BALANCEU2
     SETCHECK1=$SETCHECK2
   fi
+  PIDCHECK=$(pgrep libra)
+  sleep 0.5
+  if [[ -z $PIDCHECK ]]
+  then
+    session="node"
+    tmux new-session -d -s $session &> /dev/null
+    window=0
+    tmux rename-window -t $session:$window 'node' &> /dev/null
+    message="\`\`\`No running node process now. So this script will start node and check if you are in set.\`\`\`"
+    send_discord_message "$message"
+    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+    sleep 60
+  fi
   sleep 600
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
