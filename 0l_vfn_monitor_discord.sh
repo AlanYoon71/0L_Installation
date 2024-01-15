@@ -36,6 +36,7 @@ OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direc
 if [[ -z $INBOUND ]]; then INBOUND=0; fi
 if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
 SETCHECK1=`expr $INBOUND + $OUTBOUND`
+if [[ -z $SETCHECK1 ]]; then SETCHECK1=0; fi
 while true; do
   if [[ $start_flag -eq 1 ]]
   then
@@ -72,6 +73,7 @@ while true; do
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
   SETCHECK2=`expr $INBOUND + $OUTBOUND`
+  if [[ -z $SETCHECK2 ]]; then SETCHECK2=0; fi
   if [[ -z $HEIGHT1 ]]; then HEIGHT1=0; fi
   if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
   if [[ -z $SYNC1 ]]; then SYNC1=0; fi
@@ -156,7 +158,7 @@ while true; do
   else
     if [[ $SYNCDIFF -eq 0 ]]
     then
-      if [[ -z "$SETCHECK2" ]]
+      if [[ $SETCHECK2 -eq 0 ]]
       then
         message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
         send_discord_message "$message"
