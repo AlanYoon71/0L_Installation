@@ -170,7 +170,7 @@ while true; do
   then
     if [[ $restart_count -eq 0 ]]
     then
-      message="\`\`\`diff\n- Your node can't sync and access network now. $JAIL  Script will restart node and check it again. -\n\`\`\`"
+      message="\`\`\`diff\n- Your node can't sync and access network now. $JAIL Script will restart node and check it again. -\n\`\`\`"
       send_discord_message "$message"
       PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
       sleep 5
@@ -178,6 +178,12 @@ while true; do
       rm -f vn_start_time.txt
       tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
       sleep 10
+      LEDGER2=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
+      sleep 0.2
+      HEIGHT2=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
+      sleep 0.2
+      if [[ -z $LEDGER2 ]]; then LEDGER2=0; fi
+      if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
     fi
   fi
   if [[ $LEDGER1 -eq $LEDGER2 ]]
