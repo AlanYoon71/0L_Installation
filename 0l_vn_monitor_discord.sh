@@ -170,6 +170,15 @@ while true; do
   then
     tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
     sleep 10
+    if [[ $SETCHECK2 -eq 0 ]]
+    then
+      PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
+      sleep 5
+      restart_count=1
+      rm -f vn_start_time.txt
+      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+      sleep 10
+    fi
   fi
   SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
@@ -232,7 +241,7 @@ while true; do
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             rm -f vn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
