@@ -229,7 +229,7 @@ while true; do
   else
     if [[ $PROPDIFF -eq 0 ]]
     then
-      if [[ -z "$SETCHECK2" ]]
+      if [[ $SETCHECK2 -eq 0 ]]
       then
         message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
         send_discord_message "$message"
@@ -296,7 +296,7 @@ while true; do
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             rm -f vn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
