@@ -126,7 +126,6 @@ while true; do
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
   SETCHECK2=`expr $INBOUND + $OUTBOUND`
   ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-  SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
   if [[ -z $HEIGHT1 ]]; then HEIGHT1=0; fi
   if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
   if [[ -z $SYNC1 ]]; then SYNC1=0; fi
@@ -182,7 +181,6 @@ while true; do
       sleep 10
     fi
   fi
-  SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
@@ -190,7 +188,6 @@ while true; do
   SETCHECK2=`expr $INBOUND + $OUTBOUND`
   if [[ -z $SETCHECK2 ]]; then SETCHECK2=0; fi
   ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-  SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
     if [[ $restart_count -eq 0 ]]
@@ -272,8 +269,6 @@ while true; do
             tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
             sleep 5
           else
-            PIDCHECK=$(pgrep libra)
-            RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
             message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
@@ -283,8 +278,6 @@ while true; do
           fi
         fi
       else
-        PIDCHECK=$(pgrep libra)
-        RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
@@ -313,14 +306,12 @@ while true; do
           fi
         else
           timer=0
-          SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
           INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
           OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
           if [[ -z $INBOUND ]]; then INBOUND=0; fi
           if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
           SETCHECK2=`expr $INBOUND + $OUTBOUND`
           ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-          SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
           message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
@@ -353,16 +344,12 @@ while true; do
       if [[ $EPOCHDIFF -gt 0 ]]
       then
         timer=0
-        SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
         INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
         OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
         if [[ -z $INBOUND ]]; then INBOUND=0; fi
         if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
         SETCHECK2=`expr $INBOUND + $OUTBOUND`
         ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-        SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
-        PIDCHECK=$(pgrep libra)
-        RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
@@ -445,13 +432,11 @@ EOF
           then
             start_time=$(date +%s)
             echo "$start_time" > "vn_start_time.txt"
-            SETIN=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_validator_voting_power | grep -o '[0-9]*'`
             INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
             OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
             if [[ -z $INBOUND ]]; then INBOUND=0; fi
             if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
             SETCHECK2=`expr $INBOUND + $OUTBOUND`
-            SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
             if [[ $SETCHECK2 -eq 0 ]]
             then
               message="\`\`\`You are not in validator set. $JAIL\`\`\`"
@@ -465,8 +450,6 @@ EOF
           else
             if [[ $PROPDIFF -eq 0 ]]
             then
-              PIDCHECK=$(pgrep libra)
-              RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
               message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
               send_discord_message "$message"
               message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Proposing too slow.\n\`\`\`"
