@@ -267,6 +267,10 @@ while true; do
             message="\`\`\`You are not in validator set. $JAIL\`\`\`"
             send_discord_message "$message"
             rm -f vn_start_time.txt
+            PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
+            sleep 5
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+            sleep 5
           else
             PIDCHECK=$(pgrep libra)
             RUNTIME=$(ps -p $PIDCHECK -o etime | awk 'NR==2')
