@@ -443,7 +443,7 @@ EOF
             OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
             if [[ -z $INBOUND ]]; then INBOUND=0; fi
             if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-            SETCHECK=`expr $INBOUND + $OUTBOUND`
+            SETCHECK2=`expr $INBOUND + $OUTBOUND`
             SET=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_all_validators_voting_power{peer_id= | wc -l`
             if [[ $SETCHECK2 -eq 0 ]]
             then
