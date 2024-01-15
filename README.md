@@ -1,8 +1,8 @@
 0l Validator monitoring script for discord
 
-1. Prepare your own discord server and channel for monitoring.
+1. Prepare your own discord server and channel for monitoring(10 minutes interval).
 2. Make discord bot and connect bot to your discord channel.
-3. Download script from your validator and edit permission script file.
+3. Download this script from your validator and edit permission script file.
    
    ```chmod +x 0l_vn_monitor_discord.sh```
 5. Copy your webhook url of bot and paste url into line 34 of script.
