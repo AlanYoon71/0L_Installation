@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo ""
+echo "Script starts."
 webhook_url=""
 send_discord_message() {
   local message=$1
