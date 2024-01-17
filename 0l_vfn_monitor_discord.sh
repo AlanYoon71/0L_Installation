@@ -1,7 +1,36 @@
 #!/bin/bash
 
-echo ""
-echo "Script starts."
+while true; do
+    echo ""
+    echo "If you want to check balance?"
+    read -p "y/n : " user_input
+    if [[ $user_input == "y" ]]; then
+        echo ""
+        echo "Input your 64-digit account address.(exclude 0x)."
+        echo ""
+        read -p "account : " accountinput
+        echo ""
+        if [[ $accountinput =~ ^[A-Z0-9]{1,31}$ ]]; then
+            echo "Input 64-digit full account address exactly, please."
+        else
+            export accountinput=$(echo $accountinput | tr 'A-Z' 'a-z')
+            echo "Your account is $accountinput. Accepted."
+            echo ""
+            echo "Script starts."
+            break
+        fi
+        echo ""
+        echo "Script starts."
+    elif [[ $user_input == "n" ]]; then
+        echo ""
+        echo "Script starts."
+        break
+    else
+        echo "Invalid input. Please enter 'y' or 'n'."
+        exit
+    fi
+done
+
 webhook_url=""
 send_discord_message() {
   local message=$1
@@ -33,6 +62,15 @@ LEDGER1=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'
 sleep 0.2
 HEIGHT1=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
 sleep 0.2
+if [[ -z $accountinput ]]
+then
+  :
+else
+  BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 2)
+  sleep 1
+  BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
+  sleep 1
+fi
 INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
 OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
 if [[ -z $INBOUND ]]; then INBOUND=0; fi
@@ -46,6 +84,8 @@ while true; do
     EPOCH1=$EPOCH2
     LEDGER1=$LEDGER2
     HEIGHT1=$HEIGHT2
+    BALANCET1=$BALANCET2
+    BALANCEU1=$BALANCEU2
     SETCHECK1=$SETCHECK2
   fi
   PIDCHECK=$(pgrep libra)
@@ -70,6 +110,15 @@ while true; do
   sleep 0.2
   HEIGHT2=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
   sleep 0.2
+  if [[ -z $accountinput ]]
+  then
+    :
+  else
+    BALANCET2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 2)
+    sleep 1
+    BALANCEU2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%'\''d %'\''d", $1, $2}' | cut -d ' ' -f 1)
+    sleep 1
+  fi
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
@@ -84,12 +133,22 @@ while true; do
   if [[ -z $EPOCH2 ]]; then EPOCH2=0; fi
   if [[ -z $LEDGER1 ]]; then LEDGER1=0; fi
   if [[ -z $LEDGER2 ]]; then LEDGER2=0; fi
+  if [[ -z $BALANCET1 ]]; then BALANCET1=0; fi
+  if [[ -z $BALANCET2 ]]; then BALANCET2=0; fi
+  if [[ -z $BALANCEU1 ]]; then BALANCEU1=0; fi
+  if [[ -z $BALANCEU2 ]]; then BALANCEU2=0; fi
   sleep 0.2
   LEDGERDIFF=`expr $LEDGER2 - $LEDGER1`
   LAG=`expr $LEDGER2 - $SYNC2`
   HEIGHTDIFF=`expr $HEIGHT2 - $HEIGHT1`
   EPOCHDIFF=`expr $EPOCH2 - $EPOCH1`
   SYNCDIFF=`expr $SYNC2 - $SYNC1`
+  BALANCETDIFF=`expr $BALANCET2 - $BALANCET1`
+  sleep 0.2
+  BALANCEUDIFF=`expr $BALANCEU2 - $BALANCEU1`
+  sleep 0.2
+  if [[ $BALANCETDIFF -ge 0 ]]; then BALANCETDIFF="+$BALANCETDIFF"; fi
+  if [[ $BALANCEUDIFF -ge 0 ]]; then BALANCEUDIFF="+$BALANCEUDIFF"; fi
   if [ -e "vfn_start_time.txt" ]; then
     start_time=$(< "vfn_start_time.txt")
   fi
@@ -121,6 +180,10 @@ while true; do
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+  public_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+  public_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+  if [[ -z $public_in ]]; then public_in=0; fi
+  if [[ -z $public_out ]]; then public_out=0; fi
   SETCHECK2=`expr $INBOUND + $OUTBOUND`
   if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
@@ -164,6 +227,8 @@ while true; do
       then
         message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
         send_discord_message "$message"
+        message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+        send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
@@ -182,6 +247,15 @@ while true; do
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2\`\`\`"
           send_discord_message "$message"
           timer=0
+          if [[ -z $accountinput ]]
+          then
+            :
+          else
+            message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
+            send_discord_message "$message"
+            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+            send_discord_message "$message"
+          fi
           if [[ $SETCHECK2 -eq 0 ]]
           then
             message="\`\`\`Lost connection with Validator.\`\`\`"
@@ -191,8 +265,6 @@ while true; do
             PIDCHECK=$(pgrep libra)
             message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2\`\`\`"
-            send_discord_message "$message"
             message="\`\`\`diff\n+ Connected to Validator successfully. +\n\`\`\`"
             send_discord_message "$message"
           fi
@@ -200,6 +272,8 @@ while true; do
       else
         PIDCHECK=$(pgrep libra)
         message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
+        send_discord_message "$message"
+        message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -242,20 +316,42 @@ while true; do
         then
           message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
           send_discord_message "$message"
+          message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+          send_discord_message "$message"
           message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2\`\`\`"
           send_discord_message "$message"
+          if [[ -z $accountinput ]]
+          then
+            :
+          else
+            message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
+            send_discord_message "$message"
+            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+            send_discord_message "$message"
+          fi
           message="\`\`\`Lost connection with Validator.\`\`\`"
           send_discord_message "$message"
           rm -f vfn_start_time.txt
         else
           message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
+          message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+          send_discord_message "$message"
           message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2\`\`\`"
           send_discord_message "$message"
+          if [[ -z $accountinput ]]
+          then
+            :
+          else
+            message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
+            send_discord_message "$message"
+            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+            send_discord_message "$message"
+          fi
           message="\`\`\`diff\n+ Connected to Validator successfully. +\n\`\`\`"
           send_discord_message "$message"
         fi
@@ -281,10 +377,14 @@ while true; do
           then
             message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
             send_discord_message "$message"
+            message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+            send_discord_message "$message"
             message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
           else
             message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
+            send_discord_message "$message"
+            message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
