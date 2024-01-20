@@ -17,7 +17,7 @@
    
    ```./0l_vn_monitor_discord.sh```
 10. If script works well, you can see the messages like below in your personal server.
-   
+    
    ```Script starts.```
    
    ```+ ======= [ VALIDATOR ] ======== +  11 nodes in set are active now.```
