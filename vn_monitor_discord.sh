@@ -14,6 +14,7 @@ while true; do
     fi
 done
 
+echo ""
 echo "Do you want to adjust your bidding value to average level in set? (y/n)"
 echo "After two epochs, this function will be activated once every time epoch is changed."
 read -p "y/n : " user_input
