@@ -115,8 +115,8 @@ else
     else
         address=`grep -oP '(?<=account: )\w+' libra.yaml`
         echo ""
-        echo "You need additional three actions as below to join validator set."
-        echo "=================================="
+        echo "You need additional 4 actions as below to join validator set."
+        echo "============================================================="
         echo "1. Onboard with this command by another node. (for fullnode and validator both)"
         echo "   Command : libra txs transfer --to-account $address --amount 5"
         echo ""
@@ -125,6 +125,10 @@ else
         echo ""
         echo "3. Request the vouches with this command from other validators in the set. (for validator)"
         echo "   Command : libra txs validator vouch --vouch-for $address"
+        echo ""
+        echo "4. Bid to be in the validator set. (for validator)"
+        echo "   Command : libra txs validator pof --bid-pct 0.5 --expiry 1000"
+        echo "============================================================="
         echo ""
     fi
     sleep 2
