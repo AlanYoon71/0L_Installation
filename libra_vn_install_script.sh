@@ -7,7 +7,7 @@ sleep 2
 cd ~
 apt install sudo
 sudo apt update
-sudo apt install -y nano git wget curl tmux bc sysstat jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
+sudo apt install -y nano git wget ufw curl tmux bc sysstat jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli
 mkdir ~/.libra &> /dev/null 
 
@@ -77,6 +77,8 @@ echo "Fullnode config in operator.yaml updated."
 echo ""
 echo -e "\e[1m\e[32m5. Run libra node.\e[0m"
 echo ""
+sudo ufw enable &> /dev/null;
+sudo ufw allow ssh &> /dev/null;sudo ufw allow 6180 &> /dev/null;sudo ufw allow 6181 &> /dev/null;sudo ufw allow 6182 &> /dev/null;sudo ufw allow 9100 &> /dev/null;sudo ufw allow 8080 &> /dev/null;
 sleep 2
 PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
 session="node"
