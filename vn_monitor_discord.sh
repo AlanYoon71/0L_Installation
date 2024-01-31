@@ -153,8 +153,8 @@ while true; do
   sleep 0.2
   BALANCEUDIFF=`echo "$BALANCEU2 - $BALANCEU1" | bc`
   sleep 0.2
-  if [[ $BALANCETDIFF -ge 0 ]]; then BALANCETDIFF="+$BALANCETDIFF"; fi
-  if [[ $BALANCEUDIFF -ge 0 ]]; then BALANCEUDIFF="+$BALANCEUDIFF"; fi
+  if (( $(echo "$BALANCETDIFF >= 0" | bc -l) )); then BALANCETDIFF="+$BALANCETDIFF"; fi
+  if (( $(echo "$BALANCEUDIFF >= 0" | bc -l) )); then BALANCEUDIFF="+$BALANCEUDIFF"; fi
   if [ -e "vn_start_time.txt" ]; then
     start_time=$(< "vn_start_time.txt")
   fi
