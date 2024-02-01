@@ -251,9 +251,9 @@ while true; do
           then
             :
           else
-            message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
+            message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
             send_discord_message "$message"
           fi
           if [[ $SETCHECK2 -eq 0 ]]
@@ -326,9 +326,9 @@ while true; do
           then
             :
           else
-            message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
+            message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
             send_discord_message "$message"
           fi
           message="\`\`\`Lost connection with Validator.\`\`\`"
@@ -347,9 +347,9 @@ while true; do
           then
             :
           else
-            message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
+            message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
             send_discord_message "$message"
           fi
           message="\`\`\`diff\n+ Connected to Validator successfully. +\n\`\`\`"
