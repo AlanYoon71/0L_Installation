@@ -60,17 +60,19 @@ start_flag=0
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 sleep 0.2
 EPOCH1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
-sleep 0.5
+sleep 0.2
 LEDGER1=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
 sleep 0.2
 HEIGHT1=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
 sleep 0.2
 PROP1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\" | grep -o '[0-9]*'`
 sleep 0.2
+NETREWARD1=$(libra query resource --resource-path-string 0x1::proof_of_fee::ConsensusReward --account 0x1 | jq -r '.net_reward' | awk '{printf "%.2f\n", $1/1000000}')
+sleep 0.2
 BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 2)
-sleep 1
+sleep 0.2
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 1)
-sleep 1
+sleep 0.2
 INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
 OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
 if [[ -z $INBOUND ]]; then INBOUND=0; fi
@@ -106,7 +108,7 @@ while true; do
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
   EPOCH2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
-  sleep 0.5
+  sleep 0.2
   LEDGER2=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
   sleep 0.2
   HEIGHT2=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
@@ -115,12 +117,14 @@ while true; do
   sleep 0.2
   JAIL=`libra query resource --resource-path-string 0x1::jail::Jail --account $accountinput | jq -r .is_jailed | grep -q "false" && echo "Not jailed." || echo "You are jailed."`
   sleep 0.2
+  NETREWARD2=$(libra query resource --resource-path-string 0x1::proof_of_fee::ConsensusReward --account 0x1 | jq -r '.net_reward' | awk '{printf "%.2f\n", $1/1000000}')
+  sleep 0.2
   BALANCET2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 2)
-  sleep 1
+  sleep 0.2
   BALANCEU2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 1)
-  sleep 1
+  sleep 0.2
   VOUCH=`libra query resource --resource-path-string 0x1::vouch::MyVouches --account $accountinput | jq '.my_buddies | map(select(startswith("0x"))) | length'`
-  sleep 1
+  sleep 0.2
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
@@ -142,6 +146,8 @@ while true; do
   if [[ -z $LEDGER1 ]]; then LEDGER1=0; fi
   if [[ -z $LEDGER2 ]]; then LEDGER2=0; fi
   if [[ -z $SETCHECK2 ]]; then SETCHECK2=0; fi
+  if [[ -z $NETREWARD1 ]]; then NETREWARD1=0; fi
+  if [[ -z $NETREWARD2 ]]; then NETREWARD2=0; fi
   sleep 0.2
   LEDGERDIFF=`expr $LEDGER2 - $LEDGER1`
   LAG=`expr $LEDGER2 - $SYNC2`
@@ -149,10 +155,10 @@ while true; do
   EPOCHDIFF=`expr $EPOCH2 - $EPOCH1`
   SYNCDIFF=`expr $SYNC2 - $SYNC1`
   PROPDIFF=`expr $PROP2 - $PROP1`
+  NETREWARDDIFF=`echo "$NETREWARD2 - $NETREWARD1" | bc`
   BALANCETDIFF=`echo "$BALANCET2 - $BALANCET1" | bc`
-  sleep 0.2
   BALANCEUDIFF=`echo "$BALANCEU2 - $BALANCEU1" | bc`
-  sleep 0.2
+  if (( $(echo "$NETREWARDDIFF >= 0" | bc -l) )); then NETREWARDDIFF="+$NETREWARDDIFF"; fi
   if (( $(echo "$BALANCETDIFF >= 0" | bc -l) )); then BALANCETDIFF="+$BALANCETDIFF"; fi
   if (( $(echo "$BALANCEUDIFF >= 0" | bc -l) )); then BALANCEUDIFF="+$BALANCEUDIFF"; fi
   if [ -e "vn_start_time.txt" ]; then
@@ -251,16 +257,16 @@ while true; do
         else
           message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
+          message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Net reward : $NETREWARD1 ---> $NETREWARD2 ( $NETREWARDDIFF )  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
           timer=0
-          message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
+          message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
           send_discord_message "$message"
           if [[ $SETCHECK2 -eq 0 ]]
           then
-            message="\`\`\`You are not in validator set. $JAIL\`\`\`"
+            message="\`\`\`You are not in set. $JAIL\`\`\`"
             send_discord_message "$message"
             rm -f vn_start_time.txt
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
@@ -270,7 +276,7 @@ while true; do
           else
             message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
+            message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Net reward : $NETREWARD1 ---> $NETREWARD2 ( $NETREWARDDIFF )  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`diff\n+ You entered the set successfully. +\n\`\`\`"
             send_discord_message "$message"
@@ -311,13 +317,13 @@ while true; do
           if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
           SETCHECK2=`expr $INBOUND + $OUTBOUND`
           ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-          message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
+          message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
           send_discord_message "$message"
           if [[ $SETCHECK2 -eq 0 ]]
           then
-            message="\`\`\`You are not in validator set. $JAIL\`\`\`"
+            message="\`\`\`You are not in set. $JAIL\`\`\`"
             send_discord_message "$message"
             rm -f vn_start_time.txt
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
@@ -325,7 +331,7 @@ while true; do
             tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
             sleep 5
           else
-            message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
+            message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Net reward : $NETREWARD1 ---> $NETREWARD2 ( $NETREWARDDIFF )  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`You entered active validator set in new epoch again. But not proposing now. Validator needs to be restarted.\`\`\`"
             send_discord_message "$message"
@@ -353,13 +359,13 @@ while true; do
         send_discord_message "$message"
         message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nTotal    balance : $BALANCET1 $BALANCETDIFF > $BALANCET2\n\`\`\`"
+        message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nUnlocked balance : $BALANCEU1 $BALANCEUDIFF > $BALANCEU2\n\`\`\`"
+        message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
         send_discord_message "$message"
         if [[ $SETCHECK2 -eq 0 ]]
         then
-          message="\`\`\`You are not in validator set. $JAIL\`\`\`"
+          message="\`\`\`You are not in set. $JAIL\`\`\`"
           send_discord_message "$message"
           rm -f vn_start_time.txt
           PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
@@ -367,7 +373,7 @@ while true; do
           tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
           sleep 5
         else
-          message="\`\`\`arm\nEpoch jumped. $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
+          message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Net reward : $NETREWARD1 ---> $NETREWARD2 ( $NETREWARDDIFF )  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`diff\n+ You entered the set successfully. +\n\`\`\`"
           send_discord_message "$message"
@@ -438,7 +444,7 @@ EOF
             SETCHECK2=`expr $INBOUND + $OUTBOUND`
             if [[ $SETCHECK2 -eq 0 ]]
             then
-              message="\`\`\`You are not in validator set. $JAIL\`\`\`"
+              message="\`\`\`You are not in set. $JAIL\`\`\`"
               send_discord_message "$message"
               rm -f vn_start_time.txt
               PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
