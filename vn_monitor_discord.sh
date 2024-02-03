@@ -265,7 +265,7 @@ while true; do
         else
           message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCHNet\n\`\`\`"
+          message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nEpoch reward : $EPOCHREWARD1 ---> $EPOCHREWARD2 ( $EPOCHREWARDDIFF )\n\`\`\`"
           send_discord_message "$message"
@@ -288,7 +288,7 @@ while true; do
           else
             message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCHNet\n\`\`\`"
+            message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch reward : $EPOCHREWARD1 ---> $EPOCHREWARD2 ( $EPOCHREWARDDIFF )\n\`\`\`"
             send_discord_message "$message"
@@ -347,7 +347,7 @@ while true; do
             tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
             sleep 5
           else
-            message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCHNet\n\`\`\`"
+            message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch reward : $EPOCHREWARD1 ---> $EPOCHREWARD2 ( $EPOCHREWARDDIFF )\n\`\`\`"
             send_discord_message "$message"
@@ -393,7 +393,7 @@ while true; do
           tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
           sleep 5
         else
-          message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCHNet\n\`\`\`"
+          message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nEpoch reward : $EPOCHREWARD1 ---> $EPOCHREWARD2 ( $EPOCHREWARDDIFF )\n\`\`\`"
           send_discord_message "$message"
