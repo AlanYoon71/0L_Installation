@@ -1,10 +1,11 @@
 #!/bin/bash
 
 libra query resource --resource-path-string 0x1::fee_maker::EpochFeeMakerRegistry --account 0x1 | jq -r '.fee_makers[]' > validators_in_set.txt
+set_count=`cat validators_in_set.txt | wc -l`
 libra query resource --resource-path-string 0x1::validator_universe::ValidatorUniverse --account 0x1 | jq -r '.validators' > val_universe.txt
 
 echo ""
-echo "Validators’ identities in set"
+echo "Validators’ identities in set ( $set_count )"
 echo "============================="
 while IFS= read -r key; do
   val=$(grep -E "${key:0:6}|${key:1:6}|${key:2:6}|${key:3:6}|${key:4:6}|${key:5:6}" val_accounts_total.txt | awk '{print $1, $2}')
@@ -20,14 +21,14 @@ curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep last_voted_round{peer_id= > r
 awk 'NR==FNR{a[$0]; next} !($0 in a)' result1.txt result2.txt > result2_filtered.txt
 awk -F'peer_id="' '{print $2}' result2_filtered.txt | awk -F'"' '{print $1}' > result3.txt
 awk 'NR==FNR{a[substr($0, length($0)-5)]; next} !(substr($0, length($0)-5) in a)' result3.txt validators_in_set.txt > inactive_in_set.txt
-count=`cat inactive_in_set.txt | wc -l`
-if [[ $count -eq 0 ]]
+inactive_count=`cat inactive_in_set.txt | wc -l`
+if [[ $inactive_count -eq 0 ]]
 then
   echo ""
   echo "All validators are voting."
 else
   echo ""
-  echo "Inactive validators in set"
+  echo "Inactive validators in set ( $inactive_count )"
   echo "=========================="
   while IFS= read -r key; do
     val=$(grep -E "${key:0:6}|${key:1:6}|${key:2:6}|${key:3:6}|${key:4:6}|${key:5:6}" val_accounts_total.txt | awk '{print $1, $2}')
@@ -84,6 +85,7 @@ while IFS= read -r key; do
 done < max_bid_list.txt
 echo "=================================="
 echo "Highest bid value(qty) : $highest_bid_value ( $highest_bid_quantity )"
+echo ""
 echo "# Only the bid values of eligible validators are considered."
 while true; do
     echo ""
