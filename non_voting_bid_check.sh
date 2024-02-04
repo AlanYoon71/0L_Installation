@@ -10,9 +10,9 @@ while IFS= read -r key; do
   val=$(grep -E "${key:0:6}|${key:1:6}|${key:2:6}|${key:3:6}|${key:4:6}|${key:5:6}" val_accounts_total.txt | awk '{print $1, $2}')
   first_col="${val:32:4}...${val:60:4}"
   second_col=$(awk '{print $2}' <<< "$val")
-  echo "$first_col $second_col"
+  echo "$first_col   $second_col"
 done < validators_in_set.txt
-echo "=============================="
+echo "============================="
 
 libra query resource --resource-path-string 0x1::stake::ValidatorPerformance --account 0x1 | jq -r '.validators[].successful_proposals' > result1.txt
 sleep 120
@@ -23,7 +23,7 @@ inactive_count=`cat inactive_in_set.txt | wc -l`
 if [[ $inactive_count -eq 0 ]]
 then
   echo ""
-  echo "All validators are voting."
+  echo "All validators in set are proposing."
 else
   echo ""
   echo "Inactive validators in set ( $inactive_count )"
@@ -32,12 +32,12 @@ else
     val=$(grep -E "${key:0:6}|${key:1:6}|${key:2:6}|${key:3:6}|${key:4:6}|${key:5:6}" val_accounts_total.txt | awk '{print $1, $2}')
     first_col="${val:32:4}...${val:60:4}"
     second_col=$(awk '{print $2}' <<< "$val")
-    echo "$first_col $second_col"
+    echo "$first_col   $second_col"
   done < inactive_in_set.txt
-  echo "==========================="
+  echo "=========================="
 fi
 
-libra query resource --resource-path-string 0x1::validator_universe::ValidatorUniverse --account 0x1 | jq -r '.validators' | jq -r '.[]' > val_universe.txt
+# libra query resource --resource-path-string 0x1::validator_universe::ValidatorUniverse --account 0x1 | jq -r '.validators' | jq -r '.[]' > val_universe.txt
 grep -o -E '\w{6,}' val_universe.txt > val_universe_keys.txt
 grep -o -E '\w{6,}' validators_in_set.txt > validators_in_set_keys.txt
 grep -v -F -f validators_in_set_keys.txt val_universe_keys.txt > val_universe_filtered_keys.txt
@@ -69,53 +69,97 @@ for address in "${addresses[@]}"; do
     echo "$result $address" >> bid_list.txt
     sleep 3
 done
-highest_bid_value=$(awk 'NR==1{max=$1} $1>max{max=$1; count=1} $1==max{count++} END{print max}' bid_list.txt)
-highest_bid_quantity=$(awk 'NR==1{max=$1} $1>max{max=$1; count=1} $1==max{count++} END{printf "%d\n", count-1}' bid_list.txt)
-awk 'BEGIN {max = 0} {if ($1 > max) {max = $1; line = $0} else if ($1 == max) {line = line "\n" $0}} END {print line}' bid_list.txt | awk '{print $2}' > max_bid_list.txt
+#highest_bid_value=$(awk 'NR==1{max=$1} $1>max{max=$1; count=1} $1==max{count++} END{print max}' bid_list.txt)
+#highest_bid_quantity=$(awk 'NR==1{max=$1} $1>max{max=$1; count=1} $1==max{count++} END{printf "%d\n", count-1}' bid_list.txt)
+
+first_max=$(awk 'NR==1{max=$1} $1>max{max=$1; count=1} $1==max{count++} END{print max}' bid_list.txt)
+echo "$first_max" > first_max.txt
+second_max=$(awk -v first_max="$first_max" '$1<first_max{if($1>second_max) second_max=$1} END{print second_max}' bid_list.txt)
+echo "$second_max" > second_max.txt
+third_max=$(awk -v first_max="$first_max" -v second_max="$second_max" '$1<first_max && $1<second_max{if($1>third_max) third_max=$1} END{print third_max}' bid_list.txt)
+echo "$third_max" > third_max.txt
+first_max_count=$(awk -v first_max="$first_max" '$1==first_max{count++} END{print count}' bid_list.txt)
+echo "$first_max_count" > first_max_count.txt
+second_max_count=$(awk -v second_max="$second_max" '$1==second_max{count++} END{print count}' bid_list.txt)
+echo "$second_max_count" > second_max_count.txt
+third_max_count=$(awk -v third_max="$third_max" '$1==third_max{count++} END{print count}' bid_list.txt)
+echo "$third_max_count" > third_max_count.txt
+
+first_max_account=$(awk -v first_max="$first_max" '$1 == first_max {print $2}' bid_list.txt)
+echo "$first_max_account" > first_max_account.txt
+second_max_account=$(awk -v second_max="$second_max" '$1 == second_max {print $2}' bid_list.txt)
+echo "$second_max_account" > second_max_account.txt
+third_max_account=$(awk -v third_max="$third_max" '$1 == third_max {print $2}' bid_list.txt)
+echo "$third_max_account" > third_max_account.txt
+
 echo ""
-echo "Highest bid validators outside set"
+echo "High bid validators outside set"
 echo "=================================="
 while IFS= read -r key; do
   val=$(grep -E "${key:0:6}|${key:1:6}|${key:2:6}|${key:3:6}|${key:4:6}|${key:5:6}" val_accounts_total.txt | awk '{print $1, $2}')
   first_col="${val:32:4}...${val:60:4}"
   second_col=$(awk '{print $2}' <<< "$val")
-  echo "$first_col $second_col"
-done < max_bid_list.txt
+  echo "$first_col   $first_max   $second_col"
+done < first_max_account.txt
+while IFS= read -r key; do
+  val=$(grep -E "${key:0:6}|${key:1:6}|${key:2:6}|${key:3:6}|${key:4:6}|${key:5:6}" val_accounts_total.txt | awk '{print $1, $2}')
+  first_col="${val:32:4}...${val:60:4}"
+  second_col=$(awk '{print $2}' <<< "$val")
+  echo "$first_col   $second_max   $second_col"
+done < second_max_account.txt
+while IFS= read -r key; do
+  val=$(grep -E "${key:0:6}|${key:1:6}|${key:2:6}|${key:3:6}|${key:4:6}|${key:5:6}" val_accounts_total.txt | awk '{print $1, $2}')
+  first_col="${val:32:4}...${val:60:4}"
+  second_col=$(awk '{print $2}' <<< "$val")
+  echo "$first_col   $third_max   $second_col"
+done < third_max_account.txt
 echo "=================================="
-echo "Highest bid value(qty) : $highest_bid_value ( $highest_bid_quantity )"
-echo ""
-echo "# Only the bid values of eligible validators are considered."
+
+echo "1st group : $first_max ( $first_max_count )"
+echo "2nd group : $second_max ( $second_max_count )"
+echo "3rd group : $third_max ( $third_max_count )"
+
+echo "# Only qualified validators are considered."
+sleep 2
 while true; do
     echo ""
-    echo "If you’d like your bid value to match the highest bid outside the set,"
-    echo "please input your 64-digit validator account address (excluding ‘0x’)."
-    read -p "account : " accountinput
+    echo ""
+    echo "If you’d like to change your current bid value,"
+    echo "input your 64-digit address(exclude ‘0x’) and bid value(ex. 100)."
+    read -p "account   : " accountinput
+    read -p "bid value : " input_value
     echo ""
     if [[ $accountinput =~ ^[A-Z0-9]{1,31}$ ]] || [[ -z $accountinput ]]; then
         echo "Input 64-digit full account address exactly, please."
-        echo "If you want to skip this action, simply press Ctrl+C. :)"
+        echo "If you want to stop proceed, simply press Ctrl+C. :)"
     else
         export accountinput=$(echo $accountinput | tr 'A-Z' 'a-z')
         echo "Your account is $accountinput. Accepted."
+        echo "Input value is $input_value."
+        read -p "Mnemonic  : " MNEMONIC
+        sleep 1
         break
     fi
 done
 bid1=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
-if [[ $bid1 -ge $highest_bid_value ]]
-then
-  :
-else
-  recommended_bid_value=$(echo "scale=3; $highest_bid_value / 1000" | bc)
-  echo "Recommended bid value : $highest_bid_value"
-  expect <<EOF
-  spawn libra txs validator pof --bid-pct $recommended_bid_value --expiry 1000
-  expect "🔑"
-  send "$MNEMONIC\r"
-  expect eof
+value_fix=$(echo "scale=3; $input_value / 1000" | bc)
+expect <<EOF
+spawn libra txs validator pof --bid-pct $value_fix --expiry 1000
+expect "🔑"
+send "$MNEMONIC\r"
+expect eof
 EOF
-  sleep 5
-  bid2=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
-  bid1=$(awk "BEGIN { printf \"%.1f\", $bid1 / 10 }") && bid1="$bid1%"
-  bid2=$(awk "BEGIN { printf \"%.1f\", $bid2 / 10 }") && bid2="$bid2%"
+sleep 5
+bid2=`libra query resource --resource-path-string 0x1::proof_of_fee::ProofOfFeeAuction --account $accountinput | jq -r '.bid' | tr -d '\"'`
+if [[ $bid1 -eq $bid2 ]]
+then
+  echo ""
+  echo "Bid value has not changed."
+else
+  echo ""
   echo "Bid value updated! $bid1 ----> $bid2"
 fi
+sleep 2
+echo ""
+echo ""
+echo "Done!"
