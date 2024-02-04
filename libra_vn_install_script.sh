@@ -52,9 +52,9 @@ echo ""
 sleep 1
 
 pip install gdown &> /dev/null && pip install --upgrade gdown &> /dev/null
-cd ~ && gdown --id 1B7aY6HRiSwHlssBRE_lqp2DRozPlCBuW && gdown --id 1LPObdz6IDMtkvBMuSoPBbVMac_LvZ6Yo
+cd ~ && gdown --id 1e7c7Tu4v6EeuST5AnIR8s7LcllbYUMxv && gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p
 tar -xvf data_04Feb.zip && rm data_04Feb.zip* && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip*
-rm -rf ~/.libra/data; rm -rf ~/.libra/genesis;
+rm -rf ~/.libra/data; rm -rf ~/.libra/genesis; rm ./data_04Feb/*.json;
 mv ./data_04Feb ~/.libra/data && mv ./genesis_04Feb ~/.libra/genesis
 
 echo ""
