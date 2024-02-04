@@ -50,11 +50,13 @@ echo ""
 echo -e "\e[1m\e[32m4. Restore db for fast catch-up.\e[0m"
 echo ""
 sleep 1
+
 pip install gdown &> /dev/null && pip install --upgrade gdown &> /dev/null
-cd ~ && gdown --id 1x3H-VeMfCu6eJyAzqN-Bv_PE0xbt4jtn && gdown --id 1D57ZaYnuPNwgx0JLzDMOGf6SS77EPtFX
-tar -xvf data_03Feb_fixed.zip && rm data_03Feb_fixed.zip* && tar -xvf genesis_03Feb_fixed.zip && rm genesis_03Feb_fixed.zip*
+cd ~ && gdown --id 1B7aY6HRiSwHlssBRE_lqp2DRozPlCBuW && gdown --id 1LPObdz6IDMtkvBMuSoPBbVMac_LvZ6Yo
+tar -xvf data_04Feb.zip && rm data_04Feb.zip* && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip*
 rm -rf ~/.libra/data; rm -rf ~/.libra/genesis;
-mv ./data_03Feb_fixed ~/.libra/data && mv ./genesis_03Feb_fixed ~/.libra/genesis
+mv ./data_04Feb ~/.libra/data && mv ./genesis_04Feb ~/.libra/genesis
+
 echo ""
 operator_update=$(grep full_node_network_public_key ~/.libra/public-keys.yaml)
 sed -i "s/full_node_network_public_key:.*/$operator_update/" ~/.libra/operator.yaml &> /dev/null
