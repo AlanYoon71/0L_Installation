@@ -1,9 +1,8 @@
 #!/bin/bash
 
-libra query resource --resource-path-string 0x1::fee_maker::EpochFeeMakerRegistry --account 0x1 | jq -r '.fee_makers[]' > validators_in_set.txt
+libra query resource --resource-path-string 0x1::stake::ValidatorSet --account 0x1 | jq -r '.active_validators[].addr' > validators_in_set.txt
 set_count=`cat validators_in_set.txt | wc -l`
-libra query resource --resource-path-string 0x1::validator_universe::ValidatorUniverse --account 0x1 | jq -r '.validators' > val_universe.txt
-
+libra query resource --resource-path-string 0x1::epoch_boundary::BoundaryStatus --account 0x1 | jq -r '.incoming_only_qualified_bidders' | jq -r '.[]' > val_universe.txt
 echo ""
 echo "Validators’ identities in set ( $set_count )"
 echo "============================="
@@ -15,12 +14,11 @@ while IFS= read -r key; do
 done < validators_in_set.txt
 echo "=============================="
 
-curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep last_voted_round{peer_id= > result1.txt
+libra query resource --resource-path-string 0x1::stake::ValidatorPerformance --account 0x1 | jq -r '.validators[].successful_proposals' > result1.txt
 sleep 120
-curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep last_voted_round{peer_id= > result2.txt
-awk 'NR==FNR{a[$0]; next} !($0 in a)' result1.txt result2.txt > result2_filtered.txt
-awk -F'peer_id="' '{print $2}' result2_filtered.txt | awk -F'"' '{print $1}' > result3.txt
-awk 'NR==FNR{a[substr($0, length($0)-5)]; next} !(substr($0, length($0)-5) in a)' result3.txt validators_in_set.txt > inactive_in_set.txt
+libra query resource --resource-path-string 0x1::stake::ValidatorPerformance --account 0x1 | jq -r '.validators[].successful_proposals' > result2.txt
+comm -12 <(sort result1.txt) <(sort result2.txt) > common_rows.txt
+awk 'NR==FNR { a[$1]; next } FNR in a' common_rows.txt validators_in_set.txt > inactive_in_set.txt
 inactive_count=`cat inactive_in_set.txt | wc -l`
 if [[ $inactive_count -eq 0 ]]
 then
