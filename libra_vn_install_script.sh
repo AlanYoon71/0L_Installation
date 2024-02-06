@@ -5,16 +5,16 @@ echo -e "\e[1m\e[32m1. Prepare environment and build for libra.\e[0m"
 echo ""
 sleep 2
 cd ~
+apt update
 apt install sudo
-sudo apt update
 sudo apt install -y nano git wget ufw curl tmux bc sysstat jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
-curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . ~/.bashrc && cargo install toml-cli
-mkdir ~/.libra &> /dev/null 
-
+curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . .bashrc
+mkdir ~/.libra &> /dev/null;
 if [ -d ~/libra-framework ]; then
-    cd ~/libra-framework && git fetch && git pull 
+    cd ~/libra-framework && git fetch && git pull
 else
-    git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework && bash ./util/dev_setup.sh -t && source ~/.bashrc
+    git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework
+    bash ./util/dev_setup.sh -t && source ~/.bashrc
     cd ~/libra-framework
 fi
 
