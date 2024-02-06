@@ -8,7 +8,7 @@ cd ~
 apt update
 apt install sudo
 sudo apt install -y nano git wget ufw curl tmux bc sysstat jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
-curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && . .bashrc
+curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && echo "PATH=$PATH:$HOME/.cargo/bin:$HOME/.cargo/env" >> ~/.bashrc && . .bashrc
 mkdir ~/.libra &> /dev/null;
 if [ -d ~/libra-framework ]; then
     cd ~/libra-framework && git fetch && git pull
