@@ -80,11 +80,11 @@ restart_count=0
 start_flag=0
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 sleep 0.2
-EPOCH1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
+EPOCH1=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.epoch'`
 sleep 0.2
 LEDGER1=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
 sleep 0.2
-HEIGHT1=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
+HEIGHT1=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.block_height' | grep -o -P '\d+'`
 sleep 0.2
 PROP1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\" | grep -o '[0-9]*'`
 sleep 0.2
@@ -148,11 +148,11 @@ while true; do
   sleep 600
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
-  EPOCH2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
+  EPOCH2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.epoch'`
   sleep 0.2
   LEDGER2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
   sleep 0.2
-  HEIGHT2=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
+  HEIGHT2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.block_height' | grep -o -P '\d+'`
   sleep 0.2
   PROP2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_safety_rules_queries\{method=\"sign_proposal\",result=\"success\" | grep -o '[0-9]*'`
   sleep 0.2
@@ -242,7 +242,7 @@ while true; do
   #SETCHECK2=`expr $INBOUND + $OUTBOUND`
   #if [[ -z $SETCHECK2 ]]; then SETCHECK2=0; fi
   ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-  if [[ $LEDGER1 -ne $LEDGER2 ]] && [[ $HEIGHT1 -eq $HEIGHT2 ]]
+  if [[ $LEDGER1 -ne $LEDGER2 ]] && [[ $SYNC1 -eq $SYNC2 ]]
   then
     if [[ $restart_count -eq 0 ]]
     then
@@ -254,11 +254,17 @@ while true; do
       sleep 5
       restart_count=1
       rm -f vn_start_time.txt
-      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
-      sleep 30
+      if [[ $INSET -eq 0 ]]
+      then
+        tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+        sleep 20
+      else
+        tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+        sleep 20
+      fi
       LEDGER2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
       sleep 0.2
-      HEIGHT2=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
+      HEIGHT2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.block_height' | grep -o -P '\d+'`
       sleep 0.2
       if [[ -z $LEDGER2 ]]; then LEDGER2=0; fi
       if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
