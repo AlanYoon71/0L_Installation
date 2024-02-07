@@ -42,6 +42,15 @@ send_discord_message() {
 
 message="\`\`\`Script started!\`\`\`"
 send_discord_message "$message"
+accountlaststring="${accountinput: -6}"
+INSET1=`libra query resource --resource-path-string 0x1::stake::ValidatorSet --account 0x1 | jq -r '.active_validators[].addr' | grep -P $accountlaststring`
+sleep 1
+if [[ -z $INSET1 ]]
+then
+  INSET1=0
+else
+  INSET1=1
+fi
 session="node"
 tmux new-session -d -s $session &> /dev/null
 window=0
@@ -50,10 +59,22 @@ PIDCHECK=$(pgrep libra)
 sleep 0.5
 if [[ -z $PIDCHECK ]]
 then
-  message="\`\`\`No running node process now. So this script will start node and check if you are in set.\`\`\`"
-  send_discord_message "$message"
-  tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
-  sleep 60
+  if [[ $INSET1 -eq 0 ]]
+  then
+    message="\`\`\`No running node process now. And you are not in set.\`\`\`"
+    send_discord_message "$message"
+    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+    message="\`\`\`VFN started.\`\`\`"
+    send_discord_message "$message"
+    sleep 60
+  else
+    message="\`\`\`No running node process now. And you are in set.\`\`\`"
+    send_discord_message "$message"
+    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+    message="\`\`\`Validator started.\`\`\`"
+    send_discord_message "$message"
+    sleep 60
+  fi
 fi
 restart_count=0
 start_flag=0
@@ -61,7 +82,7 @@ SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_versio
 sleep 0.2
 EPOCH1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
 sleep 0.2
-LEDGER1=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
+LEDGER1=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
 sleep 0.2
 HEIGHT1=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
 sleep 0.2
@@ -79,8 +100,8 @@ INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direct
 OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
 if [[ -z $INBOUND ]]; then INBOUND=0; fi
 if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-SETCHECK1=`expr $INBOUND + $OUTBOUND`
-if [[ -z $SETCHECK1 ]]; then SETCHECK1=0; fi
+#SETCHECK1=`expr $INBOUND + $OUTBOUND`
+#if [[ -z $SETCHECK1 ]]; then SETCHECK1=0; fi
 while true; do
   if [[ $start_flag -eq 1 ]]
   then
@@ -91,27 +112,45 @@ while true; do
     PROP1=$PROP2
     BALANCET1=$BALANCET2
     BALANCEU1=$BALANCEU2
-    SETCHECK1=$SETCHECK2
+    #SETCHECK1=$SETCHECK2
+    INSET1=$INSET2
+  fi
+  accountlaststring="${accountinput: -6}"
+  INSET2=`libra query resource --resource-path-string 0x1::stake::ValidatorSet --account 0x1 | jq -r '.active_validators[].addr' | grep -P $accountlaststring`
+  sleep 1
+  if [[ -z $INSET2 ]]
+  then
+    INSET2=0
+  else
+    INSET2=1
   fi
   PIDCHECK=$(pgrep libra)
   sleep 0.5
   if [[ -z $PIDCHECK ]]
   then
-    session="node"
-    tmux new-session -d -s $session &> /dev/null
-    window=0
-    tmux rename-window -t $session:$window 'node' &> /dev/null
-    message="\`\`\`No running node process now. So this script will start node and check if you are in set.\`\`\`"
-    send_discord_message "$message"
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
-    sleep 60
+    if [[ $INSET2 -eq 0 ]]
+    then
+      message="\`\`\`No running node process now. And you are not in set.\`\`\`"
+      send_discord_message "$message"
+      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+      message="\`\`\`VFN started.\`\`\`"
+      send_discord_message "$message"
+      sleep 60
+    else
+      message="\`\`\`No running node process now. And you are in set.\`\`\`"
+      send_discord_message "$message"
+      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+      message="\`\`\`Validator started.\`\`\`"
+      send_discord_message "$message"
+      sleep 60
+    fi
   fi
   sleep 600
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
   EPOCH2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
   sleep 0.2
-  LEDGER2=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
+  LEDGER2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
   sleep 0.2
   HEIGHT2=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
   sleep 0.2
@@ -133,7 +172,7 @@ while true; do
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-  SETCHECK2=`expr $INBOUND + $OUTBOUND`
+  #SETCHECK2=`expr $INBOUND + $OUTBOUND`
   ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
   if [[ -z $HEIGHT1 ]]; then HEIGHT1=0; fi
   if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
@@ -149,7 +188,7 @@ while true; do
   if [[ -z $PROP2 ]]; then PROP2=0; fi
   if [[ -z $LEDGER1 ]]; then LEDGER1=0; fi
   if [[ -z $LEDGER2 ]]; then LEDGER2=0; fi
-  if [[ -z $SETCHECK2 ]]; then SETCHECK2=0; fi
+  #if [[ -z $SETCHECK2 ]]; then SETCHECK2=0; fi
   if [[ -z $EPOCHREWARD1 ]]; then EPOCHREWARD1=0; fi
   if [[ -z $EPOCHREWARD2 ]]; then EPOCHREWARD2=0; fi
   if [[ -z $NETREWARD1 ]]; then NETREWARD1=0; fi
@@ -172,7 +211,7 @@ while true; do
   if [ -e "vn_start_time.txt" ]; then
     start_time=$(< "vn_start_time.txt")
   fi
-  if [[ $SETCHECK2 -gt 0 ]] && [[ $SETCHECK1 -eq 0 ]]
+  if [[ $INSET2 -gt 0 ]] && [[ $INSET1 -eq 0 ]]
   then
     start_time=$(date +%s)
     echo "$start_time" > "vn_start_time.txt"
@@ -187,7 +226,7 @@ while true; do
     tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
     sleep 30
   fi
-  if [[ $SETCHECK2 -eq 0 ]]
+  if [[ $INSET2 -eq 0 ]]
   then
     PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
     sleep 5
@@ -200,20 +239,24 @@ while true; do
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-  SETCHECK2=`expr $INBOUND + $OUTBOUND`
-  if [[ -z $SETCHECK2 ]]; then SETCHECK2=0; fi
+  #SETCHECK2=`expr $INBOUND + $OUTBOUND`
+  #if [[ -z $SETCHECK2 ]]; then SETCHECK2=0; fi
   ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-  if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
+  if [[ $LEDGER1 -ne $LEDGER2 ]] && [[ $HEIGHT1 -eq $HEIGHT2 ]]
   then
     if [[ $restart_count -eq 0 ]]
     then
+      message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+      send_discord_message "$message"
+      message="\`\`\`diff\n- 0l Network is running, but your local node stopped syncing!! -\n\`\`\`"
+      send_discord_message "$message"
       PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
       sleep 5
       restart_count=1
       rm -f vn_start_time.txt
       tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
       sleep 30
-      LEDGER2=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
+      LEDGER2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
       sleep 0.2
       HEIGHT2=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
       sleep 0.2
@@ -225,7 +268,7 @@ while true; do
   then
     if [[ $HEIGHT1 -eq $HEIGHT2 ]]
     then
-      message="\`\`\`= = = = = Network stopped!! = = = = =\`\`\`"
+      message="\`\`\`= = = = = Open libra network stopped!! = = = = =\`\`\`"
       send_discord_message "$message"
       if [[ $SYNC2 -eq $LEDGER2 ]]
       then
@@ -239,7 +282,7 @@ while true; do
   else
     if [[ $PROPDIFF -eq 0 ]]
     then
-      if [[ $SETCHECK2 -eq 0 ]]
+      if [[ $INSET2 -eq 0 ]]
       then
         message="\`\`\`fix\n+ ------ VFN ------ +\n\`\`\`"
         send_discord_message "$message"
@@ -276,7 +319,7 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
           send_discord_message "$message"
-          if [[ $SETCHECK2 -eq 0 ]]
+          if [[ $INSET2 -eq 0 ]]
           then
             message="\`\`\`You are not in set. $JAIL\`\`\`"
             send_discord_message "$message"
@@ -331,13 +374,13 @@ while true; do
           OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
           if [[ -z $INBOUND ]]; then INBOUND=0; fi
           if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-          SETCHECK2=`expr $INBOUND + $OUTBOUND`
+          #SETCHECK2=`expr $INBOUND + $OUTBOUND`
           ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
           message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
           send_discord_message "$message"
-          if [[ $SETCHECK2 -eq 0 ]]
+          if [[ $INSET2 -eq 0 ]]
           then
             message="\`\`\`You are not in set. $JAIL\`\`\`"
             send_discord_message "$message"
@@ -373,7 +416,7 @@ while true; do
         OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
         if [[ -z $INBOUND ]]; then INBOUND=0; fi
         if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-        SETCHECK2=`expr $INBOUND + $OUTBOUND`
+        #SETCHECK2=`expr $INBOUND + $OUTBOUND`
         ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
@@ -383,7 +426,7 @@ while true; do
         send_discord_message "$message"
         message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
         send_discord_message "$message"
-        if [[ $SETCHECK2 -eq 0 ]]
+        if [[ $INSET2 -eq 0 ]]
         then
           message="\`\`\`You are not in set. $JAIL\`\`\`"
           send_discord_message "$message"
@@ -465,8 +508,8 @@ EOF
             OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
             if [[ -z $INBOUND ]]; then INBOUND=0; fi
             if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
-            SETCHECK2=`expr $INBOUND + $OUTBOUND`
-            if [[ $SETCHECK2 -eq 0 ]]
+            #SETCHECK2=`expr $INBOUND + $OUTBOUND`
+            if [[ $INSET2 -eq 0 ]]
             then
               message="\`\`\`You are not in set. $JAIL\`\`\`"
               send_discord_message "$message"
