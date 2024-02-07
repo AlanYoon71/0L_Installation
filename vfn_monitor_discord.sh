@@ -58,9 +58,9 @@ SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_versio
 sleep 0.2
 EPOCH1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
 sleep 0.5
-LEDGER1=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
+LEDGER1=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
 sleep 0.2
-HEIGHT1=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
+HEIGHT1=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.block_height' | grep -o -P '\d+'`
 sleep 0.2
 if [[ -z $accountinput ]]
 then
@@ -106,9 +106,9 @@ while true; do
   sleep 0.2
   EPOCH2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_storage_next_block_epoch | grep -o '[0-9]*'`
   sleep 0.5
-  LEDGER2=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
+  LEDGER2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
   sleep 0.2
-  HEIGHT2=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
+  HEIGHT2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.block_height' | grep -o -P '\d+'`
   sleep 0.2
   if [[ -z $accountinput ]]
   then
@@ -185,7 +185,7 @@ while true; do
   if [[ -z $public_in ]]; then public_in=0; fi
   if [[ -z $public_out ]]; then public_out=0; fi
   SETCHECK2=`expr $INBOUND + $OUTBOUND`
-  if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $HEIGHT1 -eq $HEIGHT2 ]]
+  if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $SYNC1 -eq $SYNC2 ]]
   then
     if [[ $restart_count -eq 0 ]]
     then
@@ -197,9 +197,9 @@ while true; do
       rm -f vfn_start_time.txt
       tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
       sleep 10
-      LEDGER2=`curl -s localhost:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
+      LEDGER2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
       sleep 0.2
-      HEIGHT2=`curl -s localhost:8080/v1/ | jq -r '.block_height'`
+      HEIGHT2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.block_height' | grep -o -P '\d+'`
       sleep 0.2
       if [[ -z $LEDGER2 ]]; then LEDGER2=0; fi
       if [[ -z $HEIGHT2 ]]; then HEIGHT2=0; fi
