@@ -100,6 +100,14 @@ INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direct
 OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
 if [[ -z $INBOUND ]]; then INBOUND=0; fi
 if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+vfn_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+vfn_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+if [[ -z $vfn_in ]]; then vfn_in=0; fi
+if [[ -z $vfn_out ]]; then vfn_out=0; fi
+public_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+public_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+if [[ -z $public_in ]]; then public_in=0; fi
+if [[ -z $public_out ]]; then public_out=0; fi
 #SETCHECK1=`expr $INBOUND + $OUTBOUND`
 #if [[ -z $SETCHECK1 ]]; then SETCHECK1=0; fi
 while true; do
@@ -172,6 +180,14 @@ while true; do
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+  vfn_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+  vfn_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+  if [[ -z $vfn_in ]]; then vfn_in=0; fi
+  if [[ -z $vfn_out ]]; then vfn_out=0; fi
+  public_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+  public_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+  if [[ -z $public_in ]]; then public_in=0; fi
+  if [[ -z $public_out ]]; then public_out=0; fi
   #SETCHECK2=`expr $INBOUND + $OUTBOUND`
   ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
   if [[ -z $HEIGHT1 ]]; then HEIGHT1=0; fi
@@ -239,6 +255,14 @@ while true; do
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
   if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+  vfn_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+  vfn_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+  if [[ -z $vfn_in ]]; then vfn_in=0; fi
+  if [[ -z $vfn_out ]]; then vfn_out=0; fi
+  public_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+  public_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+  if [[ -z $public_in ]]; then public_in=0; fi
+  if [[ -z $public_out ]]; then public_out=0; fi
   #SETCHECK2=`expr $INBOUND + $OUTBOUND`
   #if [[ -z $SETCHECK2 ]]; then SETCHECK2=0; fi
   ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
@@ -290,7 +314,7 @@ while true; do
     then
       if [[ $INSET2 -eq 0 ]]
       then
-        message="\`\`\`fix\n+ ------ VFN ------ +\n\`\`\`"
+        message="\`\`\`fix\n+ ------ VFN ------ +  VFN [ $vfn_in : $vfn_out ]  Public [ $public_in : $public_out ]\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -380,6 +404,14 @@ while true; do
           OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
           if [[ -z $INBOUND ]]; then INBOUND=0; fi
           if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+          vfn_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+          vfn_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+          if [[ -z $vfn_in ]]; then vfn_in=0; fi
+          if [[ -z $vfn_out ]]; then vfn_out=0; fi
+          public_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+          public_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+          if [[ -z $public_in ]]; then public_in=0; fi
+          if [[ -z $public_out ]]; then public_out=0; fi
           #SETCHECK2=`expr $INBOUND + $OUTBOUND`
           ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
           message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
@@ -422,6 +454,14 @@ while true; do
         OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
         if [[ -z $INBOUND ]]; then INBOUND=0; fi
         if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+        vfn_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+        vfn_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+        if [[ -z $vfn_in ]]; then vfn_in=0; fi
+        if [[ -z $vfn_out ]]; then vfn_out=0; fi
+        public_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+        public_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+        if [[ -z $public_in ]]; then public_in=0; fi
+        if [[ -z $public_out ]]; then public_out=0; fi
         #SETCHECK2=`expr $INBOUND + $OUTBOUND`
         ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
@@ -514,6 +554,14 @@ EOF
             OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
             if [[ -z $INBOUND ]]; then INBOUND=0; fi
             if [[ -z $OUTBOUND ]]; then OUTBOUND=0; fi
+            vfn_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+            vfn_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
+            if [[ -z $vfn_in ]]; then vfn_in=0; fi
+            if [[ -z $vfn_out ]]; then vfn_out=0; fi
+            public_in=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+            public_out=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Public | grep -oE '[0-9]+$'`
+            if [[ -z $public_in ]]; then public_in=0; fi
+            if [[ -z $public_out ]]; then public_out=0; fi
             #SETCHECK2=`expr $INBOUND + $OUTBOUND`
             if [[ $INSET2 -eq 0 ]]
             then
