@@ -225,9 +225,9 @@ while true; do
     then
       if [[ $SETCHECK2 -eq 0 ]]
       then
-        message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
+        message="\`\`\`fix\n+ ------ VFN ------ +\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+        message="\`\`\`arm\nConnections : VFN [ $INBOUND : $OUTBOUND ]  Public [ $public_in : $public_out ]\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -273,7 +273,7 @@ while true; do
         PIDCHECK=$(pgrep libra)
         message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+        message="\`\`\`arm\nConnections : VFN [ $INBOUND : $OUTBOUND ]  Public [ $public_in : $public_out ]\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
@@ -314,9 +314,9 @@ while true; do
         PIDCHECK=$(pgrep libra)
         if [[ $SETCHECK2 -eq 0 ]]
         then
-          message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
+          message="\`\`\`fix\n+ ------ VFN ------ +\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+          message="\`\`\`arm\nConnections : VFN [ $INBOUND : $OUTBOUND ]  Public [ $public_in : $public_out ]\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
@@ -337,7 +337,7 @@ while true; do
         else
           message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+          message="\`\`\`arm\nConnections : VFN [ $INBOUND : $OUTBOUND ]  Public [ $public_in : $public_out ]\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
@@ -375,16 +375,16 @@ while true; do
           fi
           if [[ $SETCHECK2 -eq 0 ]]
           then
-            message="\`\`\`fix\n+ ------ Fullnode ------ +\n\`\`\`"
+            message="\`\`\`fix\n+ ------ VFN ------ +\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+            message="\`\`\`arm\nConnections : VFN [ $INBOUND : $OUTBOUND ]  Public [ $public_in : $public_out ]\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
           else
             message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nConnections : VFN [In $INBOUND - $OUTBOUND Out]  Public [In $public_in - $public_out Out]\n\`\`\`"
+            message="\`\`\`arm\nConnections : VFN [ $INBOUND : $OUTBOUND ]  Public [ $public_in : $public_out ]\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
