@@ -1,4 +1,4 @@
-Validator monitoring script for discord
+Validator-fullnode converting and monitoring script for discord
 
 1. Prepare your own discord server and channel for monitoring (10 minutes interval).
 2. Make discord bot and connect bot to your discord channel.
