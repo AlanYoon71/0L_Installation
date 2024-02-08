@@ -314,7 +314,7 @@ while true; do
     then
       if [[ $INSET2 -eq 0 ]]
       then
-        message="\`\`\`fix\n+ ------ VFN ------ +  VFN [$vfn_out→]  Public [→$public_in:$public_out→]\n\`\`\`"
+        message="\`\`\`fix\n+ ------ VFN ------ +  VFN [$vfn_out]  Public [→$public_in:$public_out→]\n\`\`\`"
         send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
