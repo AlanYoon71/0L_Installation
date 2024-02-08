@@ -13,13 +13,13 @@ Validator monitoring script for discord
 
    `libra node`
    
-8. Open tmux and run the script from validator and check if your discord channel receives messages.
+7. Open tmux and run the script from validator and check if your discord channel receives messages.
    
    `tmux new -s bot`
 
    `./vn_fn_converter_discord.sh`
    
-10. If script works well, you can see the messages like below in your personal server.
+8. If script works well, you can see the messages like below in your personal server.
     
    `Script starts.`
    
