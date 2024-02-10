@@ -1,51 +1,56 @@
 #!/bin/bash
 
 echo ""
-echo -e "\e[1m\e[32m1. Prepare environment and build for libra.\e[0m"
+echo -e "\e[1m\e[32m1. Prepare environment for libra.\e[0m"
 echo ""
-sleep 2
+sleep 3
 cd ~
 apt update
 apt install sudo
 sudo apt install -y nano git wget ufw curl tmux bc sysstat jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && echo "PATH=$PATH:$HOME/.cargo/bin:$HOME/.cargo/env" >> ~/.bashrc && . .bashrc
 mkdir ~/.libra &> /dev/null;
+echo ""
+echo -e "\e[1m\e[32m2. Download libra framework source and git pull.\e[0m"
+echo ""
+sleep 3
 if [ -d ~/libra-framework ]; then
     cd ~/libra-framework && git fetch && git pull
 else
     git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework
     bash ./util/dev_setup.sh -t && source ~/.bashrc
-    cd ~/libra-framework
+    cd ~/libra-framework && git fetch && git pull
 fi
-
+echo ""
+echo -e "\e[1m\e[32m3. Build libra binary files.\e[0m"
+echo ""
+sleep 3
 cargo build --release -p libra && sudo cp -f ~/libra-framework/target/release/libra* ~/.cargo/bin/
 source ~/.bashrc
 echo ""
 echo "Building done."
 echo ""
-sleep 1
-echo -e "\e[1m\e[32m2. Keygen for wallet.\e[0m"
+sleep 3
+echo -e "\e[1m\e[32m4. Keygen for wallet.\e[0m"
 echo ""
-sleep 1
+sleep 3
 
 echo "Do you want to keygen for your new wallet? (y/n)"
 read -p "y/n : " user_input
 if [[ $user_input == "y" ]]; then
     echo ""
     new=1
-    echo -e "\e[1m\e[32m2. Keygen new wallet.\e[0m"
     libra wallet keygen
-    echo ""
-    echo -e "\e[1m\e[32m3. Initialize validator config.\e[0m"
-    echo ""
 elif [[ $user_input == "n" ]]; then
-    echo ""
-    echo -e "\e[1m\e[32m3. Initialize validator config.\e[0m"
-    echo ""
-
+    :
 fi
+echo ""
+echo -e "\e[1m\e[32m5. Initialize validator and fullnode configs.\e[0m"
+echo ""
+sleep 3
 libra config validator-init
-
+echo ""
+libra config fullnode-init &> /dev/null;
 echo "base:
   role: 'full_node'
   data_dir: '/root/.libra/data'
@@ -84,21 +89,25 @@ full_node_networks:
 api:
   enabled: true
   address: '0.0.0.0:8080'" > ~/.libra/fullnode.yaml
-sed -i "s/\/root\//$(echo $HOME | sed 's/\//\\\//g')\//g" fullnode.yaml
-
+sleep 2
+sed -e "s/\/root\//$(echo $HOME | sed 's/\//\\\//g')\//g" ~/.libra/fullnode.yaml > temp_file
+mv -f temp_file ~/.libra/fullnode.yaml
+echo "Fullnode config initialized."
+echo ""
+sleep 3
 libra config fix --force-url https://rpc.openlibra.space:8080
 echo ""
-echo -e "\e[1m\e[32m4. Restore db for fast catch-up.\e[0m"
+echo -e "\e[1m\e[32m6. Restore db for fast catch-up.\e[0m"
 echo ""
-sleep 1
-
-pip install gdown &> /dev/null && pip install --upgrade gdown &> /dev/null
-cd ~ && gdown --id 1e7c7Tu4v6EeuST5AnIR8s7LcllbYUMxv && gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p
-tar -xvf data_04Feb.zip && rm data_04Feb.zip* && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip*
-rm -rf ~/.libra/data; rm -rf ~/.libra/genesis; rm ./data_04Feb/*.json;
-mv ./data_04Feb ~/.libra/data && mv ./genesis_04Feb ~/.libra/genesis
-
+sleep 3
 echo ""
+
+cd ~
+git clone https://github.com/0LNetworkCommunity/epoch-archive-mainnet &> /dev/null;
+cd ~/epoch-archive-mainnet
+make bins
+make restore-all
+
 operator_update=$(grep full_node_network_public_key ~/.libra/public-keys.yaml)
 sed -i "s/full_node_network_public_key:.*/$operator_update/" ~/.libra/operator.yaml &> /dev/null
 sed -i 's/~$//' ~/.libra/operator.yaml &> /dev/null
@@ -110,71 +119,102 @@ echo "$port_update" >> ~/.libra/operator.yaml
 echo ""
 echo "Fullnode config in operator.yaml updated."
 echo ""
-echo -e "\e[1m\e[32m5. Run libra node.\e[0m"
-echo ""
+echo -e "\e[1m\e[32m7. Run fullnode and check status.\e[0m"
 sudo ufw enable &> /dev/null;
 sudo ufw allow ssh &> /dev/null;sudo ufw allow 6180 &> /dev/null;sudo ufw allow 6181 &> /dev/null;sudo ufw allow 6182 &> /dev/null;sudo ufw allow 9100 &> /dev/null;sudo ufw allow 8080 &> /dev/null;
 sleep 2
-PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
 session="node"
 tmux new-session -d -s $session &> /dev/null
 window=0
 tmux rename-window -t $session:$window 'node' &> /dev/null
-PIDCHECK=$(pgrep libra)
-if [[ -z $PIDCHECK ]]
+sleep 3
+echo ""
+echo "Now start fullnode. Wait a moment(about 2 minutes) until the node stabilizes."
+tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+sleep 60
+SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+sleep 60
+SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+sleep 1
+echo ""
+echo "Checking fullnode's sync status..."
+echo ""
+if [[ $SYNC1 -eq $SYNC2 ]]
 then
+    echo "Fullnode stopped!!"
+    echo "Fullnode stopped!!"
+    echo ""
+    echo "It seems that your DB lacks integrity."
+    echo "Downloading DB and genesis backup files from Alan’s Google Drive."
+    echo ""
+    sleep 3
+    pip install gdown &> /dev/null && pip install --upgrade gdown &> /dev/null
+    cd ~ && gdown --id 1e7c7Tu4v6EeuST5AnIR8s7LcllbYUMxv && gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p && tar -xvf data_04Feb.zip && rm data_04Feb.zip* && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip* && rm -rf ~/.libra/data; rm -rf ~/.libra/genesis; rm ./data_04Feb/*.json; mv ./data_04Feb ~/.libra/data && mv ./genesis_04Feb ~/.libra/genesis
+    echo ""
+    echo "Now start fullnode again. Wait a moment(about 2 minutes) until the node stabilizes."
     tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
-    sleep 30
-fi
-PIDCHECK=$(pgrep libra)
-if [[ -z $PIDCHECK ]]
-then
-    echo "Fullnode stopped. Install failed!!!"
-    echo "Fullnode stopped. Install failed!!!"
-    echo ""
-    echo "Exiting script..."
-    PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
-    echo ""
-    sleep 3
-    exit
-else
-    echo -e "\e[1m\e[32mFullnode is running now. Good job!\e[0m"
-    echo ""
-    sleep 2
-    echo "Wait until your node is fully synced."
-    echo ""
-    sleep 3
-    watch 'curl localhost:8080/v1/ | jq'
-    echo ""
-    if [[ -z $new ]]
+    sleep 60
+    SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+    sleep 60
+    SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+    sleep 1
+    if [[ $SYNC1 -eq $SYNC2 ]]
     then
-        :
-    else
-        address=`grep -oP '(?<=account: )\w+' libra.yaml`
         echo ""
-        echo "You need additional 4 actions as below to join validator set."
-        echo "============================================================="
-        echo "1. Onboard with this command by another node. (for fullnode and validator both)"
-        echo "   Command : libra txs transfer --to-account $address --amount 5"
+        echo "Fullnode stopped!! Install failed!!"
+        echo "Fullnode stopped!! Install failed!!"
         echo ""
-        echo "2. Register validator with this command by yourself. (for validator)"
-        echo "   Command : libra txs validator register"
+        echo "Exiting script..."
         echo ""
-        echo "3. Request the vouches with this command from other validators in the set. (for validator)"
-        echo "   Command : libra txs validator vouch --vouch-for $address"
-        echo ""
-        echo "4. Bid to be in the validator set. (for validator)"
-        echo "   Command : libra txs validator pof --bid-pct 0.5 --expiry 1000"
-        echo "============================================================="
-        echo ""
+        sleep 3
+        exit
     fi
-    sleep 2
-    echo -e "\e[1m\e[32m6. Run delay tower.\e[0m"
-    echo ""
-    session="tower"
-    tmux new-session -d -s $session &> /dev/null
-    window=0
-    tmux rename-window -t $session:$window 'tower' &> /dev/null
-    tmux send-keys -t tower:0 "libra tower zero && libra tower start" C-m
-    tmux attach -t tower
 fi
+echo ""
+echo -e "\e[1m\e[32mFullnode is running now! Installed successfully.\e[0m"
+echo ""
+sleep 2
+echo "Wait until your node is fully synced."
+echo ""
+sleep 3
+watch 'curl localhost:8080/v1/ | jq'
+if [[ -z $new ]]
+then
+    :
+else
+    address=`grep -oP '(?<=account: )\w+' libra.yaml`
+    echo ""
+    echo "You need additional 4 actions as below to join validator set."
+    echo "============================================================="
+    echo "1. Onboard with this command by another node. (for fullnode and validator both)"
+    echo "   Command : libra txs transfer --to-account $address --amount 5"
+    echo ""
+    echo "2. Register validator with this command by yourself. (for validator)"
+    echo "   Command : libra txs validator register"
+    echo ""
+    echo "3. Request the vouches with this command from other validators in the set. (for validator)"
+    echo "   Command : libra txs validator vouch --vouch-for $address"
+    echo ""
+    echo "4. Bid to be in the validator set. (for validator)"
+    echo "   Command : libra txs validator pof --bid-pct 0.5 --expiry 1000"
+    echo "============================================================="
+    echo ""
+    sleep 5
+fi
+sleep 2
+echo -e "\e[1m\e[32m8. Run delay tower.\e[0m"
+echo ""
+sleep 3
+session="tower"
+tmux new-session -d -s $session &> /dev/null
+window=0
+tmux rename-window -t $session:$window 'tower' &> /dev/null
+tmux send-keys -t tower:0 "libra tower zero && libra tower start" C-m
+echo ""
+tmux ls
+echo ""
+echo "Check your tmux sessions."
+echo ""
+sleep 3
+echo "Done."
+echo ""
