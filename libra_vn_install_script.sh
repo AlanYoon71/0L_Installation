@@ -177,7 +177,6 @@ sleep 2
 echo "Wait until your node is fully synced."
 echo ""
 sleep 3
-watch 'curl localhost:8080/v1/ | jq'
 if [[ -z $new ]]
 then
     :
