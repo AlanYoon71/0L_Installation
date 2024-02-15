@@ -152,7 +152,7 @@ sleep 60
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 sleep 120
 SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-sleep 1
+sleep 60
 echo ""
 echo "Checking fullnode's sync status..."
 echo ""
@@ -174,7 +174,7 @@ then
     SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
     sleep 120
     SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-    sleep 1
+    sleep 60
     if [[ $SYNC1 -eq $SYNC2 ]]
     then
         echo ""
