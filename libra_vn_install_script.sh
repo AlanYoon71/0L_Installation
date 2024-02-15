@@ -140,6 +140,7 @@ echo ""
 echo ""
 echo "If you have VFN now, input your VFN IP address."
 echo "If you don't have VFN yet, just enter."
+echo ""
 read -p "VFN IP address : " vfn_ip
 echo ""
 
