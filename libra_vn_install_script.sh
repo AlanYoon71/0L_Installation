@@ -108,6 +108,7 @@ then
     mv -f temp_file ~/.libra/fullnode.yaml
     pip install gdown &> /dev/null && pip install --upgrade gdown &> /dev/null
     cd ~ && gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip* && rm -rf ~/.libra/genesis; mv ./genesis_04Feb ~/.libra/genesis
+    echo ""
     echo "Fullnode config and waypoint fixed successfully."
     echo ""
     sleep 3
