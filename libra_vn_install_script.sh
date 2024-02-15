@@ -226,12 +226,12 @@ sleep 2
 echo -e "\e[1m\e[32m8. Run delay tower.\e[0m"
 echo ""
 sleep 3
-session="tower"
-tmux new-session -d -s $session &> /dev/null
-window=0
-tmux rename-window -t $session:$window 'tower' &> /dev/null
-tmux send-keys -t tower:0 "libra tower zero && libra tower start" C-m
-echo ""
+# session="tower"
+# tmux new-session -d -s $session &> /dev/null
+# window=0
+# tmux rename-window -t $session:$window 'tower' &> /dev/null
+# tmux send-keys -t tower:0 "libra tower zero && libra tower start" C-m
+# echo ""
 tmux ls
 echo ""
 echo "Check your tmux sessions."
