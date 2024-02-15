@@ -197,6 +197,7 @@ then
         echo "Google Drive is currently busy, so recommend running this script again in 30 minutes."
         echo ""
         echo "Exiting script..."
+        echo ""
         sleep 3
         exit
     fi
@@ -211,6 +212,7 @@ then
         echo "Google Drive is currently busy, so recommend running this script again in 30 minutes."
         echo ""
         echo "Exiting script..."
+        echo ""
         sleep 3
         exit
     fi
