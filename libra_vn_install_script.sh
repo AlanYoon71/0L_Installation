@@ -63,50 +63,53 @@ sleep 3
 libra config validator-init
 echo ""
 libra config fullnode-init
-echo "base:
-  role: 'full_node'
-  data_dir: '/root/.libra/data'
-  waypoint:
-    from_file: '/root/.libra/genesis/waypoint.txt'
+if [ $? -ne 0 ]
+then
+    echo "base:
+    role: 'full_node'
+    data_dir: '/root/.libra/data'
+    waypoint:
+        from_file: '/root/.libra/genesis/waypoint.txt'
 
-state_sync:
-     state_sync_driver:
-        # do a fast sync with DownloadLatestStates
-        # bootstrapping_mode: ExecuteOrApplyFromGenesis
-        bootstrapping_mode: DownloadLatestStates
-        continuous_syncing_mode: ExecuteTransactionsOrApplyOutputs
+    state_sync:
+        state_sync_driver:
+            # do a fast sync with DownloadLatestStates
+            # bootstrapping_mode: ExecuteOrApplyFromGenesis
+            bootstrapping_mode: DownloadLatestStates
+            continuous_syncing_mode: ExecuteTransactionsOrApplyOutputs
 
-execution:
-  genesis_file_location: '/root/.libra/genesis/genesis.blob'
+    execution:
+    genesis_file_location: '/root/.libra/genesis/genesis.blob'
 
-full_node_networks:
-- network_id: 'public'
-  listen_address: '/ip4/0.0.0.0/tcp/6182'
-  seed_addrs:
-    cb7e573123b67b0bb957d23f0d11c65b0b5438815b3750461c3815d507fb5649:
-    - "/ip4/73.181.115.53/tcp/6182/noise-ik/0xcb7e573123b67b0bb957d23f0d11c65b0b5438815b3750461c3815d507fb5649/handshake/0"
-    1017ce1abc30e356660b8b0542275f2fb4373b5f8a82b7800a5b3fdf718ae55f:
-    - "/ip4/70.15.242.6/tcp/6182/noise-ik/0x1017ce1abc30e356660b8b0542275f2fb4373b5f8a82b7800a5b3fdf718ae55f/handshake/0"
-    619898b2f99fba7b25fae35e3eab03164d7d9ce0d10abe8f6ceae9a43ffa1c34:
-    - "/ip4/65.109.80.179/tcp/6182/noise-ik/0x619898b2f99fba7b25fae35e3eab03164d7d9ce0d10abe8f6ceae9a43ffa1c34/handshake/0"
-    bc2d1a55f90dfd27e4ef871285f13386997aecf609a3c4d4c4527efc9b2d193e:
-    - "/ip4/94.130.22.86/tcp/6182/noise-ik/0xbc2d1a55f90dfd27e4ef871285f13386997aecf609a3c4d4c4527efc9b2d193e/handshake/0"
-    3b315502851df6d3004c69cf17714559d2407e28477b622d4e28c7b876859d0a:
-    - "/ip4/144.76.104.93/tcp/6182/noise-ik/0x3b315502851df6d3004c69cf17714559d2407e28477b622d4e28c7b876859d0a/handshake/0"
-    46b3705ebeeb469dd980210ace3462a91320249d37e90d1279a9a9df94995278:
-    - "/ip4/136.243.59.175/tcp/6182/noise-ik/0x46b3705ebeeb469dd980210ace3462a91320249d37e90d1279a9a9df94995278/handshake/0"
-    9ac157ee324e4129c9edac7ba5eca70af299929ae8c0d7362f4e6c75a7ac447e:
-    - "/ip4/104.248.94.195/tcp/6182/noise-ik/0x9ac157ee324e4129c9edac7ba5eca70af299929ae8c0d7362f4e6c75a7ac447e/handshake/0"
+    full_node_networks:
+    - network_id: 'public'
+    listen_address: '/ip4/0.0.0.0/tcp/6182'
+    seed_addrs:
+        cb7e573123b67b0bb957d23f0d11c65b0b5438815b3750461c3815d507fb5649:
+        - "/ip4/73.181.115.53/tcp/6182/noise-ik/0xcb7e573123b67b0bb957d23f0d11c65b0b5438815b3750461c3815d507fb5649/handshake/0"
+        1017ce1abc30e356660b8b0542275f2fb4373b5f8a82b7800a5b3fdf718ae55f:
+        - "/ip4/70.15.242.6/tcp/6182/noise-ik/0x1017ce1abc30e356660b8b0542275f2fb4373b5f8a82b7800a5b3fdf718ae55f/handshake/0"
+        619898b2f99fba7b25fae35e3eab03164d7d9ce0d10abe8f6ceae9a43ffa1c34:
+        - "/ip4/65.109.80.179/tcp/6182/noise-ik/0x619898b2f99fba7b25fae35e3eab03164d7d9ce0d10abe8f6ceae9a43ffa1c34/handshake/0"
+        bc2d1a55f90dfd27e4ef871285f13386997aecf609a3c4d4c4527efc9b2d193e:
+        - "/ip4/94.130.22.86/tcp/6182/noise-ik/0xbc2d1a55f90dfd27e4ef871285f13386997aecf609a3c4d4c4527efc9b2d193e/handshake/0"
+        3b315502851df6d3004c69cf17714559d2407e28477b622d4e28c7b876859d0a:
+        - "/ip4/144.76.104.93/tcp/6182/noise-ik/0x3b315502851df6d3004c69cf17714559d2407e28477b622d4e28c7b876859d0a/handshake/0"
+        46b3705ebeeb469dd980210ace3462a91320249d37e90d1279a9a9df94995278:
+        - "/ip4/136.243.59.175/tcp/6182/noise-ik/0x46b3705ebeeb469dd980210ace3462a91320249d37e90d1279a9a9df94995278/handshake/0"
+        9ac157ee324e4129c9edac7ba5eca70af299929ae8c0d7362f4e6c75a7ac447e:
+        - "/ip4/104.248.94.195/tcp/6182/noise-ik/0x9ac157ee324e4129c9edac7ba5eca70af299929ae8c0d7362f4e6c75a7ac447e/handshake/0"
 
-api:
-  enabled: true
-  address: '0.0.0.0:8080'" > ~/.libra/fullnode.yaml
-sleep 2
-sed -e "s/\/root\//$(echo $HOME | sed 's/\//\\\//g')\//g" ~/.libra/fullnode.yaml > temp_file
-mv -f temp_file ~/.libra/fullnode.yaml
-echo "Fullnode config initialized."
-echo ""
-sleep 3
+    api:
+    enabled: true
+    address: '0.0.0.0:8080'" > ~/.libra/fullnode.yaml
+    sleep 2
+    sed -e "s/\/root\//$(echo $HOME | sed 's/\//\\\//g')\//g" ~/.libra/fullnode.yaml > temp_file
+    mv -f temp_file ~/.libra/fullnode.yaml
+    echo "Fullnode config fixed successfully."
+    echo ""
+    sleep 3
+fi
 libra config fix --force-url https://rpc.openlibra.space:8080
 echo ""
 echo -e "\e[1m\e[32m6. Restore db for fast catch-up.\e[0m"
@@ -128,12 +131,26 @@ make restore-all
 operator_update=$(grep full_node_network_public_key ~/.libra/public-keys.yaml)
 sed -i "s/full_node_network_public_key:.*/$operator_update/" ~/.libra/operator.yaml &> /dev/null
 sed -i 's/~$//' ~/.libra/operator.yaml &> /dev/null
-ip_update=$(grep "  host:" ~/.libra/operator.yaml)
-echo "$ip_update" >> ~/.libra/operator.yaml
+
+echo ""
+echo ""
+echo "If you have VFN now, input your VFN IP address."
+echo "If you don't have VFN yet, just enter."
+read -p "VFN IP address : " vfn_ip
+echo ""
+
+if [[ -z $vfn_ip ]]; then
+    echo "You need to set up VFN later for 0l network's stability and security."
+    ip_update=$(grep "  host:" ~/.libra/operator.yaml)
+    echo "$ip_update" >> ~/.libra/operator.yaml
+    echo ""
+else
+    echo "  host: $vfn_ip" >> ~/.libra/operator.yaml
+fi
+
 port_update=$(grep "  port:" ~/.libra/operator.yaml)
 port_update=$(echo "$port_update" | sed 's/6180/6182/')
 echo "$port_update" >> ~/.libra/operator.yaml
-echo ""
 echo "Fullnode config in operator.yaml updated."
 echo ""
 echo -e "\e[1m\e[32m7. Run fullnode and check status.\e[0m"
@@ -195,10 +212,8 @@ fi
 echo ""
 echo -e "\e[1m\e[32mFullnode is running now! Installed successfully.\e[0m"
 echo ""
-sleep 2
-echo "Wait until your node is fully synced."
-echo ""
 sleep 3
+
 if [[ -z $new ]]
 then
     :
@@ -217,25 +232,21 @@ else
     echo "   Command : libra txs validator vouch --vouch-for $address"
     echo ""
     echo "4. Bid to be in the validator set. (for validator)"
-    echo "   Command : libra txs validator pof --bid-pct 0.5 --expiry 1000"
+    echo "   Command : libra txs validator pof --bid-pct 0.1 --expiry 1000"
     echo "============================================================="
     echo ""
     sleep 5
 fi
-sleep 2
-echo -e "\e[1m\e[32m8. Run delay tower.\e[0m"
+
+echo -e "\e[1m\e[32m8. Check your node status.\e[0m"
 echo ""
 sleep 3
-# session="tower"
-# tmux new-session -d -s $session &> /dev/null
-# window=0
-# tmux rename-window -t $session:$window 'tower' &> /dev/null
-# tmux send-keys -t tower:0 "libra tower zero && libra tower start" C-m
-# echo ""
 tmux ls
 echo ""
 echo "Check your tmux sessions."
 echo ""
+curl -s localhost:8080/v1/ | jq
 sleep 3
+echo ""
 echo "Done."
 echo ""
