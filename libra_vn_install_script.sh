@@ -165,7 +165,7 @@ tmux new-session -d -s $session &> /dev/null
 window=0
 tmux rename-window -t $session:$window 'node' &> /dev/null
 echo ""
-echo "Now start fullnode. Wait a moment(about 2 minutes) until the node stabilizes."
+echo "Now start fullnode. Wait a moment(about 4 minutes) until the node stabilizes."
 tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
 sleep 60
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
