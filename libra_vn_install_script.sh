@@ -131,6 +131,11 @@ else
 fi
 make bins
 make restore-all
+if [ $? -ne 0 ]
+then
+    pip install gdown &> /dev/null && pip install --upgrade gdown &> /dev/null
+    cd ~ && gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip* && rm -rf ~/.libra/genesis; mv ./genesis_04Feb ~/.libra/genesis
+fi
 
 operator_update=$(grep full_node_network_public_key ~/.libra/public-keys.yaml)
 sed -i "s/full_node_network_public_key:.*/$operator_update/" ~/.libra/operator.yaml &> /dev/null
