@@ -106,10 +106,13 @@ then
     sleep 2
     sed -e "s/\/root\//$(echo $HOME | sed 's/\//\\\//g')\//g" ~/.libra/fullnode.yaml > temp_file
     mv -f temp_file ~/.libra/fullnode.yaml
-    echo "Fullnode config fixed successfully."
+    pip install gdown &> /dev/null && pip install --upgrade gdown &> /dev/null
+    cd ~ && gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip* && rm -rf ~/.libra/genesis; mv ./genesis_04Feb ~/.libra/genesis
+    echo "Fullnode config and waypoint fixed successfully."
     echo ""
     sleep 3
 fi
+
 libra config fix --force-url https://rpc.openlibra.space:8080
 echo ""
 echo -e "\e[1m\e[32m6. Restore db for fast catch-up.\e[0m"
