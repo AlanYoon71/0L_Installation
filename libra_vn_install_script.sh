@@ -186,8 +186,36 @@ then
     echo "Downloading DB and genesis backup files from Alan’s Google Drive."
     echo ""
     sleep 3
+    
     pip install gdown &> /dev/null && pip install --upgrade gdown &> /dev/null
-    cd ~ && gdown --id 1e7c7Tu4v6EeuST5AnIR8s7LcllbYUMxv && gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p && tar -xvf data_04Feb.zip && rm data_04Feb.zip* && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip* && rm -rf ~/.libra/data; rm -rf ~/.libra/genesis; rm ./data_04Feb/*.json; mv ./data_04Feb ~/.libra/data && mv ./genesis_04Feb ~/.libra/genesis
+    cd ~ && gdown --id 1e7c7Tu4v6EeuST5AnIR8s7LcllbYUMxv
+    if [ $? -ne 0 ]
+    then
+        echo ""
+        echo "Google Drive is currently busy, so recommend running this script again in 30 minutes."
+        echo ""
+        echo "Exiting script..."
+        sleep 3
+        exit
+    fi
+    gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p
+    if [ $? -ne 0 ]
+    then
+        echo ""
+        echo "Google Drive is currently busy."
+        echo ""
+        echo "Wait 5minutes, please.."
+        gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p
+        echo "Google Drive is currently busy, so recommend running this script again in 30 minutes."
+        echo ""
+        echo "Exiting script..."
+        sleep 3
+        exit
+    fi
+    tar -xvf data_04Feb.zip && rm data_04Feb.zip* && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip*
+    rm -rf ~/.libra/data; rm -rf ~/.libra/genesis; rm ./data_04Feb/*.json
+    mv ./data_04Feb ~/.libra/data && mv ./genesis_04Feb ~/.libra/genesis
+    
     echo ""
     echo "Now start fullnode again. Wait a moment(about 2 minutes) until the node stabilizes."
     session="node"
