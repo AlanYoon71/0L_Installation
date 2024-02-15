@@ -144,7 +144,6 @@ session="node"
 tmux new-session -d -s $session &> /dev/null
 window=0
 tmux rename-window -t $session:$window 'node' &> /dev/null
-sleep 3
 echo ""
 echo "Now start fullnode. Wait a moment(about 2 minutes) until the node stabilizes."
 tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
@@ -158,6 +157,8 @@ echo "Checking fullnode's sync status..."
 echo ""
 if [[ $SYNC1 -eq $SYNC2 ]]
 then
+    tmux send-keys -t node:0 "exit" C-m &> /dev/null;
+    sleep 5
     echo "Fullnode stopped!!"
     echo "Fullnode stopped!!"
     echo ""
@@ -169,6 +170,10 @@ then
     cd ~ && gdown --id 1e7c7Tu4v6EeuST5AnIR8s7LcllbYUMxv && gdown --id 1_VD2PrnSbpNw6ovC0N2rbH2_jTysWj0p && tar -xvf data_04Feb.zip && rm data_04Feb.zip* && tar -xvf genesis_04Feb.zip && rm genesis_04Feb.zip* && rm -rf ~/.libra/data; rm -rf ~/.libra/genesis; rm ./data_04Feb/*.json; mv ./data_04Feb ~/.libra/data && mv ./genesis_04Feb ~/.libra/genesis
     echo ""
     echo "Now start fullnode again. Wait a moment(about 2 minutes) until the node stabilizes."
+    session="node"
+    tmux new-session -d -s $session &> /dev/null
+    window=0
+    tmux rename-window -t $session:$window 'node' &> /dev/null
     tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
     sleep 60
     SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
