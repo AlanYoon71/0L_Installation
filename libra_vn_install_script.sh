@@ -62,7 +62,7 @@ echo ""
 sleep 3
 libra config validator-init
 echo ""
-libra config fullnode-init &> /dev/null;
+libra config fullnode-init
 echo "base:
   role: 'full_node'
   data_dir: '/root/.libra/data'
@@ -115,8 +115,13 @@ sleep 3
 echo ""
 
 cd ~
-git clone https://github.com/0LNetworkCommunity/epoch-archive-mainnet &> /dev/null;
-cd ~/epoch-archive-mainnet
+if [ -d ~/epoch-archive-mainnet ]
+then
+    cd ~/epoch-archive-mainnet
+else
+    git clone https://github.com/0LNetworkCommunity/epoch-archive-mainnet
+    cd ~/epoch-archive-mainnet
+fi
 make bins
 make restore-all
 
@@ -145,7 +150,7 @@ echo "Now start fullnode. Wait a moment(about 2 minutes) until the node stabiliz
 tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
 sleep 60
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-sleep 60
+sleep 120
 SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 sleep 1
 echo ""
@@ -167,7 +172,7 @@ then
     tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
     sleep 60
     SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-    sleep 60
+    sleep 120
     SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
     sleep 1
     if [[ $SYNC1 -eq $SYNC2 ]]
