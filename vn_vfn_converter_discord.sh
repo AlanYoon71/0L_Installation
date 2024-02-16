@@ -164,7 +164,7 @@ while true; do
   high=$(printf "%.5f" $high)
   low=$(printf "%.5f" $low)
   #volume=$(printf "%.2f" $volume)
-  ticker=$(echo "Value($) : $low ~ $high  from OTC data 1 hour ago")
+  ticker=$(echo "Value($) : $low ~ $high  from OTC current price")
 
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
