@@ -13,7 +13,7 @@ echo " ░▒▓██████▓▒░░▒▓█▓▒░      ░▒▓�
 echo "";
 echo ""
 echo ""
-echo -e "\e[1m\e[32m1. Prepare environment for libra.\e[0m"
+echo -e "\e[1m\e[32m1. Prepare environment for libra validator setup.\e[0m"
 echo ""
 sleep 3
 cd ~
