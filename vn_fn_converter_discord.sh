@@ -63,7 +63,7 @@ then
   then
     message="\`\`\`No running node process now. And you are not in set.\`\`\`"
     send_discord_message "$message"
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
     message="\`\`\`Fullnode started.\`\`\`"
     send_discord_message "$message"
     sleep 60
@@ -94,8 +94,10 @@ NETREWARD1=$(libra query resource --resource-path-string 0x1::proof_of_fee::Cons
 sleep 0.2
 BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 2)
 sleep 0.2
+TBALANCET1=$(echo "$BALANCET1" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 1)
 sleep 0.2
+TBALANCEU1=$(echo "$BALANCEU1" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
 INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
 OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
 if [[ -z $INBOUND ]]; then INBOUND=0; fi
@@ -140,7 +142,7 @@ while true; do
     then
       message="\`\`\`No running node process now. And you are not in set.\`\`\`"
       send_discord_message "$message"
-      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
       message="\`\`\`Fullnode started.\`\`\`"
       send_discord_message "$message"
       sleep 60
@@ -154,6 +156,16 @@ while true; do
     fi
   fi
   sleep 600
+
+  price_data=$(curl -s -X GET "https://api.0lswap.com/orders/getChartData?interval=1h&market=OLUSDT" | jq -r '.[-1]')
+  high=$(echo "$price_data" | jq -r '.high')
+  low=$(echo "$price_data" | jq -r '.low')
+  volume=$(echo "$price_data" | jq -r '.volume')
+  high=$(printf "%.5f" $high)
+  low=$(printf "%.5f" $low)
+  volume=$(printf "%.2f" $volume)
+  ticker=$(echo "Value($) : $low ~ $high  |  Volume($) : $volume  from OTC")
+
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
   EPOCH2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.epoch'`
@@ -172,8 +184,10 @@ while true; do
   sleep 0.2
   BALANCET2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 2)
   sleep 0.2
+  TBALANCET2=$(echo "$BALANCET2" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
   BALANCEU2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 1)
   sleep 0.2
+  TBALANCEU2=$(echo "$BALANCEU2" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
   VOUCH=`libra query resource --resource-path-string 0x1::vouch::MyVouches --account $accountinput | jq '.my_buddies | map(select(startswith("0x"))) | length'`
   sleep 0.2
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
@@ -219,11 +233,13 @@ while true; do
   EPOCHREWARDDIFF=`echo "$EPOCHREWARD2 - $EPOCHREWARD1" | bc`
   NETREWARDDIFF=`echo "$NETREWARD2 - $NETREWARD1" | bc`
   BALANCETDIFF=`echo "$BALANCET2 - $BALANCET1" | bc`
+  TBALANCETDIFF=$(echo "$BALANCETDIFF" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
   BALANCEUDIFF=`echo "$BALANCEU2 - $BALANCEU1" | bc`
+  TBALANCEUDIFF=$(echo "$BALANCEUDIFF" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
   if (( $(echo "$EPOCHREWARDDIFF >= 0" | bc -l) )); then EPOCHREWARDDIFF="+$EPOCHREWARDDIFF"; fi
   if (( $(echo "$NETREWARDDIFF >= 0" | bc -l) )); then NETREWARDDIFF="+$NETREWARDDIFF"; fi
-  if (( $(echo "$BALANCETDIFF >= 0" | bc -l) )); then BALANCETDIFF="+$BALANCETDIFF"; fi
-  if (( $(echo "$BALANCEUDIFF >= 0" | bc -l) )); then BALANCEUDIFF="+$BALANCEUDIFF"; fi
+  if (( $(echo "$BALANCETDIFF >= 0" | bc -l) )); then TBALANCETDIFF="+$TBALANCETDIFF"; fi
+  if (( $(echo "$BALANCEUDIFF >= 0" | bc -l) )); then TBALANCEUDIFF="+$TBALANCEUDIFF"; fi
   if [ -e "vn_start_time.txt" ]; then
     start_time=$(< "vn_start_time.txt")
   fi
@@ -248,7 +264,7 @@ while true; do
     sleep 5
     restart_count=1
     rm -f vn_start_time.txt
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
     sleep 30
   fi
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
@@ -280,7 +296,7 @@ while true; do
       rm -f vn_start_time.txt
       if [[ $INSET -eq 0 ]]
       then
-        tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+        tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
         sleep 20
       else
         tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
@@ -316,6 +332,8 @@ while true; do
       then
         message="\`\`\`arm\nFullnode mode :  $public_in --> [Public network] --> $public_out\n\`\`\`"
         send_discord_message "$message"
+        message="\`\`\`arm\n$ticker\n\`\`\`"
+        send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
@@ -327,7 +345,7 @@ while true; do
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             rm -f vn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -345,9 +363,9 @@ while true; do
           message="\`\`\`arm\nNet reward : $NETREWARD1 ---> $NETREWARD2 ( $NETREWARDDIFF )\n\`\`\`"
           send_discord_message "$message"
           timer=0
-          message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
+          message="\`\`\`arm\nTotal    balance : $TBALANCET1 ---> $TBALANCET2 ( $TBALANCETDIFF )\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
+          message="\`\`\`arm\nUnlocked balance : $TBALANCEU1 ---> $TBALANCEU2 ( $TBALANCEUDIFF )\n\`\`\`"
           send_discord_message "$message"
           if [[ $INSET2 -eq 0 ]]
           then
@@ -356,10 +374,12 @@ while true; do
             rm -f vn_start_time.txt
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
             sleep 5
           else
             message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
+            send_discord_message "$message"
+            message="\`\`\`arm\n$ticker\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
@@ -374,6 +394,8 @@ while true; do
       else
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
+        message="\`\`\`arm\n$ticker\n\`\`\`"
+        send_discord_message "$message"
         if [[ $EPOCH1 -eq $EPOCH2 ]]
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
@@ -383,7 +405,7 @@ while true; do
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             rm -f vn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -414,9 +436,9 @@ while true; do
           if [[ -z $public_out ]]; then public_out=0; fi
           #SETCHECK2=`expr $INBOUND + $OUTBOUND`
           ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-          message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
+          message="\`\`\`arm\nTotal    balance : $TBALANCET1 ---> $TBALANCET2 ( $TBALANCETDIFF )\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
+          message="\`\`\`arm\nUnlocked balance : $TBALANCEU1 ---> $TBALANCEU2 ( $TBALANCEUDIFF )\n\`\`\`"
           send_discord_message "$message"
           if [[ $INSET2 -eq 0 ]]
           then
@@ -425,7 +447,7 @@ while true; do
             rm -f vn_start_time.txt
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
             sleep 5
           else
             message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
@@ -466,11 +488,13 @@ while true; do
         ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
         message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
+        message="\`\`\`arm\n$ticker\n\`\`\`"
+        send_discord_message "$message"
         message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
+        message="\`\`\`arm\nTotal    balance : $TBALANCET1 ---> $TBALANCET2 ( $TBALANCETDIFF )\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
+        message="\`\`\`arm\nUnlocked balance : $TBALANCEU1 ---> $TBALANCEU2 ( $TBALANCEUDIFF )\n\`\`\`"
         send_discord_message "$message"
         if [[ $INSET2 -eq 0 ]]
         then
@@ -479,7 +503,7 @@ while true; do
           rm -f vn_start_time.txt
           PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
           sleep 5
-          tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+          tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
           sleep 5
         else
           message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
@@ -510,6 +534,8 @@ while true; do
             vn_runtime=" Set entry hold time : ${days}d ${hours}h ${minutes}m"
           fi
           message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
+          send_discord_message "$message"
+          message="\`\`\`arm\n$ticker\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
@@ -570,13 +596,15 @@ EOF
               rm -f vn_start_time.txt
               PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
               sleep 5
-              tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/fullnode.yaml" C-m
+              tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
               sleep 5
             fi
           else
             if [[ $PROPDIFF -eq 0 ]]
             then
               message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
+              send_discord_message "$message"
+              message="\`\`\`arm\n$ticker\n\`\`\`"
               send_discord_message "$message"
               message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Proposing too slow.\n\`\`\`"
               send_discord_message "$message"
