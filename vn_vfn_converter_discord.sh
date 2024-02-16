@@ -160,11 +160,11 @@ while true; do
   price_data=$(curl -s -X GET "https://api.0lswap.com/orders/getChartData?interval=1h&market=OLUSDT" | jq -r '.[-1]')
   high=$(echo "$price_data" | jq -r '.high')
   low=$(echo "$price_data" | jq -r '.low')
-  volume=$(echo "$price_data" | jq -r '.volume')
+  #volume=$(echo "$price_data" | jq -r '.volume')
   high=$(printf "%.5f" $high)
   low=$(printf "%.5f" $low)
-  volume=$(printf "%.2f" $volume)
-  ticker=$(echo "Value($) : $low ~ $high  |  Volume($) : $volume  from OTC")
+  #volume=$(printf "%.2f" $volume)
+  ticker=$(echo "Value($) : $low ~ $high  from OTC data 1 hour ago")
 
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
