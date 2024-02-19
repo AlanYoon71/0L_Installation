@@ -95,9 +95,11 @@ sleep 0.2
 BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 2)
 sleep 0.2
 TBALANCET1=$(echo "$BALANCET1" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
+TBALANCET1=$(echo "\Ƚ$TBALANCET1")
 BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 1)
 sleep 0.2
 TBALANCEU1=$(echo "$BALANCEU1" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
+TBALANCEU1=$(echo "\Ƚ$TBALANCEU1")
 INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
 OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
 if [[ -z $INBOUND ]]; then INBOUND=0; fi
@@ -157,15 +159,6 @@ while true; do
   fi
   sleep 600
 
-  price_data=$(curl -s -X GET "https://api.0lswap.com/orders/getChartData?interval=1h&market=OLUSDT" | jq -r '.[-1]')
-  high=$(echo "$price_data" | jq -r '.high')
-  low=$(echo "$price_data" | jq -r '.low')
-  #volume=$(echo "$price_data" | jq -r '.volume')
-  high=$(printf "%.5f" $high)
-  low=$(printf "%.5f" $low)
-  #volume=$(printf "%.2f" $volume)
-  ticker=$(echo "Value($) : $low ~ $high  from OTC current price")
-
   SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
   sleep 0.2
   EPOCH2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.epoch'`
@@ -185,11 +178,27 @@ while true; do
   BALANCET2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 2)
   sleep 0.2
   TBALANCET2=$(echo "$BALANCET2" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
+  TBALANCET2=$(echo "\Ƚ$TBALANCET2")
   BALANCEU2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 1)
   sleep 0.2
   TBALANCEU2=$(echo "$BALANCEU2" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
+  TBALANCEU2=$(echo "\Ƚ$TBALANCEU2")
   VOUCH=`libra query resource --resource-path-string 0x1::vouch::MyVouches --account $accountinput | jq '.my_buddies | map(select(startswith("0x"))) | length'`
   sleep 0.2
+
+  price_data=$(curl -s -X GET "https://api.0lswap.com/orders/getChartData?interval=1h&market=OLUSDT" | jq -r '.[-1]')
+  high=$(echo "$price_data" | jq -r '.high')
+  low=$(echo "$price_data" | jq -r '.low')
+  #volume=$(echo "$price_data" | jq -r '.volume')
+  high=$(printf "%.5f" $high)
+  low=$(printf "%.5f" $low)
+  #volume=$(printf "%.2f" $volume)
+  average=$(echo "scale=5; ($high - $low) / 2 + $low" | bc)
+  asset=$(echo "scale=2; $average * $BALANCET2" | bc)
+  asset=$(printf "%.2f" "$asset")
+  asset=$(echo "$asset" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
+  ticker=$(echo "Price : \$$low ~ \$$high (OTC)  Asset valuation : \$$asset")
+
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   if [[ -z $INBOUND ]]; then INBOUND=0; fi
