@@ -193,7 +193,7 @@ while true; do
   asset=$(echo "scale=2; $average * $BALANCET2" | bc)
   asset=$(printf "%.2f" "$asset")
   asset=$(echo "$asset" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
-  ticker=$(echo "Price : \$$low ~ \$$high (OTC)  Asset valuation : \$$asset")
+  ticker=$(echo "Price : \$$low ~ \$$high (OTC)  Asset value  : \$$asset")
 
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
