@@ -63,14 +63,14 @@ then
   then
     message="\`\`\`No running node process now. And you are not in set.\`\`\`"
     send_discord_message "$message"
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+    tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
     message="\`\`\`VFN started.\`\`\`"
     send_discord_message "$message"
     sleep 60
   else
     message="\`\`\`No running node process now. And you are in set.\`\`\`"
     send_discord_message "$message"
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+    tmux send-keys -t node:0 "libra node" C-m
     message="\`\`\`Validator started.\`\`\`"
     send_discord_message "$message"
     sleep 60
@@ -142,14 +142,14 @@ while true; do
     then
       message="\`\`\`No running node process now. And you are not in set.\`\`\`"
       send_discord_message "$message"
-      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+      tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
       message="\`\`\`VFN started.\`\`\`"
       send_discord_message "$message"
       sleep 60
     else
       message="\`\`\`No running node process now. And you are in set.\`\`\`"
       send_discord_message "$message"
-      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+      tmux send-keys -t node:0 "libra node" C-m
       message="\`\`\`Validator started.\`\`\`"
       send_discord_message "$message"
       sleep 60
@@ -260,7 +260,7 @@ while true; do
   sleep 0.5
   if [[ -z "$PID" ]]
   then
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+    tmux send-keys -t node:0 "libra node" C-m
     sleep 30
   fi
   if [[ $INSET2 -eq 0 ]]
@@ -269,7 +269,7 @@ while true; do
     sleep 5
     restart_count=1
     rm -f vn_start_time.txt
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+    tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
     sleep 30
   fi
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"Validator | grep -oE '[0-9]+$'`
@@ -301,10 +301,10 @@ while true; do
       rm -f vn_start_time.txt
       if [[ $INSET -eq 0 ]]
       then
-        tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+        tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
         sleep 20
       else
-        tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+        tmux send-keys -t node:0 "libra node" C-m
         sleep 20
       fi
       LEDGER2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
@@ -350,7 +350,7 @@ while true; do
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             rm -f vn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+            tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -379,7 +379,7 @@ while true; do
             rm -f vn_start_time.txt
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+            tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
             sleep 5
           else
             message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
@@ -410,7 +410,7 @@ while true; do
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             rm -f vn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+            tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -420,7 +420,7 @@ while true; do
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             rm -f vn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+            tmux send-keys -t node:0 "libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -452,7 +452,7 @@ while true; do
             rm -f vn_start_time.txt
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+            tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
             sleep 5
           else
             message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
@@ -466,7 +466,7 @@ while true; do
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
             rm -f vn_start_time.txt
-            tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+            tmux send-keys -t node:0 "libra node" C-m
             sleep 5
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
@@ -508,7 +508,7 @@ while true; do
           rm -f vn_start_time.txt
           PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
           sleep 5
-          tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+          tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
           sleep 5
         else
           message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
@@ -601,7 +601,7 @@ EOF
               rm -f vn_start_time.txt
               PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
               sleep 5
-              tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+              tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
               sleep 5
             fi
           else
