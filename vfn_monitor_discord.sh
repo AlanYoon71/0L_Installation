@@ -49,7 +49,7 @@ if [[ -z $PIDCHECK ]]
 then
   message="\`\`\`No running node process now. So this script will start node and verifies its sync status.\`\`\`"
   send_discord_message "$message"
-  tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+  tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
   sleep 60
 fi
 restart_count=0
@@ -68,8 +68,10 @@ then
 else
   BALANCET1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 2)
   sleep 1
+  TBALANCET1=$(echo "$BALANCET1" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
   BALANCEU1=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 1)
   sleep 1
+  TBALANCEU1=$(echo "$BALANCEU1" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
 fi
 INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
 OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
@@ -98,7 +100,7 @@ while true; do
     tmux rename-window -t $session:$window 'node' &> /dev/null
     message="\`\`\`No running node process now. So this script will start node and verifies its sync status.\`\`\`"
     send_discord_message "$message"
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+    tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
     sleep 60
   fi
   sleep 600
@@ -116,8 +118,10 @@ while true; do
   else
     BALANCET2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 2)
     sleep 1
+    TBALANCET2=$(echo "$BALANCET2" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
     BALANCEU2=$(libra query balance --account $accountinput | jq -r '.unlocked, .total' | paste -sd " / " | awk '{printf "%.2f %.2f", $1, $2}' | cut -d ' ' -f 1)
     sleep 1
+    TBALANCEU2=$(echo "$BALANCEU2" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
   fi
   INBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"inbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
   OUTBOUND=`curl 127.0.0.1:9101/metrics 2> /dev/null | grep diem_connections{direction=\"outbound\",network_id=\"vfn | grep -oE '[0-9]+$'`
@@ -145,10 +149,12 @@ while true; do
   SYNCDIFF=`expr $SYNC2 - $SYNC1`
   BALANCETDIFF=`echo "$BALANCET2 - $BALANCET1" | bc`
   sleep 0.2
+  TBALANCETDIFF=$(echo "$BALANCETDIFF" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
   BALANCEUDIFF=`echo "$BALANCEU2 - $BALANCEU1" | bc`
   sleep 0.2
-  if (( $(echo "$BALANCETDIFF >= 0" | bc -l) )); then BALANCETDIFF="+$BALANCETDIFF"; fi
-  if (( $(echo "$BALANCEUDIFF >= 0" | bc -l) )); then BALANCEUDIFF="+$BALANCEUDIFF"; fi
+  TBALANCEUDIFF=$(echo "$BALANCEUDIFF" | sed -E ':a;s/(.*[0-9])([0-9]{3})/\1,\2/;ta')
+  if (( $(echo "$BALANCETDIFF >= 0" | bc -l) )); then TBALANCETDIFF="+$TBALANCETDIFF"; fi
+  if (( $(echo "$BALANCEUDIFF >= 0" | bc -l) )); then TBALANCEUDIFF="+$TBALANCEUDIFF"; fi
   if [ -e "vfn_start_time.txt" ]; then
     start_time=$(< "vfn_start_time.txt")
   fi
@@ -164,7 +170,7 @@ while true; do
   sleep 0.5
   if [[ -z "$PID" ]]
   then
-    tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+    tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
     sleep 10
     if [[ $SETCHECK2 -eq 0 ]]
     then
@@ -172,7 +178,7 @@ while true; do
       sleep 5
       restart_count=1
       rm -f vfn_start_time.txt
-      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+      tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
       sleep 10
     fi
   fi
@@ -195,7 +201,7 @@ while true; do
       sleep 5
       restart_count=1
       rm -f vfn_start_time.txt
-      tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+      tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
       sleep 10
       LEDGER2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
       sleep 0.2
@@ -251,9 +257,9 @@ while true; do
           then
             :
           else
-            message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
+            message="\`\`\`arm\nTotal    balance : $TBALANCET1 ---> $TBALANCET2 ( $TBALANCETDIFF )\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
+            message="\`\`\`arm\nUnlocked balance : $TBALANCEU1 ---> $TBALANCEU2 ( $TBALANCEUDIFF )\n\`\`\`"
             send_discord_message "$message"
           fi
           if [[ $SETCHECK2 -eq 0 ]]
@@ -326,9 +332,9 @@ while true; do
           then
             :
           else
-            message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
+            message="\`\`\`arm\nTotal    balance : $TBALANCET1 ---> $TBALANCET2 ( $TBALANCETDIFF )\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
+            message="\`\`\`arm\nUnlocked balance : $TBALANCEU1 ---> $TBALANCEU2 ( $TBALANCEUDIFF )\n\`\`\`"
             send_discord_message "$message"
           fi
           message="\`\`\`Lost connection with Validator.\`\`\`"
@@ -347,9 +353,9 @@ while true; do
           then
             :
           else
-            message="\`\`\`arm\nTotal    balance : $BALANCET1 ---> $BALANCET2 ( $BALANCETDIFF )\n\`\`\`"
+            message="\`\`\`arm\nTotal    balance : $TBALANCET1 ---> $TBALANCET2 ( $TBALANCETDIFF )\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nUnlocked balance : $BALANCEU1 ---> $BALANCEU2 ( $BALANCEUDIFF )\n\`\`\`"
+            message="\`\`\`arm\nUnlocked balance : $TBALANCEU1 ---> $TBALANCEU2 ( $TBALANCEUDIFF )\n\`\`\`"
             send_discord_message "$message"
           fi
           message="\`\`\`diff\n+ Connected to Validator successfully. +\n\`\`\`"
