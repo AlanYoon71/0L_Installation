@@ -17,7 +17,7 @@ echo -e "\e[1m\e[32m1. Prepare environment for libra validator setup.\e[0m"
 echo ""
 sleep 3
 cd ~
-apt update
+apt update &> /dev/null;
 apt install sudo
 apt update
 sudo apt install -y nano git wget ufw curl tmux bc sysstat jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
