@@ -28,15 +28,23 @@ echo -e "\e[1m\e[32m2. Download libra framework source and git pull.\e[0m"
 echo ""
 sleep 3
 if [ -d ~/libra-framework ]; then
+    cd ~/libra-framework
+    bash ./util/dev_setup.sh -t && source ~/.bashrc
+    sudo rm /usr/lib/python3.*/EXTERNALLY-MANAGED &> /dev/null;
+    bash ./util/dev_setup.sh -t && source ~/.bashrc
     cd ~/libra-framework && git fetch && git pull
 else
     git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework
     bash ./util/dev_setup.sh -t && source ~/.bashrc
+    sudo rm /usr/lib/python3.*/EXTERNALLY-MANAGED &> /dev/null;
+    bash ./util/dev_setup.sh -t && source ~/.bashrc
     cd ~/libra-framework && git fetch && git pull
 fi
+sudo rm /usr/lib/python3.*/EXTERNALLY-MANAGED &> /dev/null;
 echo ""
 echo -e "\e[1m\e[32m3. Build libra binary files.\e[0m"
 echo ""
+source ~/.bashrc
 sleep 3
 cargo build --release -p libra && sudo cp -f ~/libra-framework/target/release/libra* ~/.cargo/bin/
 source ~/.bashrc
