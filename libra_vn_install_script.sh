@@ -77,7 +77,7 @@ then
     echo "
 base:
   role: 'full_node'
-  data_dir: '/root.libra/data'
+  data_dir: '/root/.libra/data'
   waypoint:
     from_file: '/root/.libra/genesis/waypoint.txt'
 
