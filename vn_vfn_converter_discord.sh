@@ -115,15 +115,7 @@ if [[ -z $public_out ]]; then public_out=0; fi
 while true; do
   if [[ $start_flag -eq 1 ]]
   then
-    SYNC1=$SYNC2
-    EPOCH1=$EPOCH2
-    LEDGER1=$LEDGER2
-    HEIGHT1=$HEIGHT2
-    PROP1=$PROP2
-    BALANCET1=$BALANCET2
-    BALANCEU1=$BALANCEU2
-    #SETCHECK1=$SETCHECK2
-    INSET1=$INSET2
+    BALANCET1=$BALANCET2 && BALANCEU1=$BALANCEU2 && SYNC1=$SYNC2 && EPOCH1=$EPOCH2 && LEDGER1=$LEDGER2 && HEIGHT1=$HEIGHT2 && PROP1=$PROP2 && INSET1=$INSET2
   fi
   accountlaststring="${accountinput: -6}"
   INSET2=`libra query resource --resource-path-string 0x1::stake::ValidatorSet --account 0x1 | jq -r '.active_validators[].addr' | grep -P $accountlaststring`
@@ -620,5 +612,6 @@ EOF
     fi
   fi
   start_flag=1
+  sleep 1
   timer=$((timer + 1))
 done
