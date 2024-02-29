@@ -355,14 +355,14 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nEpoch reward : Ƚ$EPOCHREWARD1 ---> Ƚ$EPOCHREWARD2 ( $EPOCHREWARDDIFF )\n\`\`\`"
+          message="\`\`\`arm\nEpoch reward : Ƚ$EPOCHREWARD1 ---> Ƚ$EPOCHREWARD2 ($EPOCHREWARDDIFF)\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ( $NETREWARDDIFF )\n\`\`\`"
+          message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ($NETREWARDDIFF)\n\`\`\`"
           send_discord_message "$message"
           timer=0
-          message="\`\`\`arm\nTotal    balance : Ƚ$TBALANCET1 ---> Ƚ$TBALANCET2 ( $TBALANCETDIFF )\n\`\`\`"
+          message="\`\`\`arm\nTotal    balance : Ƚ$TBALANCET1 ---> Ƚ$TBALANCET2 ($TBALANCETDIFF)\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nUnlocked balance : Ƚ$TBALANCEU1 ---> Ƚ$TBALANCEU2 ( $TBALANCEUDIFF )\n\`\`\`"
+          message="\`\`\`arm\nUnlocked balance : Ƚ$TBALANCEU1 ---> Ƚ$TBALANCEU2 ($TBALANCEUDIFF)\n\`\`\`"
           send_discord_message "$message"
           if [[ $INSET2 -eq 0 ]]
           then
@@ -380,9 +380,9 @@ while true; do
             send_discord_message "$message"
             message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nEpoch reward : Ƚ$EPOCHREWARD1 ---> Ƚ$EPOCHREWARD2 ( $EPOCHREWARDDIFF )\n\`\`\`"
+            message="\`\`\`arm\nEpoch reward : Ƚ$EPOCHREWARD1 ---> Ƚ$EPOCHREWARD2 ($EPOCHREWARDDIFF)\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ( $NETREWARDDIFF )\n\`\`\`"
+            message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ($NETREWARDDIFF)\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`diff\n+ You entered the set successfully. +\n\`\`\`"
             send_discord_message "$message"
@@ -433,9 +433,9 @@ while true; do
           if [[ -z $public_out ]]; then public_out=0; fi
           #SETCHECK2=`expr $INBOUND + $OUTBOUND`
           ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-          message="\`\`\`arm\nTotal    balance : Ƚ$TBALANCET1 ---> Ƚ$TBALANCET2 ( $TBALANCETDIFF )\n\`\`\`"
+          message="\`\`\`arm\nTotal    balance : Ƚ$TBALANCET1 ---> Ƚ$TBALANCET2 ($TBALANCETDIFF)\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nUnlocked balance : Ƚ$TBALANCEU1 ---> Ƚ$TBALANCEU2 ( $TBALANCEUDIFF )\n\`\`\`"
+          message="\`\`\`arm\nUnlocked balance : Ƚ$TBALANCEU1 ---> Ƚ$TBALANCEU2 ($TBALANCEUDIFF)\n\`\`\`"
           send_discord_message "$message"
           if [[ $INSET2 -eq 0 ]]
           then
@@ -449,9 +449,9 @@ while true; do
           else
             message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nEpoch reward : Ƚ$EPOCHREWARD1 ---> Ƚ$EPOCHREWARD2 ( $EPOCHREWARDDIFF )\n\`\`\`"
+            message="\`\`\`arm\nEpoch reward : Ƚ$EPOCHREWARD1 ---> Ƚ$EPOCHREWARD2 ($EPOCHREWARDDIFF)\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ( $NETREWARDDIFF )\n\`\`\`"
+            message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ($NETREWARDDIFF)\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`You entered active validator set in new epoch again. But not proposing now. Validator needs to be restarted.\`\`\`"
             send_discord_message "$message"
@@ -489,9 +489,9 @@ while true; do
         send_discord_message "$message"
         message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nTotal    balance : Ƚ$TBALANCET1 ---> Ƚ$TBALANCET2 ( $TBALANCETDIFF )\n\`\`\`"
+        message="\`\`\`arm\nTotal    balance : Ƚ$TBALANCET1 ---> Ƚ$TBALANCET2 ($TBALANCETDIFF)\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nUnlocked balance : Ƚ$TBALANCEU1 ---> Ƚ$TBALANCEU2 ( $TBALANCEUDIFF )\n\`\`\`"
+        message="\`\`\`arm\nUnlocked balance : Ƚ$TBALANCEU1 ---> Ƚ$TBALANCEU2 ($TBALANCEUDIFF)\n\`\`\`"
         send_discord_message "$message"
         if [[ $INSET2 -eq 0 ]]
         then
@@ -505,9 +505,9 @@ while true; do
         else
           message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nEpoch reward : Ƚ$EPOCHREWARD1 ---> Ƚ$EPOCHREWARD2 ( $EPOCHREWARDDIFF )\n\`\`\`"
+          message="\`\`\`arm\nEpoch reward : Ƚ$EPOCHREWARD1 ---> Ƚ$EPOCHREWARD2 ($EPOCHREWARDDIFF)\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ( $NETREWARDDIFF )\n\`\`\`"
+          message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ($NETREWARDDIFF)\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`diff\n+ You entered the set successfully. +\n\`\`\`"
           send_discord_message "$message"
