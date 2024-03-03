@@ -13,7 +13,7 @@ while true; do
         break
     fi
 done
-
+echo "Script started!"
 webhook_url=""
 send_discord_message() {
   local message=$1
