@@ -206,8 +206,8 @@ then
     echo ""
     sleep 3
     
-    pip install gdown &> /dev/null && pip install --upgrade gdown &> /dev/null
-    pip install --upgrade --no-cache-dir gdown &> /dev/null
+    sudo pip install gdown &> /dev/null && sudo pip install --upgrade gdown &> /dev/null
+    sudo pip install --upgrade --no-cache-dir gdown &> /dev/null
     cd ~ && gdown --id 1e7c7Tu4v6EeuST5AnIR8s7LcllbYUMxv
     if [ $? -ne 0 ]
     then
