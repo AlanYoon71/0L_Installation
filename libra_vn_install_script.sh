@@ -44,7 +44,7 @@ sudo rm /usr/lib/python3.*/EXTERNALLY-MANAGED &> /dev/null;
 echo ""
 echo -e "\e[1m\e[32m3. Build libra binary files.\e[0m"
 echo ""
-source ~/.bashrc
+apt install cargo && source ~/.bashrc
 sleep 3
 cargo build --release -p libra && sudo cp -f ~/libra-framework/target/release/libra* ~/.cargo/bin/
 source ~/.bashrc
