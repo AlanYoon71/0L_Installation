@@ -330,8 +330,6 @@ while true; do
             send_discord_message "$message"
             message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ($NETREWARDDIFF)\n\`\`\`"
             send_discord_message "$message"
-            message="\`\`\`diff\n+ You entered the set successfully. +\n\`\`\`"
-            send_discord_message "$message"
           fi
         fi
       else
@@ -454,8 +452,6 @@ while true; do
           message="\`\`\`arm\nEpoch reward : Ƚ$EPOCHREWARD1 ---> Ƚ$EPOCHREWARD2 ($EPOCHREWARDDIFF)\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nNet   reward : Ƚ$NETREWARD1 ---> Ƚ$NETREWARD2 ($NETREWARDDIFF)\n\`\`\`"
-          send_discord_message "$message"
-          message="\`\`\`diff\n+ You entered the set successfully. +\n\`\`\`"
           send_discord_message "$message"
         fi
       else
