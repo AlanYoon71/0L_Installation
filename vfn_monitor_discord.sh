@@ -49,7 +49,7 @@ if [[ -z $PIDCHECK ]]
 then
   message="\`\`\`No running node process now. So this script will start node and verifies its sync status.\`\`\`"
   send_discord_message "$message"
-  tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
+  tmux send-keys -t node:0 "ulimit -n 1048576 && libra node --config-path ~/.libra/vfn.yaml" C-m
   sleep 60
 fi
 restart_count=0
@@ -100,7 +100,7 @@ while true; do
     tmux rename-window -t $session:$window 'node' &> /dev/null
     message="\`\`\`No running node process now. So this script will start node and verifies its sync status.\`\`\`"
     send_discord_message "$message"
-    tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
+    tmux send-keys -t node:0 "ulimit -n 1048576 && libra node --config-path ~/.libra/vfn.yaml" C-m
     sleep 60
   fi
   sleep 600
@@ -170,7 +170,7 @@ while true; do
   sleep 0.5
   if [[ -z "$PID" ]]
   then
-    tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
+    tmux send-keys -t node:0 "ulimit -n 1048576 && libra node --config-path ~/.libra/vfn.yaml" C-m
     sleep 10
     if [[ $SETCHECK2 -eq 0 ]]
     then
@@ -178,7 +178,7 @@ while true; do
       sleep 5
       restart_count=1
       rm -f vfn_start_time.txt
-      tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
+      tmux send-keys -t node:0 "ulimit -n 1048576 && libra node --config-path ~/.libra/vfn.yaml" C-m
       sleep 10
     fi
   fi
@@ -201,7 +201,7 @@ while true; do
       sleep 5
       restart_count=1
       rm -f vfn_start_time.txt
-      tmux send-keys -t node:0 "libra node --config-path ~/.libra/vfn.yaml" C-m
+      tmux send-keys -t node:0 "ulimit -n 1048576 && libra node --config-path ~/.libra/vfn.yaml" C-m
       sleep 10
       LEDGER2=`curl -s curl https://rpc.openlibra.space:8080/v1/ | jq -r '.ledger_version' | grep -o -P '\d+'`
       sleep 0.2
