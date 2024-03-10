@@ -312,8 +312,6 @@ while true; do
           send_discord_message "$message"
           if [[ $INSET2 -eq 0 ]]
           then
-            message="\`\`\`You are not in set. $JAIL\`\`\`"
-            send_discord_message "$message"
             rm -f vn_start_time.txt
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
@@ -383,8 +381,6 @@ while true; do
           send_discord_message "$message"
           if [[ $INSET2 -eq 0 ]]
           then
-            message="\`\`\`You are not in set. $JAIL\`\`\`"
-            send_discord_message "$message"
             rm -f vn_start_time.txt
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
@@ -439,8 +435,6 @@ while true; do
         send_discord_message "$message"
         if [[ $INSET2 -eq 0 ]]
         then
-          message="\`\`\`You are not in set. $JAIL\`\`\`"
-          send_discord_message "$message"
           rm -f vn_start_time.txt
           PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
           sleep 5
@@ -498,8 +492,6 @@ while true; do
             #SETCHECK2=`expr $INBOUND + $OUTBOUND`
             if [[ $INSET2 -eq 0 ]]
             then
-              message="\`\`\`You are not in set. $JAIL\`\`\`"
-              send_discord_message "$message"
               rm -f vn_start_time.txt
               PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
               sleep 5
