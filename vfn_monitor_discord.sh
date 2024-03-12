@@ -191,7 +191,7 @@ while true; do
   if [[ -z $public_in ]]; then public_in=0; fi
   if [[ -z $public_out ]]; then public_out=0; fi
   SETCHECK2=`expr $INBOUND + $OUTBOUND`
-  if [[ $LEDGER1 -eq $LEDGER2 ]] || [[ $SYNC1 -eq $SYNC2 ]]
+  if [[ $LEDGER1 -ne $LEDGER2 ]] || [[ $SYNC1 -eq $SYNC2 ]]
   then
     if [[ $restart_count -eq 0 ]]
     then
