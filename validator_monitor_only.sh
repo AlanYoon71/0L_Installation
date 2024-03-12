@@ -235,7 +235,7 @@ while true; do
   then
     if [[ $restart_count -eq 0 ]]
     then
-      message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+      message="\`\`\`arm\nSynced : +$SYNCDIFF > $SYNC2  Block : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
       send_discord_message "$message"
       message="\`\`\`diff\n- 0l Network is running, but your local node stopped syncing!! -\n\`\`\`"
       send_discord_message "$message"
@@ -281,7 +281,7 @@ while true; do
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+            message="\`\`\`arm\nSynced : +$SYNCDIFF > $SYNC2  Block : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`diff\n- 0l Network is running, but your local node stopped syncing!! -\n\`\`\`"
             send_discord_message "$message"
@@ -293,11 +293,11 @@ while true; do
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+            message="\`\`\`arm\nSynced : +$SYNCDIFF > $SYNC2  Block : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
           fi
         else
-          message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+          message="\`\`\`arm\nSynced : +$SYNCDIFF > $SYNC2  Block : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nEpoch : $EPOCH1 ---> $EPOCH2  Vouches : $VOUCH\n\`\`\`"
           send_discord_message "$message"
@@ -339,7 +339,7 @@ while true; do
         then
           if [[ $SYNC1 -eq $SYNC2 ]]
           then
-            message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Alert! Syncing stopped.\n\`\`\`"
+            message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced : +$SYNCDIFF > $SYNC2  Block : +$HEIGHTDIFF > $HEIGHT2  Alert! Syncing stopped.\n\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
@@ -349,7 +349,7 @@ while true; do
             message="\`\`\`fix\nNode restarted!\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Syncing, but not proposing now.\n\`\`\`"
+            message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced : +$SYNCDIFF > $SYNC2  Block : +$HEIGHTDIFF > $HEIGHT2  Syncing, but not proposing now.\n\`\`\`"
             send_discord_message "$message"
             PID=$(pgrep libra) && kill -TERM $PID &> /dev/null && sleep 1 && PID=$(pgrep libra) && kill -TERM $PID &> /dev/null
             sleep 5
@@ -427,7 +427,7 @@ while true; do
         send_discord_message "$message"
         message="\`\`\`arm\n$ticker\n\`\`\`"
         send_discord_message "$message"
-        message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+        message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced : +$SYNCDIFF > $SYNC2  Block : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nTotal    balance : Ƚ$TBALANCET1 ---> Ƚ$TBALANCET2 ($TBALANCETDIFF)\n\`\`\`"
         send_discord_message "$message"
@@ -470,7 +470,7 @@ while true; do
           send_discord_message "$message"
           message="\`\`\`arm\n$ticker\n\`\`\`"
           send_discord_message "$message"
-          message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
+          message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced : +$SYNCDIFF > $SYNC2  Block : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
           send_discord_message "$message"
         else
           if [[ $PROPDIFF -lt 0 ]] && [[ $PROP2 -ne 0 ]]
@@ -505,7 +505,7 @@ while true; do
               send_discord_message "$message"
               message="\`\`\`arm\n$ticker\n\`\`\`"
               send_discord_message "$message"
-              message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2  Proposing too slow.\n\`\`\`"
+              message="\`\`\`arm\nProposal : +$PROPDIFF > $PROP2  Synced : +$SYNCDIFF > $SYNC2  Block : +$HEIGHTDIFF > $HEIGHT2  Proposing too slow.\n\`\`\`"
               send_discord_message "$message"
             fi
           fi
