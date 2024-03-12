@@ -255,16 +255,16 @@ while true; do
   fi
   if [[ $LEDGER1 -eq $LEDGER2 ]]
   then
-    if [[ $HEIGHT1 -eq $HEIGHT2 ]]
+    if [[ $HEIGHT1 -eq $HEIGHT2 ]] && [[ $SYNC1 -eq $SYNC2 ]]
     then
-      message="\`\`\`= = = = = Open libra network stopped!! = = = = =\`\`\`"
+      message="\`\`\`= = = = = 0L network stopped!! = = = = =\`\`\`"
       send_discord_message "$message"
       if [[ $SYNC2 -eq $LEDGER2 ]]
       then
         message="\`\`\`arm\nHeight : $HEIGHT2  Sync : $SYNC2  Fully synced.\n\`\`\`"
         send_discord_message "$message"
       else
-        message="\`\`\`arm\nHeight : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : - $LAG\n\`\`\`"
+        message="\`\`\`arm\nHeight : $HEIGHT2  Sync : $SYNC2  Ledger : $LEDGER2  LAG : -$LAG\n\`\`\`"
         send_discord_message "$message"
       fi
     fi
@@ -331,7 +331,7 @@ while true; do
           fi
         fi
       else
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes are active.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\n$ticker\n\`\`\`"
         send_discord_message "$message"
@@ -423,7 +423,7 @@ while true; do
         if [[ -z $public_out ]]; then public_out=0; fi
         #SETCHECK2=`expr $INBOUND + $OUTBOUND`
         ACTIVE=`expr $INBOUND + $OUTBOUND + 1`
-        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes are active.$vn_runtime\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\n$ticker\n\`\`\`"
         send_discord_message "$message"
@@ -464,9 +464,9 @@ while true; do
             days=$(printf "%02d" $days)
             hours=$(printf "%02d" $hours)
             minutes=$(printf "%02d" $minutes)
-            vn_runtime=" Set entry hold time : ${days}d ${hours}h ${minutes}m"
+            vn_runtime=" Run time : ${days}d ${hours}h ${minutes}m"
           fi
-          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
+          message="\`\`\`diff\n+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes are active.$vn_runtime\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\n$ticker\n\`\`\`"
           send_discord_message "$message"
@@ -501,7 +501,7 @@ while true; do
           else
             if [[ $PROPDIFF -eq 0 ]]
             then
-              message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes in set are active now.$vn_runtime\n\`\`\`"
+              message="\`\`\`+ ======= [ VALIDATOR ] ======== +  $ACTIVE nodes are active.$vn_runtime\n\`\`\`"
               send_discord_message "$message"
               message="\`\`\`arm\n$ticker\n\`\`\`"
               send_discord_message "$message"
