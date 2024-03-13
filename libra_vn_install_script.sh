@@ -27,18 +27,18 @@ echo ""
 echo -e "\e[1m\e[32m2. Download libra framework source and git pull.\e[0m"
 echo ""
 sleep 3
-# if [ -d ~/libra-framework ]; then
-#     cd ~/libra-framework
-#     bash ./util/dev_setup.sh -t && source ~/.bashrc
-#     cd ~/libra-framework && git fetch && git pull
-# else
-#     git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework
-#     bash ./util/dev_setup.sh -t && source ~/.bashrc
-#     cd ~/libra-framework && git fetch && git pull
-# fi
-git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework
-bash ./util/dev_setup.sh -t && source ~/.bashrc
-cd ~/libra-framework && git fetch && git pull
+if [ -d ~/libra-framework ]; then
+    cd ~/libra-framework
+    bash ./util/dev_setup.sh -t && source ~/.bashrc
+    cd ~/libra-framework && git fetch && git pull
+else
+    git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework
+    bash ./util/dev_setup.sh -t && source ~/.bashrc
+    cd ~/libra-framework && git fetch && git pull
+fi
+# git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework
+# bash ./util/dev_setup.sh -t && source ~/.bashrc
+# cd ~/libra-framework && git fetch && git pull
 echo ""
 echo -e "\e[1m\e[32m3. Build libra binary files.\e[0m"
 echo ""
