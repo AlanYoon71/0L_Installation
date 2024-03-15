@@ -40,8 +40,8 @@ cd ~/libra-framework
 
 echo ""
 echo -e "\e[1m\e[32m3. Build binaries for libra node.\e[0m"
-git fetch
-git pull
+git fetch &> /dev/null;
+git pull  &> /dev/null;
 cargo build --release -p libra
 sudo cp -f ~/libra-framework/target/release/libra* ~/.cargo/bin/
 libra --version
