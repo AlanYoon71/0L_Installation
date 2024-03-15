@@ -55,6 +55,7 @@ elif [[ $user_input == "n" ]]; then
     :
 fi
 echo ""
+sleep 3
 libra config validator-init
 libra config fix --force-url https://rpc.openlibra.space:8080
 libra config fullnode-init
