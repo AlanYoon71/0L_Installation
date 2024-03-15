@@ -13,7 +13,7 @@ echo "░▒▓████████▓▒░▒▓████████�
 echo "";
 echo ""
 echo ""
-
+echo ""
 echo -e "\e[1m\e[32m1. Prepare environment for libra node setup.\e[0m"
 cd ~
 apt update
@@ -25,6 +25,7 @@ sudo apt install curl
 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
 source ~/.bashrc
 
+echo ""
 echo -e "\e[1m\e[32m2. Build framework for libra node.\e[0m"
 if [ -f "framework_check.txt" ]; then
     :
@@ -37,14 +38,16 @@ bash ./util/dev_setup.sh -t
 source ~/.bashrc
 cd ~/libra-framework
 
-echo -e "\e[1m\e[32m2. Build binaries for libra node.\e[0m"
+echo ""
+echo -e "\e[1m\e[32m3. Build binaries for libra node.\e[0m"
 git fetch
 git pull
 cargo build --release -p libra
 sudo cp -f ~/libra-framework/target/release/libra* ~/.cargo/bin/
 libra --version
 
-echo -e "\e[1m\e[32m3. Initialize validator's configs.\e[0m"
+echo ""
+echo -e "\e[1m\e[32m4. Initialize validator's configs.\e[0m"
 echo ""
 echo "Do you want to keygen for your new wallet? (y/n)"
 read -p "y/n : " user_input
@@ -65,7 +68,8 @@ libra config fix --force-url https://rpc.openlibra.space:8080
 sudo ufw allow 22; sudo ufw allow 3000; sudo ufw allow 6180; sudo ufw allow 6181; sudo ufw allow 6182; sudo ufw allow 8080; sudo ufw allow 9101;
 sudo ufw enable;
 
-echo -e "\e[1m\e[32m4. Start libra node in tmux session.\e[0m"
+echo ""
+echo -e "\e[1m\e[32m5. Start libra node in tmux session.\e[0m"
 mkdir ~/.libra/logs &> /dev/null;
 session="node" &> /dev/null;
 tmux new-session -d -s $session &> /dev/null;
