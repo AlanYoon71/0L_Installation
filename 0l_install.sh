@@ -84,8 +84,8 @@ SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_versio
 if [[ $SYNC1 -eq $SYNC2 ]]
 then
     echo ""
-    echo "Node is not syncing now. Check node's status, please."
-    echo "Node is not syncing now. Check node's status, please."
+    echo -e "\e[1m\e[31mNode is not syncing now. Check node's status, please.\e[0m"
+    echo -e "\e[1m\e[31mNode is not syncing now. Check node's status, please.\e[0m"
 else
     echo ""
     echo -e "\e[1m\e[32mNode is syncing now! Installed successfully.\e[0m"
