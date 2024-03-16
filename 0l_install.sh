@@ -15,6 +15,7 @@ echo ""
 echo ""
 echo ""
 echo -e "\e[1m\e[32m1. Prepare environment for libra node setup.\e[0m"
+echo ""
 cd ~
 apt update
 apt install sudo
@@ -27,6 +28,7 @@ source ~/.bashrc
 
 echo ""
 echo -e "\e[1m\e[32m2. Build framework for libra node.\e[0m"
+echo ""
 if [ -f "framework_check.txt" ]; then
     :
 else
@@ -40,6 +42,7 @@ cd ~/libra-framework
 
 echo ""
 echo -e "\e[1m\e[32m3. Build binaries for libra node.\e[0m"
+echo ""
 git fetch &> /dev/null;
 git pull  &> /dev/null;
 cargo build --release -p libra
@@ -61,6 +64,15 @@ echo ""
 sleep 3
 libra config validator-init
 libra config fix --force-url https://rpc.openlibra.space:8080
+if [ -f "archive_check.txt" ]; then
+    :
+else
+    git clone https://github.com/0LNetworkCommunity/epoch-archive-mainnet
+    echo "This script has downloaded archive." > archive_check.txt
+fi
+cd ~/epoch-archive-mainnet
+make bins
+make restore-all
 libra config fullnode-init
 libra config fix --force-url https://rpc.openlibra.space:8080
 #grep full_node_network_public_key ~/.libra/public-keys.yaml # copy key
@@ -70,17 +82,24 @@ sudo ufw enable;
 
 echo ""
 echo -e "\e[1m\e[32m5. Start libra node in tmux session.\e[0m"
+echo ""
 mkdir ~/.libra/logs &> /dev/null;
 session="node" &> /dev/null;
 tmux new-session -d -s $session &> /dev/null;
 window=0
 tmux rename-window -t $session:$window 'node' &> /dev/null;
-tmux send-keys -t node:0 "RUST_LOG=info libra node >> ~/.libra/logs/validator.log" C-m
+tmux send-keys -t node:0 "RUST_LOG=info libra node >> ~/.libra/logs/node.log" C-m
 echo "Checking fullnode's sync status..."
 sleep 10
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
-sleep 30
+echo ""
+echo "Synced Version : \e[1m\e[32m$SYNC1\e[0m"
+echo ""
+echo "Wait 15 sec, please."
+sleep 15
 SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
+echo ""
+echo "Synced Version : \e[1m\e[32m$SYNC2\e[0m"
 if [[ $SYNC1 -eq $SYNC2 ]]
 then
     echo ""
@@ -110,9 +129,11 @@ echo ""
 sleep 5
 tmux ls
 echo ""
-echo "Check your tmux sessions."
+echo "Check your tmux session."
+echo '"tmux attach -t node"'
 echo ""
-curl -s localhost:8080/v1/ | jq
+echo "Your node's logging in ~/.libra/logs/node.log"
+echo '"tail -f -n100 ~/.libra/logs/node.log"'
 sleep 3
 echo ""
 echo "Done."
