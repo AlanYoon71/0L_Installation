@@ -77,8 +77,8 @@ libra config fullnode-init
 libra config fix --force-url https://rpc.openlibra.space:8080
 #grep full_node_network_public_key ~/.libra/public-keys.yaml # copy key
 #nano ~/.libra/operator.yaml #paste key
-sudo ufw allow 22; sudo ufw allow 3000; sudo ufw allow 6180; sudo ufw allow 6181; sudo ufw allow 6182; sudo ufw allow 8080; sudo ufw allow 9101;
-sudo ufw enable;
+sudo ufw allow 22 &> /dev/null; sudo ufw allow 3000 &> /dev/null; sudo ufw allow 6180 &> /dev/null; sudo ufw allow 6181 &> /dev/null; sudo ufw allow 6182 &> /dev/null; sudo ufw allow 8080 &> /dev/null; sudo ufw allow 9101 &> /dev/null;
+sudo ufw enable &> /dev/null;
 
 echo ""
 echo -e "\e[1m\e[32m5. Start libra node in tmux session.\e[0m"
@@ -89,7 +89,7 @@ tmux new-session -d -s $session &> /dev/null;
 window=0
 tmux rename-window -t $session:$window 'node' &> /dev/null;
 tmux send-keys -t node:0 "RUST_LOG=info libra node >> ~/.libra/logs/node.log" C-m
-echo "Checking fullnode's sync status..."
+echo "Checking node's sync status..."
 sleep 10
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 echo ""
