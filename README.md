@@ -4,9 +4,9 @@ Validator install script `(0l_install.sh)`
 
    who have read the official doc and installed the node multiple times.
 
-   `cd ~ && rm -rf Open_Libra_Project`
+   `cd ~ && rm -rf 0L_Network`
 
-   `wget https://raw.githubusercontent.com/AlanYoon71/Open_Libra_Project/main/0l_install.sh`
+   `wget https://raw.githubusercontent.com/AlanYoon71/0L_Network/main/0l_install.sh`
 
    `chmod +x 0l_install.sh && ./0l_install.sh`
 
