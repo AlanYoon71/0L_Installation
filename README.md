@@ -10,13 +10,13 @@ Validator install script `(0l_install.sh)`
 
    `chmod +x 0l_install.sh && ./0l_install.sh`
 
-Validator monitoring script for discord `(validator_monitor_only.sh)`
+Validator monitoring script for discord `(validator_monitor.sh)`
 
 1. Prepare your own discord server and channel for monitoring (10 minutes interval).
 2. Make discord bot and connect bot to your discord channel.
 3. Download this script from your validator and edit permission script file.
 
-   `chmod +x validator_monitor_only.sh`
+   `chmod +x validator_monitor.sh`
 4. Copy your webhook url of bot and paste url into line 17 of script.
 5. Open tmux and run node. Don't change the tmux session name `node`.
 
@@ -27,7 +27,7 @@ Validator monitoring script for discord `(validator_monitor_only.sh)`
 
    `tmux new -s bot`
 
-   `./validator_monitor_only.sh`
+   `./validator_monitor.sh`
 7. If script works well, you can see the messages like below in your personal server.
 
    `Script starts.`
