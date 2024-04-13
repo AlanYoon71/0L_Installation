@@ -6,9 +6,9 @@ Validator install script `(0l_install.sh)`
 
    `cd ~ && rm -rf 0L_Network`
 
-   `wget https://raw.githubusercontent.com/AlanYoon71/0L_Network/main/0l_install.sh`
+   `wget https://raw.githubusercontent.com/AlanYoon71/0L_Network/main/0l_vn_setup.sh`
 
-   `chmod +x 0l_install.sh && ./0l_install.sh`
+   `chmod +x 0l_vn_setup.sh && ./0l_vn_setup.sh`
 
 Validator monitoring script for discord `(validator_monitor.sh)`
 
