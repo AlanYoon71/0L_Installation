@@ -72,7 +72,7 @@ echo ""
 cd ~/libra-framework
 cargo build --release -p libra
 sudo cp target/release/libra ~/.cargo/bin
-version libra
+libra version
 echo ""
 
 echo -e "\e[1m\e[32m3. Generating account config files.\e[0m"
