@@ -72,6 +72,7 @@ echo ""
 cd ~/libra-framework
 cargo build --release -p libra
 sudo cp target/release/libra ~/.cargo/bin
+echo ""
 libra version
 echo ""
 
