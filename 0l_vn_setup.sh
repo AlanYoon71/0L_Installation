@@ -144,9 +144,9 @@ session="node"
 tmux new-session -d -s $session
 window=0
 tmux rename-window -t $session:$window 'node'
+tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
 echo ""
 echo "Validator started."
-tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
 echo ""
 
 animation() {
@@ -177,13 +177,52 @@ animation "Checking sync status now" "sleep 10 && export SYNC1=`curl -s 127.0.0.
 if [[ $SYNC1 -eq $SYNC2 ]]
 then
     echo ""
-    echo "Validator can't sync. Installation failed!"
-    echo "Validator can't sync. Installation failed!"
+    echo "It looks node not syncing, try again now.."
+    tmux send-keys -t node:0 "exit" C-m
+    session="node"
+    tmux new-session -d -s $session
+    window=0
+    tmux rename-window -t $session:$window 'node'
+    tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
     echo ""
-    echo "Exiting script..."
+    echo "Validator restarted."
     echo ""
-    sleep 2
-    exit
+
+    animation() {
+        local status="$1"
+        local command="$2"
+        local dots="."
+
+        while :; do
+            for (( i = 0; i < 10; i++ )); do
+                echo -ne "$status $dots\033[K"
+                sleep 0.2
+                echo -en "\r"
+                dots=".$dots"
+            done
+            dots="."
+        done &
+        local animation_pid=$!
+
+        eval "$command"
+
+        kill $animation_pid
+        status=" Done"
+        echo -e "$status \e[1m\e[32m ✓\e[0m"
+}
+
+    animation "Checking sync status now" "sleep 10 && export SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'` && sleep 50 && export SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`"
+
+    if [[ $SYNC1 -eq $SYNC2 ]]
+    then
+        echo "Validator can't sync. Installation failed!"
+        echo "Validator can't sync. Installation failed!"
+        echo ""
+        echo "Exiting script..."
+        echo ""
+        sleep 2
+        exit
+    fi
 fi
 echo ""
 echo "Validator is running and syncing now! Installed successfully."
