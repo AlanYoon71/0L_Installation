@@ -53,7 +53,7 @@ else
     cd ~/libra-framework
 fi
 sudo apt update && sudo apt install -y bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
-sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
+sudo apt install -y curl && curl -y https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
 export PATH="$HOME/.cargo/bin:$PATH" && rustup update && rustup default stable && cargo install cargo-nextest && cargo nextest --version
 git fetch --all
 git checkout release-7.0.0
