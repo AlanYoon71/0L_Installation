@@ -4,7 +4,7 @@ Validator install script `(0l_vn_setup.sh)`
 
    who have read the official doc and installed the node multiple times.
 
-   `cd ~ && wget -O https://raw.githubusercontent.com/AlanYoon71/0L_Network/main/0l_vn_setup.sh`
+   `cd ~ && wget -O ~/0l_vn_setup.sh https://raw.githubusercontent.com/AlanYoon71/0L_Network/main/0l_vn_setup.sh`
 
    `chmod +x 0l_vn_setup.sh && ./0l_vn_setup.sh`
 
