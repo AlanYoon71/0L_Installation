@@ -146,7 +146,7 @@ tmux rename-window -t $session:$window 'node'
 echo ""
 echo "Validator started."
 tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
-sleep 10
+echo ""
 
 animation() {
     local status="$1" # First argument: Initial status
