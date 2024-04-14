@@ -145,15 +145,20 @@ sleep 2
 echo ""
 sudo ufw enable
 sudo ufw allow 3000; sudo ufw allow 6180; sudo ufw allow 6181
+echo "checking tmux sessions."
 tmux send-keys -t node:0 "exit" C-m
 session="node"
 tmux new-session -d -s $session
 window=0
 tmux rename-window -t $session:$window 'node'
+echo ""
+echo "Validator is getting ready to start."
 tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
 echo ""
+sleep 10
 echo "Validator started."
 echo ""
+SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 
 animation() {
     local status="$1" # First argument: Initial status
@@ -177,13 +182,14 @@ animation() {
     status=" Done" # Change status to "Done"
     echo -e "$status \e[1m\e[32m ✓\e[0m"
 }
-
-animation "Checking sync status now" "sleep 10 && export SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'` && sleep 50 && export SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`"
+animation "Checking sync status now" "sleep 80"
+SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 
 if [[ $SYNC1 -eq $SYNC2 ]]
 then
     echo ""
     echo "It looks node not syncing, try again now.."
+    echo "checking tmux sessions."
     tmux send-keys -t node:0 "exit" C-m
     session="node"
     tmux new-session -d -s $session
@@ -191,39 +197,42 @@ then
     tmux rename-window -t $session:$window 'node'
     tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
     echo ""
+    sleep 10
     echo "Validator restarted."
     echo ""
+    SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 
     animation() {
-        local status="$1"
-        local command="$2"
+        local status="$1" # First argument: Initial status
+        local command="$2" # Second argument: Command to execute
         local dots="."
 
         while :; do
             for (( i = 0; i < 10; i++ )); do
-                echo -ne "$status $dots\033[K"
+                echo -ne "$status $dots\033[K" # Display status variable
                 sleep 0.2
                 echo -en "\r"
                 dots=".$dots"
             done
-            dots="."
+            dots="." # Reset dots counter
         done &
-        local animation_pid=$!
+        local animation_pid=$! # Capture the PID of the background process
 
         eval "$command"
 
-        kill $animation_pid
-        status=" Done"
+        kill $animation_pid # Stop the animation
+        status=" Done" # Change status to "Done"
         echo -e "$status \e[1m\e[32m ✓\e[0m"
 }
-
-    animation "Checking sync status now" "sleep 10 && export SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'` && sleep 50 && export SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`"
+    animation "Checking sync status now" "sleep 80"
+    SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 
     if [[ $SYNC1 -eq $SYNC2 ]]
     then
         echo "Validator can't sync. Installation failed!"
         echo "Validator can't sync. Installation failed!"
         echo ""
+        echo "You can check log in tmux session named node."
         echo "Exiting script..."
         echo ""
         sleep 2
