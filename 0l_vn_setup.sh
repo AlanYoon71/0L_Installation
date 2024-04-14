@@ -46,18 +46,15 @@ else
         fi
     done
 fi
-cd ~
-sudo apt update && sudo apt install -y git wget nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
-sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
-export PATH="$HOME/.cargo/bin:$PATH"
-rustup update && rustup default stable
-cargo install cargo-nextest && cargo nextest --version
 if [ -d "$HOME/libra-framework" ]; then
     cd ~/libra-framework
 else
     git clone https://github.com/0LNetworkCommunity/libra-framework
-    cd ~/libra-framework    
+    cd ~/libra-framework
 fi
+sudo apt update && sudo apt install -y git wget nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
+sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
+export PATH="$HOME/.cargo/bin:$PATH" && rustup update && rustup default stable && cargo install cargo-nextest && cargo nextest --version
 git fetch --all
 git checkout release-7.0.0
 git log -n 1 --pretty=format:"%H"
@@ -98,16 +95,16 @@ echo -e "\e[1m\e[32m4. Downloading network config files.\e[0m"
 
 sleep 2
 echo ""
-cd ~/.libra/genesis
-rm * &> /dev/null
-wget https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
-wget https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
-wget https://github.com/AlanYoon71/0L_Network/raw/main/genesis_balances.json
-cd ~/.libra
-rm *.json &> /dev/null
-wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json
-wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/drop_list.json
-wget https://github.com/AlanYoon71/0L_Network/raw/main/migration_sanitized.json
+#cd ~/.libra/genesis
+#rm * &> /dev/null
+wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
+wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
+#wget https://github.com/AlanYoon71/0L_Network/raw/main/genesis_balances.json
+#cd ~/.libra
+#rm *.json &> /dev/null
+#wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json
+#wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/drop_list.json
+#wget https://github.com/AlanYoon71/0L_Network/raw/main/migration_sanitized.json
 echo ""
 
 echo -e "\e[1m\e[32m5. Updating network config files.\e[0m"
@@ -189,7 +186,7 @@ SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_versio
 if [[ $SYNC1 -eq $SYNC2 ]]
 then
     echo ""
-    echo "It looks node not syncing, try again now.."
+    echo "It appears that validator is not syncing. Try again now.."
     echo "checking tmux sessions."
     tmux send-keys -t node:0 "exit" C-m
     session="node"
