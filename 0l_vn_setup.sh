@@ -113,8 +113,6 @@ echo ""
 operator_update=$(grep full_node_network_public_key ~/.libra/public-keys.yaml)
 sed -i "s/full_node_network_public_key:.*/$operator_update/" ~/.libra/operator.yaml &> /dev/null
 sed -i 's/~$//' ~/.libra/operator.yaml &> /dev/null
-echo ""
-echo ""
 echo "If you have VFN now, input your VFN IP address."
 echo "If you don't have VFN yet, just enter."
 echo ""
