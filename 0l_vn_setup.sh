@@ -73,6 +73,7 @@ echo -e "\e[1m\e[32m3. Generating account config files.\e[0m"
 
 sleep 2
 echo ""
+rm -rf ~/.libra/data &> /dev/null
 mkdir ~/.libra &> /dev/null; mkdir ~/.libra/genesis &> /dev/null
 cp -f ~/github_token.txt ~/.libra &> /dev/null
 echo "Do you want to generate new wallet? (y/n)"
@@ -192,7 +193,6 @@ echo -e "\e[1m\e[32m7. Registering with the validator universe.\e[0m"
 
 sleep 2
 echo ""
-rm -rf ~/.libra/data &> /dev/null
 libra txs validator register
 #libra txs validator update
 while true; do
