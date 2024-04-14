@@ -43,6 +43,9 @@ echo $token $HOME/github_token.txt
 cd ~
 sudo apt update && sudo apt install -y git wget nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
 sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
+export PATH="$HOME/.cargo/bin:$PATH"
+rustup update && rustup default stable
+cargo install cargo-nextest && cargo nextest --version
 rm -rf ~/libra-framework
 git clone https://github.com/0LNetworkCommunity/libra-framework
 cd ~/libra-framework
