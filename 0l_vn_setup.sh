@@ -240,6 +240,7 @@ echo ""
 libra txs validator register
 #libra txs validator update
 while true; do
+    echo ""
     echo "How much would you like to bid value? (0.01 ~ 1.1)"
     echo "Please check the lowest bid in the previous epoch."
     read -p "bid value : " bid_value
