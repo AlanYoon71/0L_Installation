@@ -179,7 +179,6 @@ then
     echo "Validator can't sync. Installation failed!"
     echo "Validator can't sync. Installation failed!"
     echo ""
-    tmux send-keys -t node:0 "exit" C-m &> /dev/null
     echo "Exiting script..."
     echo ""
     sleep 2
