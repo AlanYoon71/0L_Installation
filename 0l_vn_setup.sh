@@ -264,7 +264,8 @@ sleep 2
 echo ""
 tmux ls
 echo ""
-echo "Check your tmux sessions."
+echo "If you want to check log, attach the tmux session named node with command below."
+echo "< tmux attach -t node >"
 echo ""
 curl -s localhost:8080/v1/ | jq
 sleep 3
