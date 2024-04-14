@@ -46,9 +46,12 @@ sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-too
 export PATH="$HOME/.cargo/bin:$PATH"
 rustup update && rustup default stable
 cargo install cargo-nextest && cargo nextest --version
-rm -rf ~/libra-framework
-git clone https://github.com/0LNetworkCommunity/libra-framework
-cd ~/libra-framework
+if [ -d "$HOME/libra-framework" ]; then
+    cd ~/libra-framework
+else
+    git clone https://github.com/0LNetworkCommunity/libra-framework
+    cd ~/libra-framework    
+fi
 git fetch --all
 git checkout release-7.0.0
 git log -n 1 --pretty=format:"%H"
