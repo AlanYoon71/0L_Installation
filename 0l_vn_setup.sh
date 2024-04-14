@@ -56,7 +56,7 @@ git fetch --all
 git checkout release-7.0.0
 git log -n 1 --pretty=format:"%H"
 cd ~/libra-framework/util
-bash dev_setup.sh
+echo "y" | bash dev_setup.sh
 echo ""
 
 echo -e "\e[1m\e[32m2. Building libra binary files.\e[0m"
