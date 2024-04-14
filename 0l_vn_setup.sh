@@ -95,16 +95,8 @@ echo -e "\e[1m\e[32m4. Downloading network config files.\e[0m"
 
 sleep 2
 echo ""
-#cd ~/.libra/genesis
-#rm * &> /dev/null
 wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
 wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
-#wget https://github.com/AlanYoon71/0L_Network/raw/main/genesis_balances.json
-#cd ~/.libra
-#rm *.json &> /dev/null
-#wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json
-#wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/drop_list.json
-#wget https://github.com/AlanYoon71/0L_Network/raw/main/migration_sanitized.json
 echo ""
 
 echo -e "\e[1m\e[32m5. Updating network config files.\e[0m"
