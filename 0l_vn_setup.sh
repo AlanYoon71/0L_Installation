@@ -140,7 +140,7 @@ sleep 2
 echo ""
 sudo ufw enable
 sudo ufw allow 3000; sudo ufw allow 6180; sudo ufw allow 6181
-session="node"
+tmux send-keys -t node:0 "exit" C-m &> /dev/null && session="node"
 tmux new-session -d -s $session &> /dev/null
 window=0
 tmux rename-window -t $session:$window 'node'
@@ -172,7 +172,7 @@ animation() {
     echo -e "$status \e[1m\e[32m ✓\e[0m"
 }
 
-animation "Checking sync status for a minute." "sleep 10 && SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'` && sleep 50 && SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`"
+animation "Checking sync status now" "sleep 10 && SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'` && sleep 50 && SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`"
 
 if [[ $SYNC1 -eq $SYNC2 ]]
 then
@@ -180,6 +180,7 @@ then
     echo "Validator can't sync. Installation failed!"
     echo "Validator can't sync. Installation failed!"
     echo ""
+    tmux send-keys -t node:0 "exit" C-m &> /dev/null
     echo "Exiting script..."
     echo ""
     sleep 2
