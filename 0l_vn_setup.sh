@@ -91,10 +91,12 @@ echo -e "\e[1m\e[32m4. Downloading network config files.\e[0m"
 sleep 2
 echo ""
 cd ~/.libra/genesis
-#wget https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
-#wget https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
+rm * &> /dev/null
+wget https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
+wget https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
 wget https://github.com/AlanYoon71/0L_Network/raw/main/genesis_balances.json
 cd ~/.libra
+rm *.json &> /dev/null
 wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json
 wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/drop_list.json
 wget https://github.com/AlanYoon71/0L_Network/raw/main/migration_sanitized.json
@@ -132,30 +134,7 @@ echo "$port_update" >> ~/.libra/operator.yaml
 echo "~/.libra/operator.yaml updated."
 echo ""
 
-echo -e "\e[1m\e[32m6. Registering and setting bid value.\e[0m"
-
-sleep 2
-echo ""
-libra txs validator register
-#libra txs validator update
-while true; do
-    echo "How much would you like to bid value? (0.01 ~ 1.1)"
-    echo "Please check the lowest bid in the previous epoch."
-    read -p "bid value : " bid_value
-    echo ""
-    echo "Your bid value is $bid_value."
-    echo ""
-    echo "Did you enter it correctly?(y/n)"
-    read -p "y/n : " user_input
-    if [[ $user_input == "y" ]]; then
-        echo ""
-        libra txs validator pof --bid-pct $bid_value --expiry 1000
-        break
-    fi
-done
-echo ""
-
-echo -e "\e[1m\e[32m7. Setting firewall and running libra with tmux.\e[0m"
+echo -e "\e[1m\e[32m6. Setting firewall and running libra with tmux.\e[0m"
 
 sleep 2
 echo ""
@@ -167,7 +146,7 @@ window=0
 tmux rename-window -t $session:$window 'node'
 echo ""
 echo "Validator started."
-tmux send-keys -t node:0 "ulimit -n 1048576 && RUST_LOG=info libra node" C-m
+tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
 sleep 10
 
 animation() {
@@ -210,6 +189,31 @@ echo ""
 echo "Validator is running and syncing now! Installed successfully."
 echo ""
 
+echo -e "\e[1m\e[32m7. Registering with the validator universe.\e[0m"
+
+sleep 2
+echo ""
+rm -rf ~/.libra/data &> /dev/null
+libra txs validator register
+#libra txs validator update
+while true; do
+    echo "How much would you like to bid value? (0.01 ~ 1.1)"
+    echo "Please check the lowest bid in the previous epoch."
+    read -p "bid value : " bid_value
+    echo ""
+    echo "Your bid value is $bid_value."
+    echo ""
+    echo "Did you enter it correctly?(y/n)"
+    read -p "y/n : " user_input
+    if [[ $user_input == "y" ]]; then
+        echo ""
+        libra txs validator pof --bid-pct $bid_value --expiry 1000
+        echo "If your txs fails, wait until catch-up completes and retry."
+        break
+    fi
+done
+echo ""
+
 echo -e "\e[1m\e[32m8. Check your node status.\e[0m"
 
 sleep 2
@@ -221,5 +225,6 @@ echo ""
 curl -s localhost:8080/v1/ | jq
 sleep 3
 echo ""
+
 echo "Done."
 echo ""
