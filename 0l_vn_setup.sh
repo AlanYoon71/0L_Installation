@@ -151,25 +151,25 @@ echo ""
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 
 animation() {
-    local status="$1" # First argument: Initial status
-    local command="$2" # Second argument: Command to execute
+    local status="$1"
+    local command="$2"
     local dots="."
 
     while :; do
         for (( i = 0; i < 10; i++ )); do
-            echo -ne "$status $dots\033[K" # Display status variable
+            echo -ne "$status $dots\033[K"
             sleep 0.2
             echo -en "\r"
             dots=".$dots"
         done
-        dots="." # Reset dots counter
+        dots="."
     done &
-    local animation_pid=$! # Capture the PID of the background process
+    local animation_pid=$!
 
     eval "$command"
 
-    kill $animation_pid # Stop the animation
-    status=" Done" # Change status to "Done"
+    kill $animation_pid
+    status=" Done"
     echo -e "$status \e[1m\e[32m ✓\e[0m"
 }
 animation "Checking sync status now" "sleep 80"
@@ -193,25 +193,25 @@ then
     SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 
     animation() {
-        local status="$1" # First argument: Initial status
-        local command="$2" # Second argument: Command to execute
+        local status="$1"
+        local command="$2"
         local dots="."
 
         while :; do
             for (( i = 0; i < 10; i++ )); do
-                echo -ne "$status $dots\033[K" # Display status variable
+                echo -ne "$status $dots\033[K"
                 sleep 0.2
                 echo -en "\r"
                 dots=".$dots"
             done
-            dots="." # Reset dots counter
+            dots="."
         done &
-        local animation_pid=$! # Capture the PID of the background process
+        local animation_pid=$!
 
         eval "$command"
 
-        kill $animation_pid # Stop the animation
-        status=" Done" # Change status to "Done"
+        kill $animation_pid
+        status=" Done"
         echo -e "$status \e[1m\e[32m ✓\e[0m"
 }
     animation "Checking sync status now" "sleep 80"
