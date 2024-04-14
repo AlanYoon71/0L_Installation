@@ -137,7 +137,7 @@ echo -e "\e[1m\e[32m6. Registering and setting bid value.\e[0m"
 sleep 2
 echo ""
 libra txs validator register
-libra txs validator update
+#libra txs validator update
 while true; do
     echo "How much would you like to bid value? (0.01 ~ 1.1)"
     echo "Please check the lowest bid in the previous epoch."
