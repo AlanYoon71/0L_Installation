@@ -2,7 +2,7 @@
 
 while true; do
     echo ""
-    echo "If you want to check balance?"
+    echo "Do you want to check balance?"
     read -p "y/n : " user_input
     if [[ $user_input == "y" ]]; then
         echo ""
