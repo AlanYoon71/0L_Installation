@@ -25,21 +25,27 @@ apt update
 apt install sudo
 sudo apt update
 sudo apt install nano
-while true; do
-    echo ""
-    echo "Input your github token."
-    read -p "token : " token
-    echo ""
-    echo "Your github token is $token."
-    echo ""
-    echo "Did you enter it correctly?(y/n)"
-    read -p "y/n : " user_input
-    if [[ $user_input == "y" ]]; then
+if [[ -f $HOME/github_token.txt ]]
+then
+    :
+else
+    echo "github token is not found in $HOME directory."
+    while true; do
         echo ""
-        break
-    fi
-done
-echo $token $HOME/github_token.txt
+        echo "Input your github token."
+        read -p "token : " token
+        echo ""
+        echo "Your github token is $token."
+        echo ""
+        echo "Did you enter it correctly?(y/n)"
+        read -p "y/n : " user_input
+        if [[ $user_input == "y" ]]; then
+            echo ""
+            echo $token > $HOME/github_token.txt
+            break
+        fi
+    done
+fi
 cd ~
 sudo apt update && sudo apt install -y git wget nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
 sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
