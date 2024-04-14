@@ -80,7 +80,6 @@ read -p "y/n : " user_input
 if [[ $user_input == "y" ]]; then
     echo ""
     libra wallet keygen
-    new=1
 else
     libra config validator-init
 fi
@@ -137,12 +136,8 @@ echo -e "\e[1m\e[32m6. Registering and setting bid value.\e[0m"
 
 sleep 2
 echo ""
-if [[ $new -eq 1 ]]
-then
-    libra txs validator register
-else
-    libra txs validator update
-fi
+libra txs validator register
+libra txs validator update
 while true; do
     echo "How much would you like to bid value? (0.01 ~ 1.1)"
     echo "Please check the lowest bid in the previous epoch."
