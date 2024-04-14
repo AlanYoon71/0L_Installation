@@ -24,7 +24,7 @@ cd ~
 apt update
 apt install sudo
 sudo apt update
-sudo apt install nano
+sudo apt install -y nano wget git
 if [[ -f $HOME/github_token.txt ]]
 then
     :
@@ -52,7 +52,7 @@ else
     git clone https://github.com/0LNetworkCommunity/libra-framework
     cd ~/libra-framework
 fi
-sudo apt update && sudo apt install -y git wget nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
+sudo apt update && sudo apt install -y bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
 sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
 export PATH="$HOME/.cargo/bin:$PATH" && rustup update && rustup default stable && cargo install cargo-nextest && cargo nextest --version
 git fetch --all
