@@ -26,12 +26,12 @@ while true; do
 done
 
 search_string="${accountinput: -6}"
-target_vouch_count=$(libra query resource --resource-path-string 0x1::vouch::MyVouches --account $targetinput | jq '.my_buddies | map(select(startswith("0x"))) | length')
-result=$(libra query resource --resource-path-string 0x1::vouch::MyVouches --account "$targetinput" | jq -r '.my_buddies[] | .[-6:]')
+target_vouch_count=$(libra query resource --resource-path-string 0x1::vouch::MyVouches $targetinput | jq '.my_buddies | map(select(startswith("0x"))) | length')
+result=$(libra query resource --resource-path-string 0x1::vouch::MyVouches "$targetinput" | jq -r '.my_buddies[] | .[-6:]')
 echo "$result" > target_vouches.txt
-result2=$(libra query resource --resource-path-string 0x1::stake::ValidatorSet --account 0x1 | jq -r '.active_validators[].addr | .[-6:]')
+result2=$(libra query resource --resource-path-string 0x1::stake::ValidatorSet 0x1 | jq -r '.active_validators[].addr | .[-6:]')
 echo "$result2" > active_check_for_vouch_check.txt
-libra query resource --resource-path-string 0x1::stake::ValidatorSet --account 0x1 | jq -r '.active_validators[].addr' | tr ' ' '\n' > active.txt
+libra query resource --resource-path-string 0x1::stake::ValidatorSet 0x1 | jq -r '.active_validators[].addr' | tr ' ' '\n' > active.txt
 target_file="target_vouches.txt"
 check_file="active_check_for_vouch_check.txt"
 count=0
@@ -74,8 +74,8 @@ if [ "$match_found" = true ]; then
         echo ""
         libra txs validator vouch --vouch-for $targetinput --revoke
         echo ""
-        target_vouch_count=$(libra query resource --resource-path-string 0x1::vouch::MyVouches --account $targetinput | jq '.my_buddies | map(select(startswith("0x"))) | length')
-        result=$(libra query resource --resource-path-string 0x1::vouch::MyVouches --account "$targetinput" | jq -r '.my_buddies[] | .[-6:]')
+        target_vouch_count=$(libra query resource --resource-path-string 0x1::vouch::MyVouches $targetinput | jq '.my_buddies | map(select(startswith("0x"))) | length')
+        result=$(libra query resource --resource-path-string 0x1::vouch::MyVouches "$targetinput" | jq -r '.my_buddies[] | .[-6:]')
         match_found=false
         while IFS= read -r key; do
             if [[ $key == $search_string ]]; then
@@ -85,10 +85,10 @@ if [ "$match_found" = true ]; then
         done <<< "$result"
         if [ "$match_found" = true ]; then
             echo "It looks like revoke failed. The target account has total $target_vouch_count vouchers, including yours yet."
-            libra query resource --resource-path-string 0x1::vouch::MyVouches --account $targetinput | jq
+            libra query resource --resource-path-string 0x1::vouch::MyVouches $targetinput | jq
         else
             echo "Your vouch has been revoked successfully. The target account has total $target_vouch_count vouchers now."
-            libra query resource --resource-path-string 0x1::vouch::MyVouches --account $targetinput | jq
+            libra query resource --resource-path-string 0x1::vouch::MyVouches $targetinput | jq
         fi
     elif [[ $user_input == "n" ]]; then
         echo ""
@@ -106,8 +106,8 @@ else
         echo ""
         libra txs validator vouch --vouch-for $targetinput
         echo ""
-        target_vouch_count=$(libra query resource --resource-path-string 0x1::vouch::MyVouches --account $targetinput | jq '.my_buddies | map(select(startswith("0x"))) | length')
-        result=$(libra query resource --resource-path-string 0x1::vouch::MyVouches --account "$targetinput" | jq -r '.my_buddies[] | .[-6:]')
+        target_vouch_count=$(libra query resource --resource-path-string 0x1::vouch::MyVouches $targetinput | jq '.my_buddies | map(select(startswith("0x"))) | length')
+        result=$(libra query resource --resource-path-string 0x1::vouch::MyVouches "$targetinput" | jq -r '.my_buddies[] | .[-6:]')
         match_found=false
         while IFS= read -r key; do
             if [[ $key == $search_string ]]; then
@@ -118,11 +118,11 @@ else
         if [ "$match_found" = true ]; then
             echo ""
             echo "You vouched for the target account successfully. The target account has total $target_vouch_count vouchers, including yours now."
-            libra query resource --resource-path-string 0x1::vouch::MyVouches --account $targetinput | jq
+            libra query resource --resource-path-string 0x1::vouch::MyVouches $targetinput | jq
         else
             echo ""
             echo "Vouch failed. The target account has total $target_vouch_count vouchers, but does not include yours yet."
-            libra query resource --resource-path-string 0x1::vouch::MyVouches --account $targetinput | jq
+            libra query resource --resource-path-string 0x1::vouch::MyVouches $targetinput | jq
         fi
     elif [[ $user_input == "n" ]]; then
         echo ""
