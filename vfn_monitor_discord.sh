@@ -269,7 +269,7 @@ while true; do
             rm -f vfn_start_time.txt
           else
             PIDCHECK=$(pgrep libra)
-            message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
+            message="\`\`\`diff\n+ ======= [ VFN ] ======== +  Connected to VN. $vn_runtime\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`diff\n+ Connected to Validator successfully. +\n\`\`\`"
             send_discord_message "$message"
@@ -277,7 +277,7 @@ while true; do
         fi
       else
         PIDCHECK=$(pgrep libra)
-        message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
+        message="\`\`\`diff\n+ ======= [ VFN ] ======== +  Connected to VN. $vn_runtime\n\`\`\`"
         send_discord_message "$message"
         message="\`\`\`arm\nVFN mode only :  VFN network --> $OUTBOUND   $public_in --> [Public network] --> $public_out\n\`\`\`"
         send_discord_message "$message"
@@ -341,7 +341,7 @@ while true; do
           send_discord_message "$message"
           rm -f vfn_start_time.txt
         else
-          message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
+          message="\`\`\`diff\n+ ======= [ VFN ] ======== +  Connected to VN. $vn_runtime\n\`\`\`"
           send_discord_message "$message"
           message="\`\`\`arm\nVFN mode only :  VFN network --> $OUTBOUND   $public_in --> [Public network] --> $public_out\n\`\`\`"
           send_discord_message "$message"
@@ -388,7 +388,7 @@ while true; do
             message="\`\`\`arm\nSynced version : +$SYNCDIFF > $SYNC2  Block height : +$HEIGHTDIFF > $HEIGHT2\n\`\`\`"
             send_discord_message "$message"
           else
-            message="\`\`\`diff\n+ ======= [ Validator FullNode ] ======== +  Connected to Validator.$vn_runtime\n\`\`\`"
+            message="\`\`\`diff\n+ ======= [ VFN ] ======== +  Connected to VN. $vn_runtime\n\`\`\`"
             send_discord_message "$message"
             message="\`\`\`arm\nVFN mode only :  VFN network --> $OUTBOUND   $public_in --> [Public network] --> $public_out\n\`\`\`"
             send_discord_message "$message"
