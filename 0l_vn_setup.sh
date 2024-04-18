@@ -91,12 +91,43 @@ fi
 libra config fullnode-init
 echo ""
 
-echo -e "\e[1m\e[32m4. Downloading network config files.\e[0m"
+echo -e "\e[1m\e[32m4. Verifying the integrity of the network file.\e[0m"
 
 sleep 2
 echo ""
-wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
-wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
+genesis_check=$(sha256sum ~/.libra/genesis/genesis.blob | awk '{print $1}')
+if [[ "$genesis_check" -eq "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
+then
+    echo -e "Current genesis.blob sha256sum: $genesis_check ..... \e[1m\e[32m ✓\e[0m"
+else
+    echo -e "Correct genesis.blob sha256sum: ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3"
+    echo -e "Current genesis.blob sha256sum: $genesis_check ..... not matched."
+    wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
+    if [[ "$genesis_check" -eq "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
+    then
+        echo -e "Current genesis.blob sha256sum: $genesis_check ..... \e[1m\e[32m ✓\e[0m"
+    else
+        echo -e "There's no correct genesis.blob file, installation failed."
+        echo ""
+        exit
+    fi
+fi
+waypoint_check=$(cat ~/.libra/genesis/waypoint.txt)
+if [[ "$waypoint_check" -eq "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
+then
+    echo -e "Current waypoint: $waypoint_check ..... \e[1m\e[32m ✓\e[0m"
+else
+    echo -e "Correct waypoint: 0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce"
+    echo -e "Current waypoint: $waypoint_check ..... not matched."
+    wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
+    if [[ "$waypoint_check" -eq "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
+    then
+        echo -e "Current waypoint: $waypoint_check ..... \e[1m\e[32m ✓\e[0m"
+    else
+        echo "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" > ~/.libra/genesis/waypoint.txt
+        echo -e "Waypoint updated."
+    fi
+fi
 echo ""
 
 echo -e "\e[1m\e[32m5. Updating network config files.\e[0m"
@@ -239,23 +270,31 @@ sleep 2
 echo ""
 libra txs validator register
 #libra txs validator update
-while true; do
-    echo ""
-    echo "How much would you like to bid value? (0.01 ~ 1.1)"
-    echo "Please check the lowest bid in the previous epoch."
-    read -p "bid value : " bid_value
-    echo ""
-    echo "Your bid value is $bid_value."
-    echo ""
-    echo "Did you enter it correctly?(y/n)"
-    read -p "y/n : " user_input
-    if [[ $user_input == "y" ]]; then
-        echo ""
-        libra txs validator pof --bid-pct $bid_value --expiry 1000
-        echo "If your txs fails, wait until catch-up completes and retry."
-        break
-    fi
-done
+echo "If you haven't created a new wallet, you'll need to update the val-config later."
+echo "< libra txs validator update >"
+sleep 2
+# while true; do
+#     echo ""
+#     echo "How much would you like to bid value? (0.01 ~ 1.1)"
+#     echo "Please check the lowest bid in the previous epoch."
+#     read -p "bid value : " bid_value
+#     echo ""
+#     echo "Your bid value is $bid_value."
+#     echo ""
+#     echo "Did you enter it correctly?(y/n)"
+#     read -p "y/n : " user_input
+#     if [[ $user_input == "y" ]]; then
+#         echo ""
+#         libra txs validator pof --bid-pct $bid_value --expiry 1000
+#         echo "If your txs fails, wait until catch-up completes and retry."
+#         break
+#     fi
+# done
+
+echo ""
+echo "Your bid value will be set as 0.01."
+echo ""
+libra txs validator pof --bid-pct 0.01 --expiry 1000
 echo ""
 
 echo -e "\e[1m\e[32m8. Check your node status.\e[0m"
