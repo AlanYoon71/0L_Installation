@@ -292,9 +292,9 @@ sleep 2
 # done
 
 echo ""
-echo "Your bid value will be set as 0.01."
+echo "Your bid value will be set as 0.001."
 echo ""
-libra txs validator pof --bid-pct 0.01 --expiry 1000
+libra txs validator pof --bid-pct 0.001 --expiry 1000
 echo ""
 
 echo -e "\e[1m\e[32m8. Check your node status.\e[0m"
