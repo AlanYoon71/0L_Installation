@@ -69,9 +69,8 @@ while true; do
         break
     fi
 done
-git reset --hard origin/release-$release_version
 git fetch --all
-git checkout release-$release_version
+git checkout -f release-$release_version
 git pull
 git log -n 1 --pretty=format:"%H"
 cd ~/libra-framework/util
