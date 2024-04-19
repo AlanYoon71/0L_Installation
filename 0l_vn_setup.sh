@@ -55,8 +55,24 @@ fi
 sudo apt update && sudo apt install -y bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
 sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
 export PATH="$HOME/.cargo/bin:$PATH" && rustup update && rustup default stable && cargo install cargo-nextest && cargo nextest --version
+while true; do
+    echo ""
+    echo "Input libra-framework release version(x.y.z)."
+    read -p "release : " release_version
+    echo ""
+    echo "libra-framework release version for setup is $release_version."
+    echo ""
+    echo "Did you enter it correctly?(y/n)"
+    read -p "y/n : " user_input
+    if [[ $user_input == "y" ]]; then
+        echo ""
+        break
+    fi
+done
+git reset --hard origin/release-$release_version
 git fetch --all
-git checkout release-7.0.0
+git checkout release-$release_version
+git pull
 git log -n 1 --pretty=format:"%H"
 cd ~/libra-framework/util
 echo "y" | bash dev_setup.sh
