@@ -184,8 +184,7 @@ echo -e "\e[1m\e[32m6. Setting firewall and running libra with tmux.\e[0m"
 
 sleep 2
 echo ""
-sudo ufw enable
-sudo ufw allow 3000; sudo ufw allow 6180; sudo ufw allow 6181
+sudo ufw enable; sudo ufw allow 6180; sudo ufw allow 6181
 echo "checking tmux sessions."
 tmux send-keys -t node:0 "exit" C-m
 session="node"
