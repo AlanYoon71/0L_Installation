@@ -52,9 +52,14 @@ else
     git clone https://github.com/0LNetworkCommunity/libra-framework
     cd ~/libra-framework
 fi
-sudo apt update && sudo apt install -y bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev
-sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
-export PATH="$HOME/.cargo/bin:$PATH" && rustup update && rustup default stable && cargo install cargo-nextest && cargo nextest --version
+sudo apt update && sudo apt install -y nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev net-tools
+sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
+echo "Updating cargo-nextest.."
+sleep 1
+export PATH="$HOME/.cargo/bin:$PATH"; rustup update; rustup default stable; cargo install cargo-nextest; cargo nextest --version
+echo "Checking and rebuilding packages.."
+sleep 1
+sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
 while true; do
     echo ""
     echo "Input libra-framework release version(x.y.z)."
