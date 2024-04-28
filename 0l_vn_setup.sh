@@ -88,6 +88,7 @@ echo -e "\e[1m\e[32m2. Building libra binary files.\e[0m"
 
 sleep 2
 echo ""
+export PATH="$HOME/.cargo/bin:$PATH";
 cd ~/libra-framework
 cargo build --release -p libra
 sudo cp target/release/libra ~/.cargo/bin
