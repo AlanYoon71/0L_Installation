@@ -53,6 +53,8 @@ else
     cd ~/libra-framework
 fi
 sudo apt update && sudo apt install -y nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev net-tools
+rustup default 1.74.0
+sed -i 's/1.70.0/1.74.0/g' ~/libra-framework/rust-toolchain
 sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
 echo "Updating cargo-nextest.."
 sleep 1
@@ -123,6 +125,7 @@ else
     echo -e "Correct genesis.blob sha256sum: ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3"
     echo -e "Current genesis.blob sha256sum: $genesis_check ..... not matched."
     wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
+    genesis_check=$(sha256sum ~/.libra/genesis/genesis.blob | awk '{print $1}')
     if [[ "$genesis_check" -eq "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
     then
         echo -e "Current genesis.blob sha256sum: $genesis_check ..... \e[1m\e[32m ✓\e[0m"
@@ -140,6 +143,7 @@ else
     echo -e "Correct waypoint: 0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce"
     echo -e "Current waypoint: $waypoint_check ..... not matched."
     wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
+    waypoint_check=$(cat ~/.libra/genesis/waypoint.txt)
     if [[ "$waypoint_check" -eq "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
     then
         echo -e "Current waypoint: $waypoint_check ..... \e[1m\e[32m ✓\e[0m"
