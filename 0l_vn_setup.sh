@@ -1,6 +1,5 @@
 #!/bin/bash
 
-clear
 echo ""
 echo "";
 echo "░▒▓████████▓▒░▒▓█▓▒░             ░▒▓███████▓▒░░▒▓████████▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░ ";
@@ -46,22 +45,35 @@ else
         fi
     done
 fi
+# if [ -d "$HOME/libra-framework" ]; then
+#     cd ~/libra-framework
+# else
+#     git clone https://github.com/0LNetworkCommunity/libra-framework
+#     cd ~/libra-framework
+# fi
+# sudo apt update && sudo apt install -y nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev net-tools
+# rustup default 1.74.0
+# sed -i 's/1.70.0/1.74.0/g' ~/libra-framework/rust-toolchain
+# sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
+# echo "Updating cargo-nextest.."
+# sleep 1
+# export PATH="$HOME/.cargo/bin:$PATH"; rustup update; rustup default stable; cargo install cargo-nextest; cargo nextest --version
+# echo "Checking and rebuilding packages.."
+# sleep 1
+# sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
 if [ -d "$HOME/libra-framework" ]; then
+    export PATH="$HOME/.cargo/bin:$PATH" && rustup update && rustup default stable && cargo install cargo-nextest && cargo nextest --version
     cd ~/libra-framework
 else
     git clone https://github.com/0LNetworkCommunity/libra-framework
-    cd ~/libra-framework
 fi
-sudo apt update && sudo apt install -y nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev net-tools
-rustup default 1.74.0
-sed -i 's/1.70.0/1.74.0/g' ~/libra-framework/rust-toolchain
-sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
-echo "Updating cargo-nextest.."
-sleep 1
-export PATH="$HOME/.cargo/bin:$PATH"; rustup update; rustup default stable; cargo install cargo-nextest; cargo nextest --version
-echo "Checking and rebuilding packages.."
-sleep 1
-sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
+sudo apt update && sudo apt install -y bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev net-tools
+cd ~/libra-framework
+sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
+cd ~
+export PATH="$HOME/.cargo/bin:$PATH" && rustup update && rustup default stable && cargo install cargo-nextest && cargo nextest --version
+cd ~/libra-framework
+sudo apt install curl && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y && source ~/.bashrc
 while true; do
     echo ""
     echo "Input libra-framework release version(x.y.z)."
@@ -108,9 +120,8 @@ read -p "y/n : " user_input
 if [[ $user_input == "y" ]]; then
     echo ""
     libra wallet keygen
-else
-    libra config validator-init
 fi
+libra config validator-init
 libra config fullnode-init
 echo ""
 
@@ -119,17 +130,20 @@ echo -e "\e[1m\e[32m4. Verifying the integrity of the network file.\e[0m"
 sleep 2
 echo ""
 genesis_check=$(sha256sum ~/.libra/genesis/genesis.blob | awk '{print $1}')
-if [[ "$genesis_check" -eq "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
+if [[ "$genesis_check" == "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
 then
     echo -e "Current genesis.blob sha256sum: $genesis_check ..... \e[1m\e[32m ✓\e[0m"
+    sleep 3
 else
     echo -e "Correct genesis.blob sha256sum: ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3"
     echo -e "Current genesis.blob sha256sum: $genesis_check ..... not matched."
+    sleep 3
     wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
     genesis_check=$(sha256sum ~/.libra/genesis/genesis.blob | awk '{print $1}')
-    if [[ "$genesis_check" -eq "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
+    if [[ "$genesis_check" == "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
     then
         echo -e "Current genesis.blob sha256sum: $genesis_check ..... \e[1m\e[32m ✓\e[0m"
+        sleep 3
     else
         echo -e "There's no correct genesis.blob file, installation failed."
         echo ""
@@ -137,17 +151,20 @@ else
     fi
 fi
 waypoint_check=$(cat ~/.libra/genesis/waypoint.txt)
-if [[ "$waypoint_check" -eq "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
+if [[ "$waypoint_check" == "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
 then
     echo -e "Current waypoint: $waypoint_check ..... \e[1m\e[32m ✓\e[0m"
+    sleep 3
 else
     echo -e "Correct waypoint: 0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce"
     echo -e "Current waypoint: $waypoint_check ..... not matched."
+    sleep 3
     wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
     waypoint_check=$(cat ~/.libra/genesis/waypoint.txt)
-    if [[ "$waypoint_check" -eq "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
+    if [[ "$waypoint_check" == "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
     then
         echo -e "Current waypoint: $waypoint_check ..... \e[1m\e[32m ✓\e[0m"
+        sleep 3
     else
         echo "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" > ~/.libra/genesis/waypoint.txt
         echo -e "Waypoint updated."
@@ -159,7 +176,7 @@ echo -e "\e[1m\e[32m5. Updating network config files.\e[0m"
 
 sleep 2
 echo ""
-libra config fix --force-url https://rpc.openlibra.space:8080
+libra config fix --force-url https://rpc.openlibra.space:8080/v1
 sed -i 's/testnet/mainnet/g' ~/.libra/libra-cli-config.yaml
 echo "~/.libra/libra-cli-config.yaml updated."
 echo ""
@@ -184,12 +201,15 @@ port_update=$(echo "$port_update" | sed 's/6180/6182/')
 echo "$port_update" >> ~/.libra/operator.yaml
 echo "~/.libra/operator.yaml updated."
 echo ""
+echo "You should copy your vfn.yaml and operator.yaml on the validator to your VFN if you have."
+echo ""
 
 echo -e "\e[1m\e[32m6. Setting firewall and running libra with tmux.\e[0m"
 
 sleep 2
 echo ""
-sudo ufw enable; sudo ufw allow 6180; sudo ufw allow 6181
+sudo ufw allow 6180; sudo ufw allow 6181
+echo "Your firewall rule(ufw) has changed to open 6180 and 6181 ports."
 echo "checking tmux sessions."
 tmux send-keys -t node:0 "exit" C-m
 session="node"
@@ -292,8 +312,6 @@ echo -e "\e[1m\e[32m7. Registering with the validator universe.\e[0m"
 
 sleep 2
 echo ""
-libra txs validator register
-#libra txs validator update
 echo "If you haven't created a new wallet, you'll need to update the val-config later."
 echo "< libra txs validator update >"
 sleep 2
@@ -333,6 +351,8 @@ echo ""
 curl -s localhost:8080/v1/ | jq
 sleep 3
 echo ""
-
+echo "After Syncing completes, register or update your validator config with command as below."
+echo "Register : <libra txs validator register>, Update : <libra txs validator update>"
+echo ""
 echo "Done."
 echo ""
