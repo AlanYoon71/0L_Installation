@@ -331,10 +331,10 @@ sleep 2
 #     fi
 # done
 
-echo ""
-echo "Your bid value will be set as 0.001."
-echo ""
-libra txs validator pof --bid-pct 0.001 --expiry 1000
+# echo ""
+# echo "Your bid value will be set as 0.001."
+# echo ""
+# libra txs validator pof --bid-pct 0.001 --expiry 1000
 echo ""
 
 echo -e "\e[1m\e[32m8. Check your node status.\e[0m"
@@ -349,8 +349,10 @@ echo ""
 curl -s localhost:8080/v1/ | jq
 sleep 3
 echo ""
-echo "After Syncing completes, register or update your validator config with command as below."
+echo "After Syncing completes, register or update your validator config with command as below if you need."
+echo "And set your bidding percentage. If not fully synced, the transaction will fail. Please be patient."
 echo "Register : <libra txs validator register>, Update : <libra txs validator update>"
+echo "Bidding : <libra txs validator pof --bid-pct 0.1 --expiry 1000>"
 echo ""
 echo "Done."
 echo ""
