@@ -354,5 +354,8 @@ echo "And set your bidding percentage. If not fully synced, the transaction will
 echo "Register : <libra txs validator register>, Update : <libra txs validator update>"
 echo "Bidding : <libra txs validator pof --bid-pct 0.1 --expiry 1000>"
 echo ""
+echo "Also you can check syncing status with command as below."
+echo "<curl -s localhost:8080/v1/ | jq>"
+echo ""
 echo "Done."
 echo ""
