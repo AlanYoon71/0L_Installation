@@ -50,16 +50,6 @@ else
     done
 fi
 
-echo "Input your server name and IP address."
-echo ""
-read -p "Server name : " server_name
-read -p "IP address : " ip_address
-
-content="$server_name    $ip_address"
-
-# Write the content to testnet_iplist.txt
-echo "$content" > $HOME/testnet_iplist.txt
-
 if [ -d "$HOME/libra-framework" ]; then
     cd ~/libra-framework
 else
@@ -139,9 +129,14 @@ else
 fi
 echo ""
 wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json -P $HOME/.libra/
-IP=$(ifconfig | grep -oP '(?<=inet )(\d+\.\d+\.\d+\.\d+)' | head -n 1)
-me=$(awk -v ip="$IP" '$2 == ip {print $1}' $HOME/testnet_iplist.txt)
-libra genesis testnet -m "$me" $(awk '{printf "-i %s ", $2}' $HOME/testnet_iplist.txt) --json-legacy $HOME/.libra/state_epoch_79_ver_33217173.795d.json
+if [[  ! -f $HOME/.libra/validator.yaml]]
+then
+    libra config validator-init
+    libra config fullnode-init
+    wget -O $HOME/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/master/genesis.blob
+    wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/master/waypoint.txt
+    wget -O ~/.libra/genesis/genesis_balances.json https://github.com/AlanYoon71/0L_Network/raw/master/genesis_balances.json
+fi
 echo ""
 echo "Done."
 echo ""
