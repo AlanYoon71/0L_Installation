@@ -129,6 +129,7 @@ else
 fi
 echo ""
 wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json -P $HOME/.libra/
+echo "export PATH=$PATH:$HOME/.cargo/bin" >> ~/.bashrc && . ~/.bashrc
 libra config validator-init
 libra config fullnode-init
 wget -O $HOME/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/master/genesis.blob
