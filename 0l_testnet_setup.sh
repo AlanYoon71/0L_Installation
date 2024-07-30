@@ -129,14 +129,11 @@ else
 fi
 echo ""
 wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json -P $HOME/.libra/
-if [[  ! -f $HOME/.libra/validator.yaml]]
-then
-    libra config validator-init
-    libra config fullnode-init
-    wget -O $HOME/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/master/genesis.blob
-    wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/master/waypoint.txt
-    wget -O ~/.libra/genesis/genesis_balances.json https://github.com/AlanYoon71/0L_Network/raw/master/genesis_balances.json
-fi
+libra config validator-init
+libra config fullnode-init
+wget -O $HOME/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/master/genesis.blob
+wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/master/waypoint.txt
+wget -O ~/.libra/genesis/genesis_balances.json https://github.com/AlanYoon71/0L_Network/raw/master/genesis_balances.json
 echo ""
 echo "Done."
 echo ""
