@@ -4,7 +4,7 @@ if [ -f $HOME/.libra/operator.yaml ]
 then
     ID=$(grep -Po '(?<=full_node_network_public_key: "0x).*' $HOME/.libra/public-keys.yaml | sed 's/"$//')
     sleep 0.2
-    IP=`curl -s ifconfig.me`
+    IP=$(hostname -I | awk '{print $1}')
     sleep 0.5
     echo -en "\n"
     echo -en "\n"
