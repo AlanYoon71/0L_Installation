@@ -50,27 +50,12 @@ else
     done
 fi
 
-is_valid_persona() {
-    local input="$1"
-    case "$input" in
-        alice|bob|carol|dave)
-            return 0
-            ;;
-        *)
-            return 1
-            ;;
-    esac
-}
+content="alice    158.247.247.207
+bob      172.17.0.3
+carol    172.17.0.4
+dave     172.17.0.5"
 
-while true; do
-    read -p "Enter a persona (alice, bob, carol, dave): " persona
-    if is_valid_persona "$persona"; then
-        echo "You have selected: $persona"
-        break
-    else
-        echo "Invalid input. Please try again."
-    fi
-done
+echo "$content" > testnet_iplist.txt
 
 if [ -d "$HOME/libra-framework" ]; then
     cd ~/libra-framework
@@ -152,9 +137,9 @@ echo "export PATH=$PATH:$HOME/.cargo/bin" >> ~/.bashrc && . ~/.bashrc
 # fi
 echo ""
 wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json -P $HOME/.libra/
-# IP=$(ifconfig | grep -oP '(?<=inet )(\d+\.\d+\.\d+\.\d+)' | head -n 1)
 IP=$(hostname -I | awk '{print $1}')
-libra genesis testnet -m "$persona" -i "$IP" --json-legacy $HOME/.libra/state_epoch_79_ver_33217173.795d.json
+me=$(awk -v ip="$IP" '$2 == ip {print $1}' $HOME/testnet_iplist.txt)
+libra genesis testnet -m "$me" $(awk '{printf "-i %s ", $2}' $HOME/testnet_iplist.txt) --json-legacy $HOME/.libra/state_epoch_79_ver_33217173.795d.json
 echo ""
 echo "Done."
 echo ""
