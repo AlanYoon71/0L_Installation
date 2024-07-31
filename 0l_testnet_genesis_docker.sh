@@ -131,14 +131,14 @@ mkdir ~/.libra &> /dev/null; mkdir ~/.libra/genesis &> /dev/null
 sudo cp -f ~/github_token.txt ~/.libra &> /dev/null
 sudo cp -f ~/testnet_iplist.txt ~/.libra &> /dev/null
 echo "export PATH=$PATH:$HOME/.cargo/bin" >> ~/.bashrc && . ~/.bashrc
-echo "Do you want to generate new wallet? (y/n)"
-read -p "y/n : " user_input
-if [[ $user_input == "y" ]]; then
-    echo ""
-    libra wallet keygen
-else
-    :
-fi
+# echo "Do you want to generate new wallet? (y/n)"
+# read -p "y/n : " user_input
+# if [[ $user_input == "y" ]]; then
+#     echo ""
+#     libra wallet keygen
+# else
+#     :
+# fi
 echo ""
 wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json -P $HOME/.libra/
 # IP=$(ifconfig | grep -oP '(?<=inet )(\d+\.\d+\.\d+\.\d+)' | head -n 1)
