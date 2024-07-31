@@ -50,9 +50,9 @@ else
     done
 fi
 
-content="Alice    172.17.0.2
-Bob      172.17.0.3
-Carol    172.17.0.4
+content="alice    172.17.0.2
+bob      172.17.0.3
+carol    172.17.0.4
 dave     172.17.0.5"
 
 # Write the content to testnet_iplist.txt
