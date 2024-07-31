@@ -56,7 +56,10 @@ carol    172.17.0.4
 dave     172.17.0.5"
 
 # Write the content to testnet_iplist.txt
-echo "$content" > $HOME/testnet_iplist.txt
+if [[ ! -f testnet_iplist.txt ]]
+then
+    echo "$content" > $HOME/testnet_iplist.txt
+fi
 
 if [ -d "$HOME/libra-framework" ]; then
     cd ~/libra-framework
