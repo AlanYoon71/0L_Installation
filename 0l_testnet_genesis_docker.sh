@@ -154,8 +154,7 @@ echo ""
 wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json -P $HOME/.libra/
 # IP=$(ifconfig | grep -oP '(?<=inet )(\d+\.\d+\.\d+\.\d+)' | head -n 1)
 IP=$(hostname -I | awk '{print $1}')
-me="$persona"
-libra genesis testnet -m "$me" -i "$IP" --json-legacy $HOME/.libra/state_epoch_79_ver_33217173.795d.json
+libra genesis testnet -m "$persona" -i "$IP" --json-legacy $HOME/.libra/state_epoch_79_ver_33217173.795d.json
 echo ""
 echo "Done."
 echo ""
