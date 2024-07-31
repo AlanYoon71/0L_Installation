@@ -141,7 +141,8 @@ else
 fi
 echo ""
 wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/main/artifacts/state_epoch_79_ver_33217173.795d.json -P $HOME/.libra/
-IP=$(ifconfig | grep -oP '(?<=inet )(\d+\.\d+\.\d+\.\d+)' | head -n 1)
+# IP=$(ifconfig | grep -oP '(?<=inet )(\d+\.\d+\.\d+\.\d+)' | head -n 1)
+IP=$(hostname -I | awk '{print $1}')
 me=$(awk -v ip="$IP" '$2 == ip {print $1}' $HOME/testnet_iplist.txt)
 libra genesis testnet -m "$me" $(awk '{printf "-i %s ", $2}' $HOME/testnet_iplist.txt) --json-legacy $HOME/.libra/state_epoch_79_ver_33217173.795d.json
 echo ""
