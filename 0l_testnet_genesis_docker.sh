@@ -80,20 +80,15 @@ export PATH="$HOME/.cargo/bin:$PATH"; rustup update; rustup default stable; carg
 echo "Checking and rebuilding packages.."
 sleep 1
 sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
-while true; do
-    echo ""
-    echo "Input libra-framework release version(x.y.z)."
-    read -p "release : " release_version
-    echo ""
-    echo "libra-framework release version for setup is $release_version."
-    echo ""
-    echo "Did you enter it correctly?(y/n)"
-    read -p "y/n : " user_input
-    if [[ $user_input == "y" ]]; then
-        echo ""
-        break
-    fi
-done
+
+echo ""
+echo "Input libra-framework release version(x.y.z)."
+read -p "release : " release_version
+echo ""
+echo "libra-framework release version for setup is $release_version."
+echo ""
+
+
 git fetch --all
 git checkout -f release-$release_version
 git pull
