@@ -218,8 +218,14 @@ echo -e "\e[1m\e[32m6. Setting firewall and running libra with tmux.\e[0m"
 
 sleep 2
 echo ""
-sudo ufw allow 6180; sudo ufw allow 6181; sudo ufw enable;
-echo "Your firewall rule(ufw) has changed to open 6180 and 6181 ports."
+if [[ -z "$role" ]]
+then
+    sudo ufw allow 6180; sudo ufw allow 6181; sudo ufw enable;
+    echo "Your firewall rule(ufw) has changed to open 6180 and 6181 ports."
+else
+    sudo ufw allow 3000; sudo ufw allow 6180; sudo ufw allow 6181; sudo ufw allow 6182; sudo ufw allow 8080; sudo ufw enable;
+    echo "Your firewall rule (ufw) now opens ports 3000, 6180-6182, and 8080 for Docker traffic and grafana."
+fi
 echo "checking tmux sessions."
 tmux send-keys -t node:0 "exit" C-m
 session="node"
@@ -386,7 +392,7 @@ then
     echo ""
     echo "Also you can check syncing status with command as below."
 fi
-echo "<curl -s localhost:8080/v1/ | jq>"
+curl -s localhost:8080/v1/ | jq"
 echo ""
 echo "Done."
 echo ""
