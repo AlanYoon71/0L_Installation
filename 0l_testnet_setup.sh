@@ -136,7 +136,7 @@ echo ""
 #     echo -e "Correct genesis.blob sha256sum: ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3"
 #     echo -e "Current genesis.blob sha256sum: $genesis_check ..... not matched."
 #     sleep 3
-    wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/OpenLibra_Testnet/raw/master/genesis.blob
+    wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/genesis.blob
 #     genesis_check=$(sha256sum ~/.libra/genesis/genesis.blob | awk '{print $1}')
 #     if [[ "$genesis_check" == "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
 #     then
@@ -157,7 +157,7 @@ echo ""
 #     echo -e "Correct waypoint: 0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce"
 #     echo -e "Current waypoint: $waypoint_check ..... not matched."
 #     sleep 3
-    wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/OpenLibra_Testnet/raw/master/waypoint.txt
+    wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/waypoint.txt
     # waypoint_check=$(cat ~/.libra/genesis/waypoint.txt)
     # if [[ "$waypoint_check" == "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
     # then
@@ -168,7 +168,7 @@ echo ""
     #     echo -e "Waypoint updated."
     # fi
 # fi
-wget -O ~/.libra/genesis/genesis_balances.json https://github.com/AlanYoon71/OpenLibra_Testnet/raw/master/genesis_balances.json
+wget -O ~/.libra/genesis/genesis_balances.json https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/genesis_balances.json
 echo ""
 
 echo -e "\e[1m\e[32m5. Updating network config files.\e[0m"
@@ -182,7 +182,10 @@ echo ""
 operator_update=$(grep full_node_network_public_key ~/.libra/public-keys.yaml)
 sed -i "s/full_node_network_public_key:.*/$operator_update/" ~/.libra/operator.yaml &> /dev/null
 sed -i 's/~$//' ~/.libra/operator.yaml &> /dev/null
-echo "If you have VFN now, input your VFN IP address."
+echo "If you are VFN, type \"vfn\". If not VFN, just enter."
+read -p "This node's role : " role
+echo ""
+echo "If you have VFN now or you are VFN, input VFN's IP address."
 echo "If you don't have VFN yet, just enter."
 echo ""
 read -p "VFN IP address : " vfn_ip
@@ -224,11 +227,17 @@ tmux new-session -d -s $session
 window=0
 tmux rename-window -t $session:$window 'node'
 echo ""
-echo "Validator is getting ready to start."
-tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
+if [[ -z "$role" ]]
+then
+    echo "Validator is getting ready to start."
+    tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
+else
+    echo "VFN is getting ready to start."
+    tmux send-keys -t node:0 "RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+fi
 echo ""
 sleep 10
-echo "Validator started."
+echo "Started."
 echo ""
 SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 
@@ -260,17 +269,22 @@ SYNC2=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_versio
 if [[ $SYNC1 -eq $SYNC2 ]]
 then
     echo ""
-    echo "It appears that validator is not syncing. Try again now.."
+    echo "It appears that node is not syncing. Try again now.."
     echo "checking tmux sessions."
     tmux send-keys -t node:0 "exit" C-m
     session="node"
     tmux new-session -d -s $session
     window=0
     tmux rename-window -t $session:$window 'node'
-    tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
+    if [[ -z "$role" ]]
+    then
+        tmux send-keys -t node:0 "RUST_LOG=info libra node" C-m
+    else
+        tmux send-keys -t node:0 "RUST_LOG=info libra node --config-path ~/.libra/vfn.yaml" C-m
+    fi
     echo ""
     sleep 10
-    echo "Validator restarted."
+    echo "Restarted."
     echo ""
     SYNC1=`curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_version{type=\"synced\"} | grep -o '[0-9]*'`
 
@@ -301,8 +315,8 @@ then
 
     if [[ $SYNC1 -eq $SYNC2 ]]
     then
-        echo "Validator can't sync. Installation failed!"
-        echo "Validator can't sync. Installation failed!"
+        echo "Node can't sync. Installation failed!"
+        echo "Node can't sync. Installation failed!"
         echo ""
         echo "You can check log in tmux session named node."
         echo "Exiting script..."
@@ -312,58 +326,66 @@ then
     fi
 fi
 echo ""
-echo "Validator is running and syncing now! Installed successfully."
-echo ""
+if [[ -z "$role" ]]
+then
+    echo "Validator is running and syncing now! Installed successfully."
+else
+    echo "VFN is running and syncing now! Installed successfully."
+fi
+if [[ -z "$role" ]]
+then
+    echo ""
 
-echo -e "\e[1m\e[32m7. Registering with the validator universe.\e[0m"
+    echo -e "\e[1m\e[32m7. Registering with the validator universe.\e[0m"
 
-sleep 2
-echo ""
-echo "If you haven't created a new wallet, you'll need to update the val-config later."
-echo "< libra txs validator update >"
-sleep 2
-# while true; do
-#     echo ""
-#     echo "How much would you like to bid value? (0.01 ~ 1.1)"
-#     echo "Please check the lowest bid in the previous epoch."
-#     read -p "bid value : " bid_value
-#     echo ""
-#     echo "Your bid value is $bid_value."
-#     echo ""
-#     echo "Did you enter it correctly?(y/n)"
-#     read -p "y/n : " user_input
-#     if [[ $user_input == "y" ]]; then
-#         echo ""
-#         libra txs validator pof --bid-pct $bid_value --expiry 1000
-#         echo "If your txs fails, wait until catch-up completes and retry."
-#         break
-#     fi
-# done
+    sleep 2
+    echo ""
+    echo "If you haven't created a new wallet, you'll need to update the val-config later."
+    echo "< libra txs validator update >"
+    sleep 2
+    # while true; do
+    #     echo ""
+    #     echo "How much would you like to bid value? (0.01 ~ 1.1)"
+    #     echo "Please check the lowest bid in the previous epoch."
+    #     read -p "bid value : " bid_value
+    #     echo ""
+    #     echo "Your bid value is $bid_value."
+    #     echo ""
+    #     echo "Did you enter it correctly?(y/n)"
+    #     read -p "y/n : " user_input
+    #     if [[ $user_input == "y" ]]; then
+    #         echo ""
+    #         libra txs validator pof --bid-pct $bid_value --expiry 1000
+    #         echo "If your txs fails, wait until catch-up completes and retry."
+    #         break
+    #     fi
+    # done
 
-# echo ""
-# echo "Your bid value will be set as 0.001."
-# echo ""
-# libra txs validator pof --bid-pct 0.001 --expiry 1000
-echo ""
+    # echo ""
+    # echo "Your bid value will be set as 0.001."
+    # echo ""
+    # libra txs validator pof --bid-pct 0.001 --expiry 1000
+    echo ""
 
-echo -e "\e[1m\e[32m8. Check your node status.\e[0m"
+    echo -e "\e[1m\e[32m8. Check your node status.\e[0m"
 
-sleep 2
-echo ""
-tmux ls
-echo ""
-echo "If you want to check log, attach a tmux session with command below."
-echo "< tmux attach -t node >"
-echo ""
-curl -s localhost:8080/v1/ | jq
-sleep 3
-echo ""
-echo "After Syncing completes, register or update your validator config with command as below if you need."
-echo "And set your bidding percentage. If not fully synced, the transaction will fail. Please be patient."
-echo "Register : <libra txs validator register>, Update : <libra txs validator update>"
-echo "Bidding : <libra txs validator pof --bid-pct 0.1 --expiry 1000>"
-echo ""
-echo "Also you can check syncing status with command as below."
+    sleep 2
+    echo ""
+    tmux ls
+    echo ""
+    echo "If you want to check log, attach a tmux session with command below."
+    echo "< tmux attach -t node >"
+    echo ""
+    curl -s localhost:8080/v1/ | jq
+    sleep 3
+    echo ""
+    echo "After Syncing completes, register or update your validator config with command as below if you need."
+    echo "And set your bidding percentage. If not fully synced, the transaction will fail. Please be patient."
+    echo "Register : <libra txs validator register>, Update : <libra txs validator update>"
+    echo "Bidding : <libra txs validator pof --bid-pct 0.1 --expiry 1000>"
+    echo ""
+    echo "Also you can check syncing status with command as below."
+fi
 echo "<curl -s localhost:8080/v1/ | jq>"
 echo ""
 echo "Done."
