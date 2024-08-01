@@ -175,7 +175,7 @@ echo -e "\e[1m\e[32m5. Updating network config files.\e[0m"
 
 sleep 2
 echo ""
-libra config fix --force-url http://158.247.247.207:8080/
+libra config fix --force-url http://158.247.247.207:8080/v1
 sed -i 's/mainnet/testnet/g' ~/.libra/libra-cli-config.yaml
 echo "~/.libra/libra-cli-config.yaml updated."
 echo ""
