@@ -338,60 +338,7 @@ then
 else
     echo "VFN is running and syncing now! Installed successfully."
 fi
-if [[ -z "$role" ]]
-then
-    echo ""
-
-    echo -e "\e[1m\e[32m7. Registering with the validator universe.\e[0m"
-
-    sleep 2
-    echo ""
-    echo "If you haven't created a new wallet, you'll need to update the val-config later."
-    echo "< libra txs validator update >"
-    sleep 2
-    # while true; do
-    #     echo ""
-    #     echo "How much would you like to bid value? (0.01 ~ 1.1)"
-    #     echo "Please check the lowest bid in the previous epoch."
-    #     read -p "bid value : " bid_value
-    #     echo ""
-    #     echo "Your bid value is $bid_value."
-    #     echo ""
-    #     echo "Did you enter it correctly?(y/n)"
-    #     read -p "y/n : " user_input
-    #     if [[ $user_input == "y" ]]; then
-    #         echo ""
-    #         libra txs validator pof --bid-pct $bid_value --expiry 1000
-    #         echo "If your txs fails, wait until catch-up completes and retry."
-    #         break
-    #     fi
-    # done
-
-    # echo ""
-    # echo "Your bid value will be set as 0.001."
-    # echo ""
-    # libra txs validator pof --bid-pct 0.001 --expiry 1000
-    echo ""
-
-    echo -e "\e[1m\e[32m8. Check your node status.\e[0m"
-
-    sleep 2
-    echo ""
-    tmux ls
-    echo ""
-    echo "If you want to check log, attach a tmux session with command below."
-    echo "< tmux attach -t node >"
-    echo ""
-    curl -s localhost:8080/v1/ | jq
-    sleep 3
-    echo ""
-    echo "After Syncing completes, register or update your validator config with command as below if you need."
-    echo "And set your bidding percentage. If not fully synced, the transaction will fail. Please be patient."
-    echo "Register : <libra txs validator register>, Update : <libra txs validator update>"
-    echo "Bidding : <libra txs validator pof --bid-pct 0.1 --expiry 1000>"
-    echo ""
-    echo "Also you can check syncing status with command as below."
-fi
+echo ""
 curl -s localhost:8080/v1/ | jq"
 echo ""
 echo "Done."
