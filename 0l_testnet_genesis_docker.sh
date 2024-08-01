@@ -147,6 +147,35 @@ wget https://raw.githubusercontent.com/0LNetworkCommunity/v7-hard-fork-ceremony/
 IP=$(hostname -I | awk '{print $1}')
 me=$(awk -v ip="$IP" '$2 == ip {print $1}' $HOME/testnet_iplist.txt)
 libra genesis testnet -m "$me" $(awk '{printf "-i %s ", $2}' $HOME/testnet_iplist.txt) --json-legacy $HOME/.libra/state_epoch_79_ver_33217173.795d.json
+
+operator_update=$(grep full_node_network_public_key ~/.libra/public-keys.yaml)
+sed -i "s/full_node_network_public_key:.*/$operator_update/" ~/.libra/operator.yaml &> /dev/null
+sed -i 's/~$//' ~/.libra/operator.yaml &> /dev/null
+echo "If you have VFN now, input your VFN IP address."
+echo "If you don't have VFN yet, just enter."
+echo ""
+read -p "VFN IP address : " vfn_ip
+echo ""
+if [[ -z $vfn_ip ]]; then
+    echo "You need to set up VFN later for 0l network's stability and security."
+    ip_update=$(grep "  host:" ~/.libra/operator.yaml)
+    echo "$ip_update" >> ~/.libra/operator.yaml
+    echo ""
+else
+    echo "  host: $vfn_ip" >> ~/.libra/operator.yaml
+fi
+port_update=$(grep "  port:" ~/.libra/operator.yaml)
+port_update=$(echo "$port_update" | sed 's/6180/6182/')
+echo "$port_update" >> ~/.libra/operator.yaml
+echo "~/.libra/operator.yaml updated."
+
+cp -f ~/.libra/validator.yaml ~/.libra/validator.yaml.bak && sed -i '/^[0-9a-f]\{64\}:$/d; /^[[:space:]]*- \/ip4\/[0-9.]\+\/tcp\/6182\/noise-ik\/0x[0-9a-f]\{64\}\/handshake\/0$/d' ~/.libra/validator.yaml
+sleep 0.2
+cp ~/.libra/validator.yaml ~/.libra/validator.yaml.bak && sed -i '/seed_addrs:/,/seeds:/{ /seed_addrs:/b; /seeds:/b; d; }' ~/.libra/validator.yaml
+sleep 0.2
+cp ~/.libra/validator.yaml ~/.libra/validator.yaml.bak && sed -i '/seed_addrs:/{/seed_addrs: *{}/!{a\      493847429420549694a18a82bc9b1b1ce21948bbf1cd4c5cee9ece0fb8ead50a:\n      - "/ip4/158.247.247.207/tcp/6182/noise-ik/0x493847429420549694a18a82bc9b1b1ce21948bbf1cd4c5cee9ece0fb8ead50a/handshake/0"
+}}' ~/.libra/validator.yaml
+echo "~/.libra/validator.yaml updated with testnet seed."
 echo ""
 echo "Done."
 echo ""
