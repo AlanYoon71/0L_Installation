@@ -33,38 +33,13 @@ then
     :
 else
     echo "github token is not found in $HOME directory."
-    while true; do
-        echo ""
-        echo "Input your github token."
-        read -p "token : " token
-        echo ""
-        echo "Your github token is $token."
-        echo ""
-        echo "Did you enter it correctly?(y/n)"
-        read -p "y/n : " user_input
-        if [[ $user_input == "y" ]]; then
-            echo ""
-            echo $token > $HOME/github_token.txt
-            break
-        fi
-    done
+    echo ""
+    echo "Input your github token."
+    read -p "token : " token
+    echo ""
+    echo $token > $HOME/github_token.txt
 fi
-# if [ -d "$HOME/libra-framework" ]; then
-#     cd ~/libra-framework
-# else
-#     git clone https://github.com/0LNetworkCommunity/libra-framework
-#     cd ~/libra-framework
-# fi
-# sudo apt update && sudo apt install -y nano bc tmux jq build-essential cmake clang llvm libgmp-dev pkg-config libssl-dev lld libpq-dev net-tools
-# rustup default 1.74.0
-# sed -i 's/1.70.0/1.74.0/g' ~/libra-framework/rust-toolchain
-# sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
-# echo "Updating cargo-nextest.."
-# sleep 1
-# export PATH="$HOME/.cargo/bin:$PATH"; rustup update; rustup default stable; cargo install cargo-nextest; cargo nextest --version
-# echo "Checking and rebuilding packages.."
-# sleep 1
-# sudo apt install curl; curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y; source ~/.bashrc
+
 if [ -d "$HOME/libra-framework" ]; then
     export PATH="$HOME/.cargo/bin:$PATH" && rustup update && rustup default stable && cargo install cargo-nextest && cargo nextest --version
     cd ~/libra-framework
@@ -100,7 +75,8 @@ sleep 2
 echo ""
 export PATH="$HOME/.cargo/bin:$PATH";
 cd ~/libra-framework
-cargo build --release -p libra
+RUSTFLAGS="--cfg tokio_unstable" cargo build --release -p libra
+# cargo build --release -p libra
 sudo cp target/release/libra ~/.cargo/bin
 echo ""
 libra version
@@ -127,47 +103,10 @@ echo -e "\e[1m\e[32m4. Verifying the integrity of the network file.\e[0m"
 
 sleep 2
 echo ""
-# genesis_check=$(sha256sum ~/.libra/genesis/genesis.blob | awk '{print $1}')
-# if [[ "$genesis_check" == "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
-# then
-#     echo -e "Current genesis.blob sha256sum: $genesis_check ..... \e[1m\e[32m ✓\e[0m"
-#     sleep 3
-# else
-#     echo -e "Correct genesis.blob sha256sum: ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3"
-#     echo -e "Current genesis.blob sha256sum: $genesis_check ..... not matched."
-#     sleep 3
-    wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/genesis.blob
-#     genesis_check=$(sha256sum ~/.libra/genesis/genesis.blob | awk '{print $1}')
-#     if [[ "$genesis_check" == "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
-#     then
-#         echo -e "Current genesis.blob sha256sum: $genesis_check ..... \e[1m\e[32m ✓\e[0m"
-#         sleep 3
-#     else
-#         echo -e "There's no correct genesis.blob file, installation failed."
-#         echo ""
-#         exit
-#     fi
-# fi
-# waypoint_check=$(cat ~/.libra/genesis/waypoint.txt)
-# if [[ "$waypoint_check" == "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
-# then
-#     echo -e "Current waypoint: $waypoint_check ..... \e[1m\e[32m ✓\e[0m"
-#     sleep 3
-# else
-#     echo -e "Correct waypoint: 0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce"
-#     echo -e "Current waypoint: $waypoint_check ..... not matched."
-#     sleep 3
-    wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/waypoint.txt
-    # waypoint_check=$(cat ~/.libra/genesis/waypoint.txt)
-    # if [[ "$waypoint_check" == "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
-    # then
-    #     echo -e "Current waypoint: $waypoint_check ..... \e[1m\e[32m ✓\e[0m"
-    #     sleep 3
-    # else
-    #     echo "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" > ~/.libra/genesis/waypoint.txt
-    #     echo -e "Waypoint updated."
-    # fi
-# fi
+wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/genesis.blob
+sleep 0.5
+wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/waypoint.txt
+sleep 0.5
 wget -O ~/.libra/genesis/genesis_balances.json https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/genesis_balances.json
 echo ""
 
@@ -347,6 +286,8 @@ else
 fi
 echo ""
 curl -s localhost:8080/v1/ | jq
+echo ""
+tmux ls
 echo ""
 echo "Done."
 echo ""
