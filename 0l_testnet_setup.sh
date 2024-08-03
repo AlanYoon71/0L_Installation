@@ -177,7 +177,7 @@ sleep 2
 echo ""
 echo "Input upstream URL IP address for updating libra-cli-config.yaml."
 echo "If you don't know URL yet, just enter now and update later."
-read -p "URL IP Address : " URL
+read -p "URL IP Address(just type IP) : " URL
 echo ""
 if [[ ! -z "$URL" ]]
 then
