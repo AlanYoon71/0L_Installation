@@ -175,7 +175,14 @@ echo -e "\e[1m\e[32m5. Updating network config files.\e[0m"
 
 sleep 2
 echo ""
-libra config fix --force-url http://158.247.247.207:8080/v1
+echo "Input upstream URL IP address for updating libra-cli-config.yaml."
+echo "If you don't know URL yet, just enter now and update later."
+read -p "URL IP Address : " URL
+echo ""
+if [[ ! -z "$URL" ]]
+then
+    libra config fix --force-url http://$URL:8080/v1
+fi
 sed -i 's/mainnet/testnet/g' ~/.libra/libra-cli-config.yaml
 echo "~/.libra/libra-cli-config.yaml updated."
 echo ""
