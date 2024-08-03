@@ -346,7 +346,7 @@ else
     echo "VFN is running and syncing now! Installed successfully."
 fi
 echo ""
-curl -s localhost:8080/v1/ | jq"
+curl -s localhost:8080/v1/ | jq
 echo ""
 echo "Done."
 echo ""
