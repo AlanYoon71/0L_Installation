@@ -135,7 +135,7 @@ else
     echo -e "Correct genesis.blob sha256sum: ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3"
     echo -e "Current genesis.blob sha256sum: $genesis_check ..... not matched."
     sleep 3
-    wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/0L_Network/raw/main/genesis.blob
+    wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/OpenLibra_Mainnet/raw/main/genesis.blob
     genesis_check=$(sha256sum ~/.libra/genesis/genesis.blob | awk '{print $1}')
     if [[ "$genesis_check" == "ba1ae01d5fb4113f618a9deb3357db41d283299691eb1ae7c83982291e9c53f3" ]]
     then
@@ -156,7 +156,7 @@ else
     echo -e "Correct waypoint: 0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce"
     echo -e "Current waypoint: $waypoint_check ..... not matched."
     sleep 3
-    wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/0L_Network/raw/main/waypoint.txt
+    wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/OpenLibra_Mainnet/raw/main/waypoint.txt
     waypoint_check=$(cat ~/.libra/genesis/waypoint.txt)
     if [[ "$waypoint_check" == "0:0b0947eb5327275bc7cfde3cb5c0cd03a0058e3c54c30ba962fbc90e97e664ce" ]]
     then
