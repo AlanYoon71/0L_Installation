@@ -81,15 +81,16 @@ then
     if [[ "$SHA_check" != "7fcb5b1d0d560d76c460de2139779e0f1083c50e" ]]
     then
         RUSTFLAGS="--cfg tokio_unstable" cargo build --release -p libra
+        sudo cp target/release/libra ~/.cargo/bin
     else
         echo "You already have the latest version of Libra. I will skip the building."
         echo "GIT SHA: $SHA_check"
     fi
 else
     RUSTFLAGS="--cfg tokio_unstable" cargo build --release -p libra
+    sudo cp target/release/libra ~/.cargo/bin
 fi
-# cargo build --release -p libra
-sudo cp target/release/libra ~/.cargo/bin
+
 echo ""
 libra version
 echo ""
