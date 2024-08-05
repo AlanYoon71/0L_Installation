@@ -75,7 +75,19 @@ sleep 2
 echo ""
 export PATH="$HOME/.cargo/bin:$PATH";
 cd ~/libra-framework
-RUSTFLAGS="--cfg tokio_unstable" cargo build --release -p libra
+if [[ -f ~/.cargo/bin/libra ]]
+then
+    SHA_check=$(~/.cargo/bin/libra version | grep "Git SHA" | awk '{print $3}')
+    if [[ "$SHA_check" != "7fcb5b1d0d560d76c460de2139779e0f1083c50e" ]]
+    then
+        RUSTFLAGS="--cfg tokio_unstable" cargo build --release -p libra
+    else
+        echo "You already have the latest version of Libra. I will skip the building."
+        echo "GIT SHA: $SHA_check"
+    fi
+else
+    RUSTFLAGS="--cfg tokio_unstable" cargo build --release -p libra
+fi
 # cargo build --release -p libra
 sudo cp target/release/libra ~/.cargo/bin
 echo ""
