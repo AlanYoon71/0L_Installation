@@ -109,28 +109,15 @@ echo -e "\e[1m\e[32m4. Verifying the integrity of the network file.\e[0m"
 
 sleep 2
 echo ""
-wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/genesis.blob
+wget -O ~/.libra/genesis/genesis.blob https://github.com/AlanYoon71/OpenLibra_Mainnet/raw/main/genesis.blob
 sleep 0.5
-wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/waypoint.txt
-sleep 0.5
-wget -O ~/.libra/genesis/genesis_balances.json https://github.com/AlanYoon71/OpenLibra_Testnet/raw/main/genesis_balances.json
+wget -O ~/.libra/genesis/waypoint.txt https://github.com/AlanYoon71/OpenLibra_Mainnet/raw/main/waypoint.txt
 echo ""
 
 echo -e "\e[1m\e[32m5. Updating network config files.\e[0m"
 
 sleep 2
-echo ""
-echo "Input upstream URL IP address for updating libra-cli-config.yaml."
-echo "If you don't know URL yet, just enter now and update later."
-read -p "URL IP Address(just type IP) : " URL
-echo ""
-if [[ ! -z "$URL" ]]
-then
-    libra config fix --force-url http://$URL:8080/v1
-fi
-sed -i 's/mainnet/testnet/g' ~/.libra/libra-cli-config.yaml
-echo "~/.libra/libra-cli-config.yaml updated."
-echo ""
+libra config fix --force-url https://rpc.openlibra.space:8080/v1
 operator_update=$(grep full_node_network_public_key ~/.libra/public-keys.yaml)
 sed -i "s/full_node_network_public_key:.*/$operator_update/" ~/.libra/operator.yaml &> /dev/null
 sed -i 's/~$//' ~/.libra/operator.yaml &> /dev/null
@@ -180,8 +167,9 @@ else
     sudo ufw allow 6180; sudo ufw allow 6182; sudo ufw allow 8080; sudo ufw enable;
     echo "Your firewall rule (ufw) now opens ports 3000, 6180, 6182, and 8080 for Docker traffic and grafana."
 fi
-echo "checking tmux sessions."
-tmux send-keys -t node:0 "exit" C-m
+echo "checking tmux sessions..."
+echo ""
+tmux send-keys -t node:0 "exit" C-m &> /dev/null;
 session="node"
 tmux new-session -d -s $session
 window=0
@@ -229,9 +217,13 @@ SYNC2=$(curl -s 127.0.0.1:9101/metrics 2> /dev/null | grep diem_state_sync_versi
 if [[ $SYNC1 -eq $SYNC2 ]]
 then
     echo ""
-    echo "It appears that node is not syncing. Try again now.."
-    echo "checking tmux sessions."
-    tmux send-keys -t node:0 "exit" C-m
+    echo "It appears that node is not syncing."
+    echo "When you run the node for the first time, it may stop occasionally."
+    echo "Don't worry. Try again now.."
+    echo ""
+    echo "checking tmux sessions..."
+    echo ""
+    tmux send-keys -t node:0 "exit" C-m &> /dev/null;
     session="node"
     tmux new-session -d -s $session
     window=0
