@@ -2,7 +2,7 @@
 
 Ensure you have an Ubuntu system (tested on Ubuntu 22.04) and basic familiarity with the terminal.
 
-## Step 1: Running the Libra Validators or VFN
+## Step 1: Running the Libra Validator and VFN
 
 1. Firewall setting for Mainnet Validator
 
