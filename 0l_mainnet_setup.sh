@@ -71,21 +71,23 @@ cd ~/libra-framework
 if [[ -f ~/.cargo/bin/libra ]]
 then
     SHA_check=$(~/.cargo/bin/libra version | grep "Git SHA" | awk '{print $3}')
-    if [[ "$SHA_check" != "7fcb5b1d0d560d76c460de2139779e0f1083c50e" ]]
-    then
-        RUSTFLAGS="--cfg tokio_unstable" cargo build --release -p libra
-        sudo cp target/release/libra ~/.cargo/bin
-    else
-        echo "You already have the latest version of Libra. I will skip the building."
-        echo "GIT SHA: $SHA_check"
-    fi
-else
-    RUSTFLAGS="--cfg tokio_unstable" cargo build --release -p libra
-    sudo cp target/release/libra ~/.cargo/bin
 fi
 
+RUSTFLAGS="--cfg tokio_unstable" cargo build --release -p libra
+sudo cp -f target/release/libra ~/.cargo/bin
+SHA_check2=$(~/.cargo/bin/libra version | grep "Git SHA" | awk '{print $3}')
 echo ""
 libra version
+echo ""
+if [[ -z "$SHA_check" ]]; then SHA_check=none; fi
+if [[ "$SHA_check2" != "$SHA_check" ]] && [[ "$SHA_check" == "none" ]]
+then
+    echo "libra binary file built successfully!"
+    if [[ "$SHA_check2" != "$SHA_check" ]] && [[ "$SHA_check" != "none" ]]
+    then
+        echo "libra binary file updated successfully!"
+    fi
+fi
 echo ""
 
 echo -e "\e[1m\e[32m3. Generating account config files.\e[0m"
