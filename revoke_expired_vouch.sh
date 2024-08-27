@@ -18,6 +18,7 @@ confirmed_target_epoch=$((EPOCH - epoch_expired -1))
 echo ""
 echo "Your vouches will be revoked from epoch $confirmed_target_epoch to epoch 0. Confirmed."
 sleep 3
+echo ""
 
 response=$(libra query resource --resource-path-string 0x1::vouch::GivenVouches "$key" | jq)
 if [ -z "$response" ]; then
@@ -38,7 +39,19 @@ done
 
 for target in "${target_addresses[@]}"; do
   echo "Revoking vouch for $target..."
-  libra txs validator vouch --vouch-for "$target" --revoke
+
+  echo "Input your mnemonic for multiple revoke transaction."
+  read -sp "Mnemonic: " MNEMONIC1
+  echo ""
+
+  expect <<EOF
+  spawn libra txs validator vouch --vouch-for "$target" --revoke
+  expect "mnemonic:"
+  send "$MNEMONIC1\r"
+  expect eof
+EOF
+
 done
 
 echo "Revoke process completed."
+
