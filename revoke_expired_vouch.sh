@@ -48,6 +48,8 @@ for target in "${target_addresses[@]}"; do
   spawn libra txs validator vouch --vouch-for "$target" --revoke
   expect "mnemonic:"
   send "$MNEMONIC1\r"
+  sleep 3
+  echo ""
   expect eof
 EOF
 
