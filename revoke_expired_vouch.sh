@@ -1,5 +1,6 @@
 #!/bin/bash
 
+sudo apt install -y expect > /dev/null;
 echo ""
 read -p "Enter your validator account key (Include 0x): " key
 
