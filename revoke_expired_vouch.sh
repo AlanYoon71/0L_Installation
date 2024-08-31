@@ -43,17 +43,13 @@ for target in "${target_addresses[@]}"; do
 
   echo "Input your mnemonic for multiple revoke transaction."
   read -sp "Mnemonic: " MNEMONIC1
-  echo ""
-
   expect <<EOF
   spawn libra txs validator vouch --vouch-for "$target" --revoke
   expect "mnemonic:"
   send "$MNEMONIC1\r"
-  sleep 3
-  echo ""
   expect eof
 EOF
-
+  sleep 3
 done
 
 echo "Revoke process completed."
