@@ -68,9 +68,6 @@ libra node --config-path ~/.libra/vfn.yaml
 
 #check vfn network connection at VN
 curl -s localhost:9101/metrics | grep connections{
-
-#open port 6182 at VFN
-sudo ufw allow 6182
 ```
 
 A VFN is like the shadow of a validator. If you face a difficult situation where you cannot continue running the validator, the quickest way to recover the validator is to run the VFN as a validator. Simply modify the validator IP address in the `operator.yaml` file, update the validator config using the `libra txs validator update` command, and then start the validator using the `libra node` command.
