@@ -32,7 +32,7 @@ tmux new -s node
 libra node
 ```
 
-5. Running the Libra Validator Fullnode(VFN)
+5. Running the Libra VFN (if you setup manually)
 
 ```bash
 #open port 6181 at VN
@@ -50,7 +50,12 @@ libra txs validator update
 cd && tar -cvf vn_config.zip --exclude=.libra/data .libra
 
 #build binaries at VFN
-cd && apt update && apt install -y sudo nano wget git tmux && git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework && yes | bash ./util/dev_setup.sh -t && . ~/.bashrc && cargo build --release -p libra && cp -f ~/libra-framework/target/release/libra* ~/.cargo/bin/ && libra version
+cd && apt update && apt install -y sudo nano wget git tmux \
+&& git clone https://github.com/0LNetworkCommunity/libra-framework \
+&& cd ~/libra-framework && yes | bash ./util/dev_setup.sh -t \
+&& . ~/.bashrc && cargo build --release -p libra \
+&& cp -f ~/libra-framework/target/release/libra* ~/.cargo/bin/ \
+&& libra version
 
 #transfer a zip file to VFN at VN
 cd && scp vn_config.zip <username>@<VFN_IP>:/home/<username>/
