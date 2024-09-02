@@ -24,7 +24,7 @@ wget -O ~/0l_mainnet_setup.sh https://github.com/AlanYoon71/OpenLibra_Mainnet/ra
 && chmod +x ~/0l_mainnet_setup.sh && ./0l_mainnet_setup.sh
 ```
 
-4. Running the Libra Validator (VFN)
+4. Running the Libra Validator
 
 ```bash
 apt update && apt install tmux -y
@@ -32,8 +32,43 @@ tmux new -s node
 libra node
 ```
 
-If you want to detach from the tmux session you created, press Ctrl+b and then d.
-To attach to that session again, run `tmux attach -t node`.
+5. Running the Libra Validator Fullnode(VFN)
+
+```bash
+#open port 6181 at VN
+sudo ufw allow 6181
+
+#copy full_node_network_public_key in the public-keys.yaml at VN
+grep full_node_network_public_key ~/.libra/public-keys.yaml
+
+#modify ~/.libra/operator.yaml by inserting full_node_network_public_key and port 6182 at VN
+#modify ~/.libra/vfn.yaml by inserting VN_IP
+#update validator config on chain at VN
+libra txs validator update
+
+#make a zip file for validator config files at VN
+cd && tar -cvf vn_config.zip --exclude=.libra/data .libra
+
+#build binaries at VFN
+cd && apt update && apt install -y sudo nano wget git tmux && git clone https://github.com/0LNetworkCommunity/libra-framework && cd ~/libra-framework && yes | bash ./util/dev_setup.sh -t && . ~/.bashrc && cargo build --release -p libra && cp -f ~/libra-framework/target/release/libra* ~/.cargo/bin/ && libra version
+
+#transfer a zip file to VFN at VN
+cd && scp vn_config.zip <username>@<VFN_IP>:/home/<username>/
+
+#decompress a zip file at VFN
+cd && tar -xvf vn_config.zip
+
+#open tmux session and start VFN and check syncing status
+libra node --config-path ~/.libra/vfn.yaml
+
+#check vfn network connection at VN
+curl -s localhost:9101/metrics | grep connections{
+
+#open port 6182 at VFN
+sudo ufw allow 6182
+```
+
+A VFN is like the shadow of a validator. If you face a difficult situation where you cannot continue running the validator, the quickest way to recover the validator is to run the VFN as a validator. Simply modify the validator IP address in the `operator.yaml` file, update the validator config using the `libra txs validator update` command, and then start the validator using the `libra node` command.
 
 ## Step 2: Check Syncing and Voting status
 
